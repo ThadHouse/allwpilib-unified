@@ -8,9 +8,6 @@
 package edu.wpi.first.wpiutil;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 public class RuntimeDetector {
   private static String filePrefix;
