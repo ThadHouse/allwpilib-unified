@@ -11,15 +11,6 @@ configurations.errorprone {
     resolutionStrategy.force 'com.google.errorprone:error_prone_core:2.0.9'
 }
 
-apply plugin: 'maven-publish'
-apply plugin: 'edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin'
-
-if (!hasProperty('releaseType')) {
-    WPILibVersion {
-        releaseType = 'dev'
-    }
-}
-
 sourceSets {
     dev
 }
@@ -133,3 +124,5 @@ test {
 if (project.hasProperty('onlyAthena')) {
     test.enabled = false
 }
+
+apply from: 'publish.gradle'

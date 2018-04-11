@@ -128,3 +128,5 @@ model {
     }
   }
 }
+
+apply from: "${rootDir}/shared/javacpp/publish.gradle"

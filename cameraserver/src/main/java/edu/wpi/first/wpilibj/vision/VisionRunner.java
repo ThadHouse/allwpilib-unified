@@ -9,8 +9,8 @@ package edu.wpi.first.wpilibj.vision;
 
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.VideoSource;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotBase;
+//import edu.wpi.first.wpilibj.DriverStation;
+//import edu.wpi.first.wpilibj.RobotBase;
 import org.opencv.core.Mat;
 
 /**
@@ -76,15 +76,15 @@ public class VisionRunner<P extends VisionPipeline> {
    * thread using a {@link VisionThread}.</p>
    */
   public void runOnce() {
-    if (Thread.currentThread().getId() == RobotBase.MAIN_THREAD_ID) {
-      throw new IllegalStateException(
-          "VisionRunner.runOnce() cannot be called from the main robot thread");
-    }
+    // if (Thread.currentThread().getId() == RobotBase.MAIN_THREAD_ID) {
+    //   throw new IllegalStateException(
+    //       "VisionRunner.runOnce() cannot be called from the main robot thread");
+    // }
     long frameTime = m_cvSink.grabFrame(m_image);
     if (frameTime == 0) {
       // There was an error, report it
       String error = m_cvSink.getError();
-      DriverStation.reportError(error, true);
+      //DriverStation.reportError(error, true);
     } else {
       // No errors, process the image
       m_pipeline.process(m_image);
@@ -103,10 +103,10 @@ public class VisionRunner<P extends VisionPipeline> {
    * @see VisionThread
    */
   public void runForever() {
-    if (Thread.currentThread().getId() == RobotBase.MAIN_THREAD_ID) {
-      throw new IllegalStateException(
-          "VisionRunner.runForever() cannot be called from the main robot thread");
-    }
+    // if (Thread.currentThread().getId() == RobotBase.MAIN_THREAD_ID) {
+    //   throw new IllegalStateException(
+    //       "VisionRunner.runForever() cannot be called from the main robot thread");
+    // }
     while (m_enabled && !Thread.interrupted()) {
       runOnce();
     }

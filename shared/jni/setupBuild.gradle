@@ -225,3 +225,9 @@ model {
     }
   }
 }
+
+ext.getJniSpecClass = {
+  return JniNativeLibrarySpec
+}
+
+apply from: "${rootDir}/shared/jni/publish.gradle"
