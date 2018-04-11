@@ -6,14 +6,14 @@ def windowsReleaseCompilerArgs = ['/O2']
 def windowsLinkerArgs = [ '/DEBUG:FULL' ]
 def windowsReleaseLinkerArgs = [ '/OPT:REF', '/OPT:ICF' ]
 
-def linuxCompilerArgs = ['-std=c++11', '-Wformat=2', '-Wall', '-Wextra', '-Werror', '-pedantic', '-Wno-psabi', '-g',
+def linuxCompilerArgs = ['-std=c++14', '-Wformat=2', '-Wall', '-Wextra', '-Werror', '-pedantic', '-Wno-psabi', '-g',
                          '-Wno-unused-parameter', '-fPIC', '-rdynamic', '-Wno-error=deprecated-declarations', '-pthread']
 def linuxLinkerArgs = ['-rdynamic', '-pthread']
 def linuxReleaseCompilerArgs = ['-Og']
 def linuxDebugCompilerArgs = ['-O0']
 def linux32BitArg = '-m32'
 
-def macCompilerArgs =  ['-std=c++11', '-Wall', '-Wextra', '-Werror', '-pedantic-errors', '-fPIC', '-g',
+def macCompilerArgs =  ['-std=c++14', '-Wall', '-Wextra', '-Werror', '-pedantic-errors', '-fPIC', '-g',
                             '-Wno-unused-parameter', '-Wno-missing-field-initializers', '-Wno-unused-private-field',
                             '-Wno-unused-const-variable', '-pthread']
 def macReleaseCompilerArgs = ['-O2']

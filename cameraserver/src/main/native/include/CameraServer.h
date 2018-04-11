@@ -20,7 +20,7 @@
 #include <networktables/NetworkTable.h>
 #include <support/mutex.h>
 
-#include "ErrorBase.h"
+//#include "ErrorBase.h"
 #include "cscore.h"
 
 namespace frc {
@@ -30,7 +30,7 @@ namespace frc {
  *
  * Also publishes camera information to NetworkTables.
  */
-class CameraServer : public ErrorBase {
+class CameraServer {
  public:
   static constexpr uint16_t kBasePort = 1181;
   static constexpr int kSize640x480 = 0;

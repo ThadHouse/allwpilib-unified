@@ -1,0 +1,99 @@
+ext {
+  nativeName = 'cameraserver'
+  devMain = 'edu.wpi.first.cameraserver.DevMain'
+}
+
+repositories {
+    mavenCentral()
+}
+
+evaluationDependsOn(':ntcore')
+evaluationDependsOn(':cscore')
+
+apply from: "${rootDir}/shared/javacpp/setupBuild.gradle"
+
+apply plugin: 'net.ltgt.errorprone'
+apply plugin: 'pmd'
+
+configurations.errorprone {
+    resolutionStrategy.force 'com.google.errorprone:error_prone_core:2.0.9'
+}
+
+test.dependsOn project(':ntcore').nativeTestFilesJar
+run.dependsOn project(':ntcore').nativeTestFilesJar
+test.dependsOn project(':cscore').nativeTestFilesJar
+run.dependsOn project(':cscore').nativeTestFilesJar
+
+dependencies {
+    compile project(':wpiutil')
+    compile project(':ntcore')
+    compile 'org.opencv:opencv-java:3.2.0'
+    compile project(':cscore')
+    testRuntime files(project(':ntcore').nativeTestFilesJar.archivePath)
+    testRuntime 'org.opencv:opencv-jni:3.2.0:all'
+    testRuntime files(project(':cscore').nativeTestFilesJar.archivePath)
+    devCompile project(':wpiutil')
+    devCompile project(':ntcore')
+    devCompile 'org.opencv:opencv-java:3.2.0'
+    devCompile project(':cscore')
+    devRuntime files(project(':ntcore').nativeTestFilesJar.archivePath)
+    devRuntime 'org.opencv:opencv-jni:3.2.0:all'
+    devRuntime files(project(':cscore').nativeTestFilesJar.archivePath)
+}
+
+pmd {
+    sourceSets = [sourceSets.main]
+    consoleOutput = true
+    reportsDir = file("$project.buildDir/reports/pmd")
+    ruleSetFiles = files(new File(rootDir, "styleguide/pmd-ruleset.xml"))
+    ruleSets = []
+}
+
+model {
+  // Exports config is a utility to enable exporting all symbols in a C++ library on windows to a DLL.
+  // This removes the need for DllExport on a library. However, the gradle C++ builder has a bug
+  // where some extra symbols are added that cannot be resolved at link time. This configuration
+  // lets you specify specific symbols to exlude from exporting.
+  exportsConfigs {
+    cameraserver(ExportsConfig) {
+      x86ExcludeSymbols = [ '_CT??_R0?AV_System_error', '_CT??_R0?AVexception', '_CT??_R0?AVfailure',
+                            '_CT??_R0?AVruntime_error', '_CT??_R0?AVsystem_error', '_CTA5?AVfailure',
+                            '_TI5?AVfailure', '_CT??_R0?AVout_of_range', '_CTA3?AVout_of_range',
+                            '_TI3?AVout_of_range', '_CT??_R0?AVbad_cast' ]
+      x64ExcludeSymbols = [ '_CT??_R0?AV_System_error', '_CT??_R0?AVexception', '_CT??_R0?AVfailure',
+                            '_CT??_R0?AVruntime_error', '_CT??_R0?AVsystem_error', '_CTA5?AVfailure',
+                            '_TI5?AVfailure', '_CT??_R0?AVout_of_range', '_CTA3?AVout_of_range',
+                            '_TI3?AVout_of_range', '_CT??_R0?AVbad_cast' ]
+    }
+  }
+  dependencyConfigs {
+    opencv(DependencyConfig) {
+      groupId = 'org.opencv'
+      artifactId = 'opencv-cpp'
+      headerClassifier = 'headers'
+      ext = 'zip'
+      version = '3.2.0'
+      sharedConfigs = [ cameraserver: [],
+                        cameraserverBase: [],
+                        cameraserverDev: [],
+                        cameraserverTestingBaseTest: [] ]
+    }
+  }
+  binaries {
+    all {
+      if (!it.buildable || !(it instanceof NativeBinarySpec)) {
+        return
+      }
+      lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
+      lib project: ':cscore', library: 'cscore', linkage: 'shared'
+      lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
+    }
+  }
+}
+
+test {
+  testLogging {
+    events "failed"
+    exceptionFormat "full"
+  }
+}

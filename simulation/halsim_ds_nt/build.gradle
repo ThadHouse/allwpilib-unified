@@ -1,42 +1,9 @@
 description = "A simulation shared object that uses NetworkTables to act as a stand-in for the FRC Driver Station"
 
-apply plugin: 'edu.wpi.first.NativeUtils'
-apply plugin: 'visual-studio'
-apply plugin: 'cpp'
-
-if (!project.hasProperty('onlyAthena')) {
-    ext.skipAthena = true
-
-    apply from: "${rootDir}/shared/config.gradle"
-
-
-    model {
-        components {
-            halsim_ds_nt(NativeLibrarySpec) {
-                sources {
-                    cpp {
-                        source {
-                            srcDirs = [ 'src/main/native/cpp' ]
-                            includes = ["**/*.cpp"]
-                        }
-                        exportedHeaders {
-                            srcDirs = ["src/main/native/include"]
-                        }
-                    }
-                }
-            }
-        }
-
-        binaries {
-            all {
-                lib project: ':hal', library: 'hal', linkage: 'shared'
-                lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
-                lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
-            }
-            withType(StaticLibraryBinarySpec) {
-                it.buildable = false
-            }
-        }
-    }
-    apply from: 'publish.gradle'
+ext {
+  includeNtCore = true
+  includeWpiutil = true
+  pluginName = 'halsim_ds_nt'
 }
+
+apply from: "${rootDir}/shared/plugins/setupBuild.gradle"

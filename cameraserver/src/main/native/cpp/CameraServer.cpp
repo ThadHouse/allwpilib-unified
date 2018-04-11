@@ -7,13 +7,13 @@
 
 #include "CameraServer.h"
 
-#include <HAL/HAL.h>
+//#include <HAL/HAL.h>
 #include <llvm/SmallString.h>
 #include <llvm/raw_ostream.h>
 #include <networktables/NetworkTableInstance.h>
 
-#include "Utility.h"
-#include "WPIErrors.h"
+//#include "Utility.h"
+//#include "WPIErrors.h"
 #include "ntcore_cpp.h"
 
 using namespace frc;
@@ -438,8 +438,8 @@ CameraServer::CameraServer()
 #ifdef __linux__
 cs::UsbCamera CameraServer::StartAutomaticCapture() {
   cs::UsbCamera camera = StartAutomaticCapture(m_defaultUsbDevice++);
-  HAL_Report(HALUsageReporting::kResourceType_PCVideoServer,
-             camera.GetHandle());
+  //HAL_Report(HALUsageReporting::kResourceType_PCVideoServer,
+  //           camera.GetHandle());
   return camera;
 }
 
@@ -450,8 +450,8 @@ cs::UsbCamera CameraServer::StartAutomaticCapture(int dev) {
 
   cs::UsbCamera camera{name.str(), dev};
   StartAutomaticCapture(camera);
-  HAL_Report(HALUsageReporting::kResourceType_PCVideoServer,
-             camera.GetHandle());
+  //HAL_Report(HALUsageReporting::kResourceType_PCVideoServer,
+  //           camera.GetHandle());
   return camera;
 }
 
@@ -459,8 +459,8 @@ cs::UsbCamera CameraServer::StartAutomaticCapture(llvm::StringRef name,
                                                   int dev) {
   cs::UsbCamera camera{name, dev};
   StartAutomaticCapture(camera);
-  HAL_Report(HALUsageReporting::kResourceType_PCVideoServer,
-             camera.GetHandle());
+  //HAL_Report(HALUsageReporting::kResourceType_PCVideoServer,
+  //           camera.GetHandle());
   return camera;
 }
 
@@ -468,8 +468,8 @@ cs::UsbCamera CameraServer::StartAutomaticCapture(llvm::StringRef name,
                                                   llvm::StringRef path) {
   cs::UsbCamera camera{name, path};
   StartAutomaticCapture(camera);
-  HAL_Report(HALUsageReporting::kResourceType_PCVideoServer,
-             camera.GetHandle());
+  //HAL_Report(HALUsageReporting::kResourceType_PCVideoServer,
+  //           camera.GetHandle());
   return camera;
 }
 #endif
@@ -494,7 +494,7 @@ cs::AxisCamera CameraServer::AddAxisCamera(llvm::StringRef name,
                                            llvm::StringRef host) {
   cs::AxisCamera camera{name, host};
   StartAutomaticCapture(camera);
-  HAL_Report(HALUsageReporting::kResourceType_AxisCamera, camera.GetHandle());
+  //HAL_Report(HALUsageReporting::kResourceType_AxisCamera, camera.GetHandle());
   return camera;
 }
 
@@ -502,7 +502,7 @@ cs::AxisCamera CameraServer::AddAxisCamera(llvm::StringRef name,
                                            const char* host) {
   cs::AxisCamera camera{name, host};
   StartAutomaticCapture(camera);
-  HAL_Report(HALUsageReporting::kResourceType_AxisCamera, camera.GetHandle());
+  //HAL_Report(HALUsageReporting::kResourceType_AxisCamera, camera.GetHandle());
   return camera;
 }
 
@@ -510,7 +510,7 @@ cs::AxisCamera CameraServer::AddAxisCamera(llvm::StringRef name,
                                            const std::string& host) {
   cs::AxisCamera camera{name, host};
   StartAutomaticCapture(camera);
-  HAL_Report(HALUsageReporting::kResourceType_AxisCamera, camera.GetHandle());
+  //HAL_Report(HALUsageReporting::kResourceType_AxisCamera, camera.GetHandle());
   return camera;
 }
 
@@ -518,7 +518,7 @@ cs::AxisCamera CameraServer::AddAxisCamera(llvm::StringRef name,
                                            llvm::ArrayRef<std::string> hosts) {
   cs::AxisCamera camera{name, hosts};
   StartAutomaticCapture(camera);
-  HAL_Report(HALUsageReporting::kResourceType_AxisCamera, camera.GetHandle());
+  //HAL_Report(HALUsageReporting::kResourceType_AxisCamera, camera.GetHandle());
   return camera;
 }
 
@@ -536,12 +536,12 @@ cs::CvSink CameraServer::GetVideo() {
   {
     std::lock_guard<wpi::mutex> lock(m_mutex);
     if (m_primarySourceName.empty()) {
-      wpi_setWPIErrorWithContext(CameraServerError, "no camera available");
+      //wpi_setWPIErrorWithContext(CameraServerError, "no camera available");
       return cs::CvSink{};
     }
     auto it = m_sources.find(m_primarySourceName);
     if (it == m_sources.end()) {
-      wpi_setWPIErrorWithContext(CameraServerError, "no camera available");
+      //wpi_setWPIErrorWithContext(CameraServerError, "no camera available");
       return cs::CvSink{};
     }
     source = it->second;
@@ -562,7 +562,7 @@ cs::CvSink CameraServer::GetVideo(const cs::VideoSource& camera) {
         llvm::SmallString<64> buf;
         llvm::raw_svector_ostream err{buf};
         err << "expected OpenCV sink, but got " << kind;
-        wpi_setWPIErrorWithContext(CameraServerError, err.str());
+        //wpi_setWPIErrorWithContext(CameraServerError, err.str());
         return cs::CvSink{};
       }
       return *static_cast<cs::CvSink*>(&it->second);
@@ -584,7 +584,7 @@ cs::CvSink CameraServer::GetVideo(llvm::StringRef name) {
       llvm::SmallString<64> buf;
       llvm::raw_svector_ostream err{buf};
       err << "could not find camera " << name;
-      wpi_setWPIErrorWithContext(CameraServerError, err.str());
+      //wpi_setWPIErrorWithContext(CameraServerError, err.str());
       return cs::CvSink{};
     }
     source = it->second;
@@ -629,7 +629,7 @@ cs::VideoSink CameraServer::GetServer() {
   {
     std::lock_guard<wpi::mutex> lock(m_mutex);
     if (m_primarySourceName.empty()) {
-      wpi_setWPIErrorWithContext(CameraServerError, "no camera available");
+      //wpi_setWPIErrorWithContext(CameraServerError, "no camera available");
       return cs::VideoSink{};
     }
     name = "serve_";
@@ -645,7 +645,7 @@ cs::VideoSink CameraServer::GetServer(llvm::StringRef name) {
     llvm::SmallString<64> buf;
     llvm::raw_svector_ostream err{buf};
     err << "could not find server " << name;
-    wpi_setWPIErrorWithContext(CameraServerError, err.str());
+    //wpi_setWPIErrorWithContext(CameraServerError, err.str());
     return cs::VideoSink{};
   }
   return it->second;

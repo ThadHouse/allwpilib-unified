@@ -11,7 +11,7 @@
 #include <functional>
 #include <memory>
 
-#include "ErrorBase.h"
+//#include "ErrorBase.h"
 #include "cscore.h"
 #include "vision/VisionPipeline.h"
 
@@ -20,10 +20,10 @@ namespace frc {
 /**
  * Non-template base class for VisionRunner.
  */
-class VisionRunnerBase : public ErrorBase {
+class VisionRunnerBase {
  public:
   explicit VisionRunnerBase(cs::VideoSource videoSource);
-  ~VisionRunnerBase() override;
+  ~VisionRunnerBase();
 
   VisionRunnerBase(const VisionRunnerBase&) = delete;
   VisionRunnerBase& operator=(const VisionRunnerBase&) = delete;
