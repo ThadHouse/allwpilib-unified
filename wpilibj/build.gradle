@@ -48,14 +48,15 @@ public final class WPILibVersion {
 
 def wpilibVersionFile = file('src/main/java/edu/wpi/first/wpilibj/util/WPILibVersion.java')
 
-def willPublish = false
-gradle.taskGraph.addTaskExecutionGraphListener { graph ->
-    willPublish = graph.hasTask(publish)
-}
-
 task generateJavaVersion() {
     description = 'Generates the wpilib version class.'
     group = 'WPILib'
+
+    outputs.file wpilibVersionFile
+
+    if (WPILibVersion.releaseType.toString().equalsIgnoreCase('official')) {
+        outputs.upToDateWhen { false }
+    }
 
     // We follow a simple set of checks to determine whether we should generate a new version file:
     // 1. If the release type is not development, we generate a new verison file
@@ -63,15 +64,19 @@ task generateJavaVersion() {
     // 3. If there is a generated build number, and the release type is development, then we will
     //    only generate if the publish task is run.
     doLast {
-        if (!WPILibVersion.releaseType.toString().equalsIgnoreCase('official') && !willPublish && wpilibVersionFile.exists()) {
-            return
-        }
         println "Writing version ${WPILibVersion.version} to $wpilibVersionFile"
 
         if (wpilibVersionFile.exists()) {
             wpilibVersionFile.delete()
         }
         wpilibVersionFile.write(versionClass)
+    }
+}
+
+gradle.taskGraph.addTaskExecutionGraphListener { graph ->
+    def willPublish = graph.hasTask(publish)
+    if (willPublish) {
+        generateJavaVersion.outputs.upToDateWhen { false }
     }
 }
 
