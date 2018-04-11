@@ -233,3 +233,106 @@ if (project.hasProperty('linuxCross')) {
         }
     }
 }
+
+ext.getClassifier = { binary->
+    return NativeUtils.getClassifier(binary)
+}
+
+ext.getPlatformPath = { binary->
+    return NativeUtils.getPlatformPath(binary)
+}
+
+ext.createComponentZipTasks = { components, name, base, type, project, func ->
+    def configMap = [:]
+    components.each {
+        if (it in NativeLibrarySpec && it.name == name) {
+            it.binaries.each {
+                def target = getClassifier(it)
+                if (configMap.containsKey(target)) {
+                    configMap.get(target).add(it)
+                } else {
+                    configMap.put(target, [])
+                    configMap.get(target).add(it)
+                }
+            }
+        }
+    }
+    def taskList = []
+    def outputsFolder = file("$project.buildDir/outputs")
+    def baseN = base + name
+    configMap.each { key, value ->
+        def task = project.tasks.create(baseN + "-${key}", type) {
+            description = 'Creates component archive for platform ' + key
+            destinationDir =  outputsFolder
+            classifier = key
+            baseName = baseN + '-classifier'
+            duplicatesStrategy = 'exclude'
+
+            from(licenseFile) {
+                into '/'
+            }
+
+            func(it, value)
+        }
+        taskList.add(task)
+
+        project.build.dependsOn task
+
+        project.artifacts {
+            task
+        }
+    }
+    return taskList
+}
+
+ext.createAllCombined = { list, name, base, type, project ->
+    def outputsFolder = file("$project.buildDir/outputs")
+    def baseN = base + name
+    def task = project.tasks.create(baseN + '-all', type) {
+        description = 'Creates component archive for all classifiers'
+        destinationDir = outputsFolder
+        classifier = 'all'
+        baseName = baseN + '-classifier'
+        duplicatesStrategy = 'exclude'
+
+        list.each {
+            it.outputs.files.each {
+                from project.zipTree(it)
+            }
+            dependsOn it
+        }
+    }
+
+    project.build.dependsOn task
+
+    project.artifacts {
+        task
+    }
+
+    return task
+
+}
+
+ext.includeStandardZipFormat = { task, value ->
+    value.each { binary->
+        if (binary.buildable) {
+            if (binary instanceof SharedLibraryBinarySpec) {
+                task.dependsOn binary.buildTask
+                task.from(new File(binary.sharedLibraryFile.absolutePath + ".debug")) {
+                    into getPlatformPath(binary) + '/shared'
+                }
+                task.from (binary.sharedLibraryFile) {
+                    into getPlatformPath(binary) + '/shared'
+                }
+                task.from (binary.sharedLibraryLinkFile) {
+                    into getPlatformPath(binary) + '/shared'
+                }
+            } else if (binary instanceof StaticLibraryBinarySpec) {
+                task.dependsOn binary.buildTask
+                task.from (binary.staticLibraryFile) {
+                    into getPlatformPath(binary) + '/static'
+                }
+            }
+        }
+    }
+}

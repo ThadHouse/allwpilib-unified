@@ -6,6 +6,21 @@ plugins {
     id 'idea'
 }
 
+repositories {
+    mavenCentral()
+}
+
+ext.licenseFile = file("$rootDir/LICENSE.txt")
+
+// Ensure that the WPILibVersioningPlugin is setup by setting the release type, if releaseType wasn't
+// already specified on the command line
+if (!hasProperty('releaseType')) {
+    WPILibVersion {
+        releaseType = 'dev'
+    }
+}
+
+
 task wrapper(type: Wrapper) {
     gradleVersion = '4.6'
 }

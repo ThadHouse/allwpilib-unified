@@ -77,7 +77,8 @@ public class RuntimeDetector {
   public static synchronized String getLibraryResource(String libName) {
     computePlatform();
 
-    return filePath + filePrefix + libName + fileExtension;
+    String toReturn = filePath + filePrefix + libName + fileExtension;
+    return toReturn;
   }
 
   public static boolean isAthena() {

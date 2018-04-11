@@ -35,6 +35,10 @@ sourceSets {
   dev
 }
 
+repositories {
+    mavenCentral()
+}
+
 task run(type: JavaExec) {
   classpath = sourceSets.dev.runtimeClasspath
   main = devMain
@@ -56,6 +60,9 @@ dependencies {
 model {
   components {
     "${nativeName}Base"(JniNativeLibrarySpec) {
+      if (project.hasProperty('setBaseName')) {
+        baseName = setBaseName
+      }
       javaCompileTasks << compileJava
       jniCrossCompileOptions << JniCrossCompileOptions('linux', 'athena', ["${rootDir}/shared/arm-linux-jni".toString(), "${rootDir}/shared/arm-linux-jni/linux".toString()])
       sources {
@@ -84,6 +91,9 @@ model {
       }
     }
     "${nativeName}"(JniNativeLibrarySpec) {
+      if (project.hasProperty('setBaseName')) {
+        baseName = setBaseName
+      }
       enableCheckTask true
       javaCompileTasks << compileJava
       jniCrossCompileOptions << JniCrossCompileOptions('linux', 'athena', ["${rootDir}/shared/arm-linux-jni".toString(), "${rootDir}/shared/arm-linux-jni/linux".toString()])
@@ -98,8 +108,19 @@ model {
           }
         }
       }
+      binaries.all {
+        lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
+        if (project.hasProperty('niLibraries')) {
+          project(':ni-libraries').addNiLibrariesToLinker(it)
+        }
+      }
     }
     "${nativeName}JNI"(JniNativeLibrarySpec) {
+      if (project.hasProperty('setBaseName')) {
+        baseName = setBaseName
+      } else {
+        baseName = nativeName
+      }
       enableCheckTask true
       javaCompileTasks << compileJava
       jniCrossCompileOptions << JniCrossCompileOptions('linux', 'athena', ["${rootDir}/shared/arm-linux-jni".toString(), "${rootDir}/shared/arm-linux-jni/linux".toString()])
@@ -119,6 +140,7 @@ model {
           it.buildable = false
           return
         }
+        lib project: ':wpiutil', library: 'wpiutil', linkage: 'static'
       }
     }
     // By default, a development executable will be generated. This is to help the case of

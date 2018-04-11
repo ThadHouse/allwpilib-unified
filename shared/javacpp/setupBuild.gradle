@@ -67,7 +67,7 @@ model {
             source {
               srcDirs 'src/dev/native/cpp'
               include '**/*.cpp'
-              lib library: "wpiutil"
+              lib library: nativeName
             }
             exportedHeaders {
               srcDirs 'src/dev/native/include'

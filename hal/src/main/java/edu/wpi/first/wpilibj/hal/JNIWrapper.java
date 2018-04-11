@@ -23,7 +23,7 @@ public class JNIWrapper {
 
   static {
     if (!libraryLoaded) {
-      String jniFileName = "wpilibJNI";
+      String jniFileName = "wpiHal";
       try {
         System.loadLibrary(jniFileName);
       } catch (UnsatisfiedLinkError ule) {

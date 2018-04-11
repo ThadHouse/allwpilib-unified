@@ -1,0 +1,102 @@
+import org.gradle.language.base.internal.ProjectLayout
+
+if (!project.hasProperty('skipAthena')) {
+    apply plugin: 'cpp'
+    apply plugin: 'visual-studio'
+    apply plugin: 'edu.wpi.first.NativeUtils'
+
+    apply from: '../shared/config.gradle'
+
+    model {
+        dependencyConfigs {
+            opencv(DependencyConfig) {
+                groupId = 'org.opencv'
+                artifactId = 'opencv-cpp'
+                headerClassifier = 'headers'
+                ext = 'zip'
+                version = '3.2.0'
+                sharedConfigs = [ wpilibcIntegrationTests: [] ]
+            }
+        }
+    }
+
+    model {
+        components {
+            wpilibcIntegrationTests(NativeExecutableSpec) {
+                baseName = 'FRCUserProgram'
+                sources {
+                    cpp {
+                        source {
+                            srcDirs = ["${rootDir}/gmock/gtest/src", 'src/FRCUserProgram/cpp']
+                            includes = ['*-all.cc', '*_main.cc', '**/*.cpp']
+                        }
+                        exportedHeaders {
+                            srcDirs = ["${rootDir}/gmock/gtest/include", "${rootDir}/gmock/gtest", 'src/FRCUserProgram/headers']
+                            includes = ['**/*.h', '**/*.cc']
+                        }
+                    }
+                }
+                binaries.all { binary->
+                    if (binary.targetPlatform.architecture.name == 'athena') {
+                        binary.tasks.withType(CppCompile) {
+                            cppCompiler.args "-Wno-missing-field-initializers"
+                            cppCompiler.args "-Wno-unused-variable"
+                            cppCompiler.args "-Wno-error=deprecated-declarations"
+                        }
+                        lib project: ':wpilibc', library: 'wpilibc', linkage: 'shared'
+                        lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
+                        lib project: ':cscore', library: 'cscore', linkage: 'shared'
+                        lib project: ':hal', library: 'hal', linkage: 'shared'
+                        lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
+                        project(':ni-libraries').addNiLibrariesToLinker(binary)
+                    } else {
+                        binary.buildable = false
+                    }
+                }
+            }
+        }
+    }
+}
+
+def testOutputFolder = file("${project(':').buildDir}/integrationTestFiles")
+
+model {
+    tasks {
+        copyWpilibCTestLibrariesToOutput(Task) {
+            $.binaries.each {
+                if (it in NativeExecutableBinarySpec && it.targetPlatform.architecture.name == 'athena') {
+                    def spec = it
+                    dependsOn spec.buildTask
+                }
+            }
+            outputs.file testOutputFolder
+            outputs.upToDateWhen { false }
+
+            def bin = $.binaries
+            doLast {
+                bin.each {
+                    if (it in NativeExecutableBinarySpec && it.targetPlatform.architecture.name == 'athena') {
+                        def spec = it
+                        spec.libs.each {
+                            it.runtimeFiles.each { f ->
+                                copy {
+                                    from file(f)
+                                    into testOutputFolder.toString() + '/libs'
+                                }
+                            }
+                        }
+                        copy {
+                            from spec.executable.file
+                            into testOutputFolder.toString() + '/cpp'
+                        }
+                    }
+                }
+            }
+        }
+        // This is in a separate if statement because of what I would assume is a bug in grade.
+        // Will file an issue on their side.
+        if (!project.hasProperty('skipAthena')) {
+            build.dependsOn copyWpilibCTestLibrariesToOutput
+        }
+    }
+}

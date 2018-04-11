@@ -83,9 +83,6 @@ class SingleNativeBuild implements Plugin<Project> {
               baseBin = tmpBaseBin
             }
           }
-          baseBin.libs.each {
-            binary.lib it
-          }
           baseBin.tasks.withType(AbstractNativeSourceCompileTask) { oCompileTask ->
             def compileTask = (AbstractNativeSourceCompileTask)oCompileTask
             if (binary instanceof SharedLibraryBinarySpec) {
