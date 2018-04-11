@@ -1,0 +1,91 @@
+apply plugin: 'org.ysb33r.doxygen'
+
+evaluationDependsOn(':ntcore')
+evaluationDependsOn(':cscore')
+evaluationDependsOn(':hal')
+evaluationDependsOn(':wpiutil')
+evaluationDependsOn(':cameraserver')
+evaluationDependsOn(':wpilibc')
+
+def cppDepLocation = "${buildDir}/cppSource"
+
+def cppZips = []
+
+
+project(':ntcore').tasks.withType(Zip) {
+  if ((it.classifier == 'sources' || it.classifier =='headers') && it.name.contains('cpp')) {
+    cppZips << it
+  }
+}
+
+project(':cscore').tasks.withType(Zip) {
+  if ((it.classifier == 'sources' || it.classifier =='headers') && it.name.contains('cpp')) {
+    cppZips << it
+  }
+}
+
+project(':hal').tasks.withType(Zip) {
+  if ((it.classifier == 'sources' || it.classifier =='headers') && it.name.contains('cpp')) {
+    cppZips << it
+  }
+}
+
+project(':wpiutil').tasks.withType(Zip) {
+  if ((it.classifier == 'sources' || it.classifier =='headers') && it.name.contains('cpp')) {
+    cppZips << it
+  }
+}
+
+project(':cameraserver').tasks.withType(Zip) {
+  if ((it.classifier == 'sources' || it.classifier =='headers') && it.name.contains('cpp')) {
+    cppZips << it
+  }
+}
+
+project(':wpilibc').tasks.withType(Zip) {
+  if ((it.classifier == 'sources' || it.classifier =='headers') && it.name.contains('cpp')) {
+    cppZips << it
+  }
+}
+
+doxygen {
+  executables {
+     doxygen version : '1.8.8'
+  }
+}
+
+doxygen {
+    generate_html true
+
+    def dox = it
+
+    cppZips.each {
+      it.source.each {
+        dox.source file(it)
+      }
+      dependsOn it
+    }
+
+    extension_mapping 'inc=C++'
+    project_name 'WPILibC++'
+    javadoc_autobrief true
+    recursive true
+    quiet true
+    warnings false
+    warn_if_doc_error false
+    warn_no_paramdoc false
+    warn_format false
+    warn_logfile false
+    warn_if_undocumented false
+    generate_latex false
+    html_timestamp true
+    generate_treeview true
+}
+
+task zipCppDocs(type: Zip) {
+    baseName = 'cppDocs'
+    destinationDir = buildDir
+    dependsOn doxygen
+    from ("$buildDir/docs/doxygen/html")
+    into '/'
+}

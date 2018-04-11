@@ -1,0 +1,74 @@
+apply plugin: 'java'
+
+evaluationDependsOn(':ntcore')
+evaluationDependsOn(':cscore')
+evaluationDependsOn(':hal')
+evaluationDependsOn(':wpiutil')
+evaluationDependsOn(':cameraserver')
+evaluationDependsOn(':wpilibj')
+
+configurations {
+    javaSource
+}
+
+dependencies {
+    javaSource 'org.opencv:opencv-java:+:sources'
+}
+
+def javaDepLocation = "${buildDir}/javaSrc"
+def javaFilesList = configurations.javaSource.files
+
+def javaDownloadList = []
+
+task downloadAllJava {}
+
+configurations.javaSource.dependencies.each { dependency ->
+    def classifier = dependency.artifacts[0].classifier
+    def extension = dependency.artifacts[0].extension
+    def taskName = "download${dependency.group}${dependency.name}${classifier}"
+    def task = tasks.create(taskName, Copy) {
+        def file
+        javaFilesList.each {
+            if (it.toString().endsWith("${classifier}.${extension}") && it.toString().contains("${dependency.name}-".toString())) {
+                file = it
+            }
+        }
+        from rootProject.zipTree(file)
+        into "$javaDepLocation/${dependency.name.toLowerCase()}/${classifier}"
+    }
+    downloadAllJava.dependsOn task
+    javaDownloadList.add(task)
+}
+
+sourceSets {
+    docs {
+        java {
+           srcDir "$projectDir/build/javaSrc"
+        }
+    }
+}
+
+task generateJavaDocs(type: Javadoc) {
+    javadoc.options.links("http://docs.oracle.com/javase/8/docs/api/")
+    options.addStringOption "tag", "pre:a:Pre-Condition"
+    options.addStringOption('Xdoclint:accessibility,syntax,html', '-quiet')
+    source project(':hal').sourceSets.main.java
+    source project(':wpiutil').sourceSets.main.java
+    source project(':wpilibj').sourceSets.main.java
+    source project(':cscore').sourceSets.main.java
+    source project(':ntcore').sourceSets.main.java
+    source project(':cameraserver').sourceSets.main.java
+    source sourceSets.docs.java
+    failOnError = true
+}
+
+generateJavaDocs.dependsOn downloadAllJava
+generateJavaDocs.dependsOn project(':wpilibj').generateJavaVersion
+
+task zipJavaDocs(type: Zip) {
+    baseName = 'javaDocs'
+    destinationDir = buildDir
+    dependsOn generateJavaDocs
+    from ("$buildDir/docs/javadoc")
+    into '/'
+}

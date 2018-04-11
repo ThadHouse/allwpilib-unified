@@ -84,6 +84,7 @@ public class VisionRunner<P extends VisionPipeline> {
     if (frameTime == 0) {
       // There was an error, report it
       String error = m_cvSink.getError();
+      System.out.println(error);
       //DriverStation.reportError(error, true);
     } else {
       // No errors, process the image

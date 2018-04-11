@@ -48,6 +48,7 @@ if (!project.hasProperty('skipAthena')) {
                         lib project: ':cscore', library: 'cscore', linkage: 'shared'
                         lib project: ':hal', library: 'hal', linkage: 'shared'
                         lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
+                        lib project: ':cameraserver', library: 'cameraserver', linkage: 'shared'
                         project(':ni-libraries').addNiLibrariesToLinker(binary)
                     } else {
                         binary.buildable = false
