@@ -35,6 +35,7 @@ import org.gradle.nativeplatform.toolchain.internal.tools.ToolRegistry;
 import org.gradle.platform.base.BinarySpec;
 import org.gradle.platform.base.ComponentSpec;
 import org.gradle.platform.base.ComponentSpecContainer;
+import org.gradle.platform.base.BinaryContainer;
 import org.gradle.platform.base.ComponentType;
 import org.gradle.platform.base.TypeBuilder;
 import org.gradle.nativeplatform.tasks.ObjectFilesToBinary;
@@ -51,7 +52,7 @@ class SingleNativeBuild implements Plugin<Project> {
   static class Rules extends RuleSource {
     @Mutate
     @CompileStatic
-    void setupSingleNativeBuild(ModelMap<Task> tasks, ComponentSpecContainer components, ProjectLayout projectLayout) {
+    void setupSingleNativeBuild(ModelMap<Task> tasks, ComponentSpecContainer components, BinaryContainer binaryContainer, ProjectLayout projectLayout) {
       Project project = (Project)projectLayout.projectIdentifier;
 
       def nativeName = project.extensions.extraProperties.get('nativeName')
@@ -81,6 +82,9 @@ class SingleNativeBuild implements Plugin<Project> {
                 tmpBaseBin.targetPlatform.architecture.name == binary.targetPlatform.architecture.name) {
               baseBin = tmpBaseBin
             }
+          }
+          baseBin.libs.each {
+            binary.lib it
           }
           baseBin.tasks.withType(AbstractNativeSourceCompileTask) { oCompileTask ->
             def compileTask = (AbstractNativeSourceCompileTask)oCompileTask

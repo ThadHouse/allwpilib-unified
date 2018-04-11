@@ -98,12 +98,6 @@ model {
           }
         }
       }
-      binaries.all {
-        lib project: ':wpiutil', library: 'wpiutil', linkage: 'static'
-        if (project.hasProperty('niLibraries')) {
-          project(':ni-libraries').addNiLibrariesToLinker(it)
-        }
-      }
     }
     "${nativeName}JNI"(JniNativeLibrarySpec) {
       enableCheckTask true
@@ -124,10 +118,6 @@ model {
         if (it instanceof StaticLibraryBinarySpec) {
           it.buildable = false
           return
-        }
-        lib project: ':wpiutil', library: 'wpiutil', linkage: 'static'
-        if (project.hasProperty('niLibraries')) {
-          project(':ni-libraries').addNiLibrariesToLinker(it)
         }
       }
     }
