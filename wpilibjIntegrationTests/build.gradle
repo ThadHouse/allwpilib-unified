@@ -1,15 +1,16 @@
-
 plugins {
     id 'java'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '2.0.3'
+    id 'com.github.johnrengelman.shadow' version '2.0.3' apply false
 }
+
+mainClassName = 'edu.wpi.first.wpilibj.test.AntJunitLanucher'
+
+apply plugin: 'com.github.johnrengelman.shadow'
 
 repositories {
     mavenCentral()
 }
-
-mainClassName = 'edu.wpi.first.wpilibj.test.AntJunitLanucher'
 
 dependencies {
     compile project(':wpilibj')
@@ -33,7 +34,7 @@ def testOutputFolder = file("${project(':').buildDir}/integrationTestFiles")
 task copyWpilibJIntegrationTestJarToOutput(type: Copy) {
     destinationDir testOutputFolder
     dependsOn shadowJar
-    inputs.file shadowJar
+    inputs.file shadowJar.archivePath
     from (shadowJar) {
         into 'java'
     }
