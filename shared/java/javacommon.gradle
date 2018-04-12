@@ -1,5 +1,8 @@
 apply plugin: 'maven-publish'
 apply plugin: 'edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin'
+apply plugin: 'java'
+apply plugin: 'net.ltgt.errorprone'
+apply plugin: 'pmd'
 
 if (!hasProperty('releaseType')) {
     WPILibVersion {
@@ -14,22 +17,14 @@ if (project.hasProperty("publishVersion")) {
     pubVersion = WPILibVersion.version
 }
 
-def baseArtifactId = 'wpilibj'
-def artifactGroupId = 'edu.wpi.first.wpilibj'
+def baseArtifactId = project.baseId
+def artifactGroupId = project.groupId
 
 def outputsFolder = file("$project.buildDir/outputs")
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
-}
-
-task javadoc(type: Javadoc, overwrite: true) {
-    javadoc.options.links("http://docs.oracle.com/javase/8/docs/api/")
-    options.addStringOption "tag", "pre:a:Pre-Condition"
-    options.addStringOption('Xdoclint:accessibility,syntax,html', '-quiet')
-    source = sourceSets.main.allJava
-    failOnError = true
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
@@ -62,3 +57,47 @@ publishing {
     }
   }
 }
+
+test {
+    testLogging {
+        events "failed"
+        exceptionFormat "full"
+    }
+}
+
+if (project.hasProperty('onlyAthena')) {
+    test.enabled = false
+}
+
+pmd {
+    sourceSets = [sourceSets.main]
+    consoleOutput = true
+    reportsDir = file("$project.buildDir/reports/pmd")
+    ruleSetFiles = files(new File(rootDir, "styleguide/pmd-ruleset.xml"))
+    ruleSets = []
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations.errorprone {
+    resolutionStrategy.force 'com.google.errorprone:error_prone_core:2.0.9'
+}
+
+sourceSets {
+    dev
+}
+
+compileJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+task run(type: JavaExec) {
+    classpath = sourceSets.dev.runtimeClasspath
+
+    main = project.devMain
+}
+
+build.dependsOn devClasses

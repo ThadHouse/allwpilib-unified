@@ -4,25 +4,15 @@ apply plugin: 'visual-studio'
 apply plugin: 'edu.wpi.first.NativeUtils'
 apply plugin: SingleNativeBuild
 apply plugin: ExtraTasks
-apply plugin: 'java'
 
 apply from: "${rootDir}/shared/config.gradle"
 
-sourceSets {
-  dev
+ext {
+  baseId = nativeName
+  groupId = "edu.wpi.first.${nativeName}"
 }
 
-task run(type: JavaExec) {
-  classpath = sourceSets.dev.runtimeClasspath
-  main = devMain
-}
-
-build.dependsOn devClasses
-
-dependencies {
-  testCompile 'junit:junit:4.12'
-  devCompile sourceSets.main.output
-}
+apply from: "${rootDir}/shared/java/javacommon.gradle"
 
 model {
   components {

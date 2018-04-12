@@ -3,21 +3,10 @@ ext {
   devMain = 'edu.wpi.first.cameraserver.DevMain'
 }
 
-repositories {
-    mavenCentral()
-}
-
 evaluationDependsOn(':ntcore')
 evaluationDependsOn(':cscore')
 
 apply from: "${rootDir}/shared/javacpp/setupBuild.gradle"
-
-apply plugin: 'net.ltgt.errorprone'
-apply plugin: 'pmd'
-
-configurations.errorprone {
-    resolutionStrategy.force 'com.google.errorprone:error_prone_core:2.0.9'
-}
 
 test.dependsOn project(':ntcore').nativeTestFilesJar
 run.dependsOn project(':ntcore').nativeTestFilesJar
@@ -39,14 +28,6 @@ dependencies {
     devRuntime files(project(':ntcore').nativeTestFilesJar.archivePath)
     devRuntime 'org.opencv:opencv-jni:3.2.0:all'
     devRuntime files(project(':cscore').nativeTestFilesJar.archivePath)
-}
-
-pmd {
-    sourceSets = [sourceSets.main]
-    consoleOutput = true
-    reportsDir = file("$project.buildDir/reports/pmd")
-    ruleSetFiles = files(new File(rootDir, "styleguide/pmd-ruleset.xml"))
-    ruleSets = []
 }
 
 model {
@@ -88,12 +69,5 @@ model {
       lib project: ':cscore', library: 'cscore', linkage: 'shared'
       lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
     }
-  }
-}
-
-test {
-  testLogging {
-    events "failed"
-    exceptionFormat "full"
   }
 }

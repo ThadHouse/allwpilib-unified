@@ -5,13 +5,15 @@ apply plugin: 'edu.wpi.first.NativeUtils'
 apply plugin: 'edu.wpi.first.GradleJni'
 apply plugin: SingleNativeBuild
 apply plugin: ExtraTasks
-apply plugin: 'java'
 
 apply from: "${rootDir}/shared/config.gradle"
 
-if (project.hasProperty('onlyAthena')) {
-    test.enabled = false
+ext {
+  baseId = nativeName
+  groupId = "edu.wpi.first.${nativeName}"
 }
+
+apply from: "${rootDir}/shared/java/javacommon.gradle"
 
 task nativeTestFilesJar(type: Jar) {
   destinationDir = project.buildDir
@@ -31,27 +33,8 @@ task nativeTestFilesJar(type: Jar) {
   }
 }
 
-sourceSets {
-  dev
-}
-
-compileJava {
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-}
-
-repositories {
-    mavenCentral()
-}
-
-task run(type: JavaExec) {
-  classpath = sourceSets.dev.runtimeClasspath
-  main = devMain
-}
-
 test.dependsOn nativeTestFilesJar
 run.dependsOn nativeTestFilesJar
-build.dependsOn devClasses
 
 dependencies {
     compile project(':wpiutil')

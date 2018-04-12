@@ -1,37 +1,14 @@
-repositories {
-    mavenCentral()
+evaluationDependsOn(':hal')
+evaluationDependsOn(':ntcore')
+evaluationDependsOn(':cscore')
+
+ext {
+  baseId = 'wpilibj'
+  groupId = 'edu.wpi.first.wpilibj'
+  devMain = 'edu.wpi.first.wpilibj.DevMain'
 }
 
-apply plugin: 'java'
-apply plugin: 'net.ltgt.errorprone'
-apply plugin: 'pmd'
-apply plugin: TestingModelBasePlugin
-
-configurations.errorprone {
-    resolutionStrategy.force 'com.google.errorprone:error_prone_core:2.0.9'
-}
-
-sourceSets {
-    dev
-}
-
-compileJava {
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-}
-
-task run(type: JavaExec) {
-    classpath = sourceSets.dev.runtimeClasspath
-
-    main = 'edu.wpi.first.wpilibj.DevMain'
-}
-
-test.dependsOn project(':hal').nativeTestFilesJar
-run.dependsOn project(':hal').nativeTestFilesJar
-test.dependsOn project(':ntcore').nativeTestFilesJar
-run.dependsOn project(':ntcore').nativeTestFilesJar
-test.dependsOn project(':cscore').nativeTestFilesJar
-run.dependsOn project(':cscore').nativeTestFilesJar
+apply from: "${rootDir}/shared/java/javacommon.gradle"
 
 def versionClass = """
 package edu.wpi.first.wpilibj.util;
@@ -86,14 +63,6 @@ clean {
 
 compileJava.dependsOn generateJavaVersion
 
-pmd {
-    sourceSets = [sourceSets.main]
-    consoleOutput = true
-    reportsDir = file("$project.buildDir/reports/pmd")
-    ruleSetFiles = files(new File(rootDir, "styleguide/pmd-ruleset.xml"))
-    ruleSets = []
-}
-
 dependencies {
     compile project(':hal')
     compile project(':wpiutil')
@@ -119,15 +88,9 @@ dependencies {
     devRuntime files(project(':cscore').nativeTestFilesJar.archivePath)
 }
 
-test {
-    testLogging {
-        events "failed"
-        exceptionFormat "full"
-    }
-}
-
-if (project.hasProperty('onlyAthena')) {
-    test.enabled = false
-}
-
-apply from: 'publish.gradle'
+test.dependsOn project(':hal').nativeTestFilesJar
+run.dependsOn project(':hal').nativeTestFilesJar
+test.dependsOn project(':ntcore').nativeTestFilesJar
+run.dependsOn project(':ntcore').nativeTestFilesJar
+test.dependsOn project(':cscore').nativeTestFilesJar
+run.dependsOn project(':cscore').nativeTestFilesJar
