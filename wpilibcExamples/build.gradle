@@ -94,6 +94,5 @@ if (!project.hasProperty('skipAthena')) {
             }
         }
     }
+    apply from: 'publish.gradle'
 }
-
-apply from: 'publish.gradle'
