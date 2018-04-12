@@ -20,7 +20,6 @@
 #include <networktables/NetworkTable.h>
 #include <support/mutex.h>
 
-//#include "ErrorBase.h"
 #include "cscore.h"
 
 namespace frc {

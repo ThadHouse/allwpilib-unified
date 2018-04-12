@@ -20,10 +20,40 @@
 #include "SmartDashboard/SmartDashboard.h"
 #include "Utility.h"
 #include "WPILibVersion.h"
+#include "CameraServerShared.h"
+#include "WPIErrors.h"
 
 using namespace frc;
 
 std::thread::id RobotBase::m_threadId;
+
+static void SetupCameraServerShared() {
+  CameraServerShared csShared;
+  csShared.GetRobotMainThreadId = []() {
+    return std::make_pair(RobotBase::GetThreadId(), true);
+  };
+  csShared.ReportAxisCamera = [](int id){
+    HAL_Report(HALUsageReporting::kResourceType_AxisCamera, id);
+  };
+  csShared.ReportUsbCamera = [](int id) {
+      HAL_Report(HALUsageReporting::kResourceType_PCVideoServer,
+             id);
+  };
+    csShared.ReportVideoServer = [](int id) {
+      HAL_Report(HALUsageReporting::kResourceType_PCVideoServer,
+             id);
+  };
+  csShared.ReportDriverStationError = [](llvm::StringRef error) {
+    DriverStation::ReportError(error);
+  };
+  csShared.SetVisionRunnerError = [](llvm::StringRef error) {
+    wpi_setGlobalErrorWithContext(-1, error);
+  };
+  csShared.SetCameraServerError = [](llvm::StringRef error) {
+    wpi_setGlobalWPIErrorWithContext(CameraServerError, error);
+  };
+  SetCameraServerShared(csShared);
+}
 
 /**
  * Constructor for a generic robot program.
@@ -41,6 +71,8 @@ RobotBase::RobotBase() : m_ds(DriverStation::GetInstance()) {
 
   RobotState::SetImplementation(DriverStation::GetInstance());
   HLUsageReporting::SetImplementation(new HardwareHLReporting());
+
+  SetupCameraServerShared();
 
   auto inst = nt::NetworkTableInstance::GetDefault();
   inst.SetNetworkIdentity("Robot");

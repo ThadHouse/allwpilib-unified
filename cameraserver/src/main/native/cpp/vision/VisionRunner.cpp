@@ -9,10 +9,8 @@
 
 #include <opencv2/core/mat.hpp>
 
-#include <memory>
-
-//#include "DriverStation.h"
-//#include "RobotBase.h"
+#include <thread>
+#include "CameraServerShared.h"
 
 using namespace frc;
 
@@ -46,17 +44,16 @@ VisionRunnerBase::~VisionRunnerBase() {}
  * use {@link #runForever} in its own thread using a std::thread.</p>
  */
 void VisionRunnerBase::RunOnce() {
-  /*
-  if (std::this_thread::get_id() == RobotBase::GetThreadId()) {
-    wpi_setErrnoErrorWithContext(
-        "VisionRunner::RunOnce() cannot be called from the main robot thread");
+  auto& csShared = frc::GetCameraServerShared();
+  auto res = csShared.GetRobotMainThreadId();
+  if (res.second && (std::this_thread::get_id() == res.first)) {
+    csShared.SetVisionRunnerError("VisionRunner::RunOnce() cannot be called from the main robot thread");
     return;
   }
-  */
   auto frameTime = m_cvSink.GrabFrame(*m_image);
   if (frameTime == 0) {
     auto error = m_cvSink.GetError();
-    //DriverStation::ReportError(error);
+    csShared.ReportDriverStationError(error);
   } else {
     DoProcess(*m_image);
   }
@@ -70,14 +67,13 @@ void VisionRunnerBase::RunOnce() {
  * <strong>Do not call this method directly from the main thread.</strong>
  */
 void VisionRunnerBase::RunForever() {
-  /*
-  if (std::this_thread::get_id() == RobotBase::GetThreadId()) {
-    wpi_setErrnoErrorWithContext(
-        "VisionRunner::RunForever() cannot be called from the main robot "
-        "thread");
+  auto& csShared = frc::GetCameraServerShared();
+  auto res = csShared.GetRobotMainThreadId();
+  if (res.second && (std::this_thread::get_id() == res.first)) {
+    csShared.SetVisionRunnerError("VisionRunner::RunForever() cannot be called from the main robot "
+                                  "thread");
     return;
   }
-  */
   while (m_enabled) {
     RunOnce();
   }

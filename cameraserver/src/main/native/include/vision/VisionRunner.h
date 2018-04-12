@@ -11,7 +11,6 @@
 #include <functional>
 #include <memory>
 
-//#include "ErrorBase.h"
 #include "cscore.h"
 #include "vision/VisionPipeline.h"
 
