@@ -43,6 +43,10 @@ artifacts {
     archives javadocJar
 }
 
+addTaskToCopyAllOutputs(sourcesJar)
+addTaskToCopyAllOutputs(javadocJar)
+addTaskToCopyAllOutputs(jar)
+
 publishing {
   publications {
 

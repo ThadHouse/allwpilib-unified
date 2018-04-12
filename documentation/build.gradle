@@ -6,4 +6,7 @@ apply from: 'java.gradle'
 apply from: 'cpp.gradle'
 
 build.dependsOn zipJavaDocs
-//build.dependsOn zipCppDocs
+build.dependsOn zipCppDocs
+
+addTaskToCopyAllOutputs(zipJavaDocs)
+addTaskToCopyAllOutputs(zipCppDocs)

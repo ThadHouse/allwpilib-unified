@@ -52,47 +52,8 @@ artifacts {
     archives cppSourcesZip
 }
 
-def createComponentZipTasks = { components, name, base, type, project, func ->
-    def configMap = [:]
-    components.each {
-        if (it in NativeLibrarySpec && it.name == name) {
-            it.binaries.each {
-                def target = getClassifier(it)
-                if (configMap.containsKey(target)) {
-                    configMap.get(target).add(it)
-                } else {
-                    configMap.put(target, [])
-                    configMap.get(target).add(it)
-                }
-            }
-        }
-    }
-    def taskList = []
-    configMap.each { key, value ->
-        def baseN = base + name
-        def task = project.tasks.create(baseN + "-${key}", type) {
-            description = 'Creates component archive for platform ' + key
-            destinationDir =  outputsFolder
-            classifier = key
-            baseName = baseN + '-classifier'
-            duplicatesStrategy = 'exclude'
-
-            from(licenseFile) {
-                into '/'
-            }
-
-            func(it, value)
-        }
-        taskList.add(task)
-
-        project.build.dependsOn task
-
-        project.artifacts {
-            archives task
-        }
-    }
-    return taskList
-}
+addTaskToCopyAllOutputs(cppSourcesZip)
+addTaskToCopyAllOutputs(cppHeadersZip)
 
 model {
     publishing {

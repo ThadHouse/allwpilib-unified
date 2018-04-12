@@ -33,6 +33,7 @@ ext {
 }
 
 apply from: "${rootDir}/shared/jni/setupBuild.gradle"
+apply from: 'simjni.gradle'
 
 model {
   // Exports config is a utility to enable exporting all symbols in a C++ library on windows to a DLL.

@@ -82,6 +82,8 @@ doxygen {
     generate_treeview true
 }
 
+doxygen.dependsOn project(':wpilibc').generateCppVersion
+
 task zipCppDocs(type: Zip) {
     baseName = 'cppDocs'
     destinationDir = buildDir

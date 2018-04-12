@@ -50,6 +50,10 @@ task cppHeadersZip(type: Zip) {
 build.dependsOn cppSourcesZip
 build.dependsOn cppHeadersZip
 
+addTaskToCopyAllOutputs(cppSourcesZip)
+addTaskToCopyAllOutputs(cppHeadersZip)
+
+
 model {
     publishing {
         def pluginTaskList = createComponentZipTasks($.components, pluginName, "zipcpp${pluginName}", Zip, project, { task, value->

@@ -60,6 +60,9 @@ task build() {}
 build.dependsOn headersZip
 build.dependsOn libZip
 
+addTaskToCopyAllOutputs(headersZip)
+addTaskToCopyAllOutputs(libZip)
+
 apply from: 'publish.gradle'
 
 task patchNiLibraries() {

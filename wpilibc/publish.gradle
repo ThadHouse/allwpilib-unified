@@ -33,6 +33,8 @@ task cppSourcesZip(type: Zip) {
     }
 }
 
+cppSourcesZip.dependsOn generateCppVersion
+
 task cppHeadersZip(type: Zip) {
     destinationDir = outputsFolder
     baseName = 'wpilibc'
