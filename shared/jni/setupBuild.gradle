@@ -164,20 +164,16 @@ model {
   tasks {
     def c = $.components
     project.tasks.create('runCpp', Exec) {
-      println 'creatingcpp'
       def found = false
       def systemArch = getCurrentArch()
       c.each {
         if (it in NativeExecutableSpec && it.name == "${nativeName}Dev") {
           it.binaries.each {
-            println it
             if (!found) {
               def arch = it.targetPlatform.architecture.name
-              println arch
-              println systemArch
               if (arch == systemArch) {
                 dependsOn it.tasks.install
-                commandLine it.tasks.install.runScript
+                commandLine it.tasks.install.runScriptFile
                 def filePath = it.tasks.install.installDirectory.get().toString() + File.separatorChar + 'lib'
                 test.dependsOn it.tasks.install
                 test.systemProperty 'java.library.path', filePath

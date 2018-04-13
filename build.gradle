@@ -64,9 +64,6 @@ copyAllOutputs.dependsOn outputVersions
 ext.addTaskToCopyAllOutputs = { task ->
     copyAllOutputs.dependsOn task
     copyAllOutputs.inputs.file task.archivePath
-    if (task.baseName == null) {
-        println task
-    }
     copyAllOutputs.from task.archivePath
 }
 
@@ -98,5 +95,5 @@ subprojects {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.6'
+    gradleVersion = '4.7-rc-1'
 }

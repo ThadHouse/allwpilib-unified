@@ -69,7 +69,7 @@ model {
                 if (it in NativeExecutableBinarySpec && it.targetPlatform.architecture.name == 'athena') {
                     def installTask = it.tasks.install
                     task.dependsOn installTask
-                    task.from (installTask.sourceFile) {
+                    task.from (installTask.inputFileIfExists) {
                         into '/cpp'
                     }
                     installTask.libs.each {

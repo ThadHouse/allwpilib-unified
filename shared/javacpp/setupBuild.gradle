@@ -107,7 +107,7 @@ model {
               def arch = it.targetPlatform.architecture.name
               if (arch == systemArch) {
                 dependsOn it.tasks.install
-                commandLine it.tasks.install.runScript
+                //commandLine it.tasks.install.runScriptFile.asFile
                 def filePath = it.tasks.install.installDirectory.get().toString() + File.separatorChar + 'lib'
                 test.dependsOn it.tasks.install
                 test.systemProperty 'java.library.path', filePath
