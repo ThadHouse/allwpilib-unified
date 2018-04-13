@@ -12,17 +12,48 @@ namespace {
       m_call = JGlobal<jobject>(env, obj);
     }
 
+    void performCallback(const char* name, const HAL_Value* value) {
+      JNIEnv* env;
+      JavaVM* vm = sim::GetJVM();
+      bool didAttachThread = false;
+      int tryGetEnv = vm->GetEnv((void**)&env, JNI_VERSION_1_6);
+      if (tryGetEnv == JNI_EDETACHED) {
+        // Thread not attached
+        didAttachThread = true;
+        if (vm->AttachCurrentThread((void**)&env, nullptr) != 0) {
+          // Failed to attach, log and return
+          llvm::outs() << "Failed to attach\n";
+          llvm::outs().flush();
+          return;
+        }
+      } else if (tryGetEnv == JNI_EVERSION) {
+        llvm::outs() << "Invalid JVM Version requested\n";
+        llvm::outs().flush();
+      }
+
+      env->CallVoidMethod(m_call, sim::GetNotifyCallback(), MakeJString(env, name), sim::MakeSimValue(env, value));
+
+      if (env->ExceptionCheck()) {
+        env->ExceptionDescribe();
+      }
+
+      if (didAttachThread) {
+        vm->DetachCurrentThread();
+      }
+    }
+
     void free(JNIEnv* env) {
       m_call.free(env);
     }
 
     JGlobal<jobject> m_call;
+    int32_t callbackId;
   };
 }
 
 static hal::UnlimitedHandleResource<SIM_JniHandle, CallbackStore, hal::HAL_HandleEnum::SimulationJni>* callbackHandles;
 
-namespace frc {
+namespace sim {
   void InitializeAccelerometerSim() {
     static hal::UnlimitedHandleResource<SIM_JniHandle, CallbackStore, hal::HAL_HandleEnum::SimulationJni> cb;
     callbackHandles = &cb;
@@ -47,10 +78,38 @@ JNIEXPORT void JNICALL Java_edu_wpi_first_hal_sim_AccelerometerSim_resetData
  * Signature: (ILedu/wpi/first/hal/sim/NotifyCallback;Z)I
  */
 JNIEXPORT jint JNICALL Java_edu_wpi_first_hal_sim_AccelerometerSim_registerActiveCallback
-  (JNIEnv *, jclass, jint index, jobject callback, jboolean initialNotify) {
-    HALSIM_RegisterAccelerometerActiveCallback(index, [](const char* name, void* param, const HAL_Value* value){
+  (JNIEnv * env, jclass, jint index, jobject callback, jboolean initialNotify) {
 
-    }, nullptr, initialNotify);
+    auto callbackStore = std::make_shared<CallbackStore>();
+
+    auto handle = callbackHandles->Allocate(callbackStore);
+
+    if (handle == HAL_kInvalidHandle) {
+      return -1;
+    }
+
+    uintptr_t handleAsPtr = static_cast<uintptr_t>(handle);
+    void* handleAsVoidPtr = reinterpret_cast<void*>(handleAsPtr);
+
+    callbackStore->create(env, callback);
+
+    auto id = HALSIM_RegisterAccelerometerActiveCallback(index, [](const char* name, void* param, const HAL_Value* value){
+      llvm::outs().flush();
+      uintptr_t handleTmp = reinterpret_cast<uintptr_t>(param);
+      SIM_JniHandle handle =
+          static_cast<SIM_JniHandle>(handleTmp);
+      auto data = callbackHandles->Get(handle);
+      if (!data) return;
+
+      data->performCallback(name, value);
+
+      llvm::outs().flush();
+
+    }, handleAsVoidPtr, initialNotify);
+
+    callbackStore->callbackId = id;
+
+    return handle;
   }
 
 /*
@@ -59,7 +118,11 @@ JNIEXPORT jint JNICALL Java_edu_wpi_first_hal_sim_AccelerometerSim_registerActiv
  * Signature: (II)V
  */
 JNIEXPORT void JNICALL Java_edu_wpi_first_hal_sim_AccelerometerSim_cancelActiveCallback
-  (JNIEnv *, jclass, jint, jint);
+  (JNIEnv * env, jclass, jint index, jint handle) {
+  auto callback = callbackHandles->Free(handle);
+  HALSIM_CancelAccelerometerActiveCallback(index, callback->callbackId);
+  callback->free(env);
+}
 
 /*
  * Class:     edu_wpi_first_hal_sim_AccelerometerSim
@@ -67,7 +130,9 @@ JNIEXPORT void JNICALL Java_edu_wpi_first_hal_sim_AccelerometerSim_cancelActiveC
  * Signature: (I)Z
  */
 JNIEXPORT jboolean JNICALL Java_edu_wpi_first_hal_sim_AccelerometerSim_getActive
-  (JNIEnv *, jclass, jint);
+  (JNIEnv *, jclass, jint index) {
+    return HALSIM_GetAccelerometerActive(index);
+  }
 
 /*
  * Class:     edu_wpi_first_hal_sim_AccelerometerSim
@@ -75,5 +140,7 @@ JNIEXPORT jboolean JNICALL Java_edu_wpi_first_hal_sim_AccelerometerSim_getActive
  * Signature: (IZ)V
  */
 JNIEXPORT void JNICALL Java_edu_wpi_first_hal_sim_AccelerometerSim_setActive
-  (JNIEnv *, jclass, jint, jboolean);
+  (JNIEnv *, jclass, jint index, jboolean value) {
+    HALSIM_SetAccelerometerActive(index, value);
+  }
 }

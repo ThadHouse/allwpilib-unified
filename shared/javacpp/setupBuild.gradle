@@ -50,18 +50,16 @@ model {
     }
     // By default, a development executable will be generated. This is to help the case of
     // testing specific functionality of the library.
-    if (!project.hasProperty('skipDevExe')) {
-      "${nativeName}Dev"(NativeExecutableSpec) {
-        sources {
-          cpp {
-            source {
-              srcDirs 'src/dev/native/cpp'
-              include '**/*.cpp'
-              lib library: nativeName
-            }
-            exportedHeaders {
-              srcDirs 'src/dev/native/include'
-            }
+    "${nativeName}Dev"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          source {
+            srcDirs 'src/dev/native/cpp'
+            include '**/*.cpp'
+            lib library: nativeName
+          }
+          exportedHeaders {
+            srcDirs 'src/dev/native/include'
           }
         }
       }
@@ -101,14 +99,23 @@ model {
     def c = $.components
     project.tasks.create('runCpp', Exec) {
       def found = false
+      def systemArch = System.getProperty("os.arch")
       c.each {
         if (it in NativeExecutableSpec && it.name == "${nativeName}Dev") {
           it.binaries.each {
             if (!found) {
               def arch = it.targetPlatform.architecture.name
-              if (arch == 'x86-64' || arch == 'x86') {
+              if (arch == systemArch) {
                 dependsOn it.tasks.install
                 commandLine it.tasks.install.runScript
+                def filePath = it.tasks.install.installDirectory.get().toString() + File.separatorChar + 'lib'
+                test.dependsOn it.tasks.install
+                test.systemProperty 'java.library.path', filePath
+                test.workingDir filePath
+                run.dependsOn it.tasks.install
+                run.systemProperty 'java.library.path', filePath
+                run.workingDir filePath
+
                 found = true
               }
             }

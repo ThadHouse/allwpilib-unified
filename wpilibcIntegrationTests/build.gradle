@@ -63,36 +63,23 @@ def testOutputFolder = file("${project(':').buildDir}/integrationTestFiles")
 
 model {
     tasks {
-        copyWpilibCTestLibrariesToOutput(Task) {
+        copyWpilibCTestLibrariesToOutput(Copy) {
+            def task = it
             $.binaries.each {
                 if (it in NativeExecutableBinarySpec && it.targetPlatform.architecture.name == 'athena') {
-                    def spec = it
-                    dependsOn spec.buildTask
-                }
-            }
-            outputs.file testOutputFolder
-            outputs.upToDateWhen { false }
-
-            def bin = $.binaries
-            doLast {
-                bin.each {
-                    if (it in NativeExecutableBinarySpec && it.targetPlatform.architecture.name == 'athena') {
-                        def spec = it
-                        spec.libs.each {
-                            it.runtimeFiles.each { f ->
-                                copy {
-                                    from file(f)
-                                    into testOutputFolder.toString() + '/libs'
-                                }
-                            }
-                        }
-                        copy {
-                            from spec.executable.file
-                            into testOutputFolder.toString() + '/cpp'
+                    def installTask = it.tasks.install
+                    task.dependsOn installTask
+                    task.from (installTask.sourceFile) {
+                        into '/cpp'
+                    }
+                    installTask.libs.each {
+                        task.from (it) {
+                            into '/libs'
                         }
                     }
                 }
             }
+            destinationDir testOutputFolder
         }
         // This is in a separate if statement because of what I would assume is a bug in grade.
         // Will file an issue on their side.

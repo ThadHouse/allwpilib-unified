@@ -7,9 +7,7 @@ apply from: "${rootDir}/shared/jni/setupBuild.gradle"
 
 dependencies {
     compile 'org.opencv:opencv-java:3.2.0'
-    testRuntime 'org.opencv:opencv-jni:3.2.0:all'
     devCompile 'org.opencv:opencv-java:3.2.0'
-    devRuntime 'org.opencv:opencv-jni:3.2.0:all'
 }
 
 model {

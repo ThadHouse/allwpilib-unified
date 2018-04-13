@@ -65,21 +65,16 @@ model {
     def c = $.components
     if (!project.hasProperty('onlyAthena')) {
       runCpp(Exec) {
-        def found = false
+        def systemArch = System.getProperty("os.arch")
         c.each {
-          if (it in NativeExecutableSpec && it.name == "${pluginName}Dev") {
+          if (it in NativeExecutableSpec && it.name == "${nativeName}Dev") {
             it.binaries.each {
               if (!found) {
                 def arch = it.targetPlatform.architecture.name
-                if (arch == 'x86-64' || arch == 'x86') {
+                if (arch == systemArch) {
                   dependsOn it.tasks.install
                   commandLine it.tasks.install.runScript
-                  it.tasks.install.libs.each { lib ->
-                    if (lib.name.contains(pluginName)) {
-                      def filePath = it.tasks.install.installDirectory.get().toString() + File.separatorChar + 'lib' + File.separatorChar + lib.name
-                      environment('HALSIM_EXTENSIONS', filePath)
-                    }
-                  }
+
                   found = true
                 }
               }

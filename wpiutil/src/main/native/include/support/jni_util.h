@@ -81,8 +81,7 @@ class JGlobal {
   JGlobal() = default;
 
   JGlobal(JNIEnv* env, T obj) {
-    m_cls = static_cast<T>(env->NewGlobalRef(local));
-    env->DeleteLocalRef(local);
+    m_cls = static_cast<T>(env->NewGlobalRef(obj));
   }
 
   void free(JNIEnv* env) {

@@ -69,13 +69,11 @@ task generateAthenaSimFiles() {
     athenaSimJniOutputFile.withWriter { out->
       out.println '#include <jni.h>'
       out.println '''
-JavaVM* jvm = nullptr;
+static JavaVM* jvm = nullptr;
 
-namespace frc {
+namespace sim {
 jint SimOnLoad(JavaVM* vm, void* reserved) {
   jvm = vm;
-
-  Log::ReportingLevel() = logDEBUG;
 
   JNIEnv *env;
   if (vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK)
@@ -92,7 +90,7 @@ void SimOnUnload(JavaVM * vm, void* reserved) {
 }
 }
 
-static void ThrowSimException() {
+static void ThrowSimException(JNIEnv* env) {
 
 }
 '''

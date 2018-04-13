@@ -98,6 +98,11 @@ compileJava {
     targetCompatibility = 1.8
 }
 
+dependencies {
+    testCompile 'junit:junit:4.12'
+    devCompile sourceSets.main.output
+}
+
 task run(type: JavaExec) {
     classpath = sourceSets.dev.runtimeClasspath
 

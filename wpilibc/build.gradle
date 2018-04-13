@@ -134,28 +134,26 @@ model {
     }
     // By default, a development executable will be generated. This is to help the case of
     // testing specific functionality of the library.
-    if (!project.hasProperty('skipDevExe')) {
-      "${nativeName}Dev"(NativeExecutableSpec) {
-        sources {
-          cpp {
-            source {
-              srcDirs 'src/dev/native/cpp'
-              include '**/*.cpp'
-              lib library: 'wpilibc'
-            }
-            exportedHeaders {
-              srcDirs 'src/dev/native/include'
-            }
+    "${nativeName}Dev"(NativeExecutableSpec) {
+      sources {
+        cpp {
+          source {
+            srcDirs 'src/dev/native/cpp'
+            include '**/*.cpp'
+            lib library: 'wpilibc'
+          }
+          exportedHeaders {
+            srcDirs 'src/dev/native/include'
           }
         }
-        binaries.all {
-          lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
-          lib project: ':cscore', library: 'cscore', linkage: 'shared'
-          lib project: ':hal', library: 'hal', linkage: 'shared'
-          lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
-          lib project: ':cameraserver', library: 'cameraserver', linkage: 'shared'
-          project(':ni-libraries').addNiLibrariesToLinker(it)
-        }
+      }
+      binaries.all {
+        lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
+        lib project: ':cscore', library: 'cscore', linkage: 'shared'
+        lib project: ':hal', library: 'hal', linkage: 'shared'
+        lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
+        lib project: ':cameraserver', library: 'cameraserver', linkage: 'shared'
+        project(':ni-libraries').addNiLibrariesToLinker(it)
       }
     }
     // The TestingBase library is a workaround for an issue with the GoogleTest plugin.

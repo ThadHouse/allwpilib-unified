@@ -5,29 +5,22 @@ ext {
 
 evaluationDependsOn(':ntcore')
 evaluationDependsOn(':cscore')
+evaluationDependsOn(':wpilibj')
+evaluationDependsOn(':hal')
 
 apply from: "${rootDir}/shared/javacpp/setupBuild.gradle"
-
-test.dependsOn project(':ntcore').nativeTestFilesJar
-run.dependsOn project(':ntcore').nativeTestFilesJar
-test.dependsOn project(':cscore').nativeTestFilesJar
-run.dependsOn project(':cscore').nativeTestFilesJar
 
 dependencies {
     compile project(':wpiutil')
     compile project(':ntcore')
     compile 'org.opencv:opencv-java:3.2.0'
     compile project(':cscore')
-    testRuntime files(project(':ntcore').nativeTestFilesJar.archivePath)
     testRuntime 'org.opencv:opencv-jni:3.2.0:all'
-    testRuntime files(project(':cscore').nativeTestFilesJar.archivePath)
     devCompile project(':wpiutil')
     devCompile project(':ntcore')
     devCompile 'org.opencv:opencv-java:3.2.0'
     devCompile project(':cscore')
-    devRuntime files(project(':ntcore').nativeTestFilesJar.archivePath)
     devRuntime 'org.opencv:opencv-jni:3.2.0:all'
-    devRuntime files(project(':cscore').nativeTestFilesJar.archivePath)
 }
 
 model {
@@ -60,6 +53,7 @@ model {
                         cameraserverTestingBaseTest: [] ]
     }
   }
+  components {}
   binaries {
     all {
       if (!it.buildable || !(it instanceof NativeBinarySpec)) {
@@ -68,6 +62,36 @@ model {
       lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
       lib project: ':cscore', library: 'cscore', linkage: 'shared'
       lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
+      def component = it.component
+      if (component in NativeExecutableSpec && component.name == "${nativeName}Dev" &&
+          it.targetPlatform.architecture.name != 'athena') {
+        lib project: ':hal', library: 'hal', linkage: 'shared'
+      }
+    }
+  }
+  tasks {
+    def c = $.components
+    def found = false
+    def systemArch = System.getProperty("os.arch")
+    c.each {
+      if (it in NativeExecutableSpec && it.name == "${nativeName}Dev") {
+        it.binaries.each {
+          if (!found) {
+            def arch = it.targetPlatform.architecture.name
+            if (arch == systemArch) {
+              def filePath = it.tasks.install.installDirectory.get().toString() + File.separatorChar + 'lib'
+              project(':wpilibj').test.dependsOn it.tasks.install
+              project(':wpilibj').test.systemProperty 'java.library.path', filePath
+              project(':wpilibj').test.workingDir filePath
+              project(':wpilibj').run.dependsOn it.tasks.install
+              project(':wpilibj').run.systemProperty 'java.library.path', filePath
+              project(':wpilibj').run.workingDir filePath
+
+              found = true
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -15,34 +15,9 @@ ext {
 
 apply from: "${rootDir}/shared/java/javacommon.gradle"
 
-task nativeTestFilesJar(type: Jar) {
-  destinationDir = project.buildDir
-  classifier = "nativeTestFiles"
-
-  project.model {
-    binaries {
-      withType(SharedLibraryBinarySpec) { binary ->
-        if (binary.component.name == "${nativeName}JNI") {
-          from(binary.sharedLibraryFile) {
-            into NativeUtils.getPlatformPath(binary)
-          }
-          dependsOn binary.buildTask
-        }
-      }
-    }
-  }
-}
-
-test.dependsOn nativeTestFilesJar
-run.dependsOn nativeTestFilesJar
-
 dependencies {
     compile project(':wpiutil')
-    testCompile 'junit:junit:4.12'
-    testRuntime files(project.nativeTestFilesJar.archivePath)
     devCompile project(':wpiutil')
-    devCompile sourceSets.main.output
-    devRuntime files(project.nativeTestFilesJar.archivePath)
 }
 
 model {
@@ -133,26 +108,25 @@ model {
     }
     // By default, a development executable will be generated. This is to help the case of
     // testing specific functionality of the library.
-    if (!project.hasProperty('skipDevExe')) {
-      "${nativeName}Dev"(NativeExecutableSpec) {
-        sources {
-          cpp {
-            lib library: nativeName
-            lib project: ':wpiutil', library: 'wpiutil', linkage: 'static'
-            source {
-              srcDirs 'src/dev/native/cpp'
-              include '**/*.cpp'
-            }
-            exportedHeaders {
-              srcDirs 'src/dev/native/include'
-            }
+    "${nativeName}Dev"(NativeExecutableSpec) {
+      sources {
+        cpp {
+
+          source {
+            srcDirs 'src/dev/native/cpp'
+            include '**/*.cpp'
+          }
+          exportedHeaders {
+            srcDirs 'src/dev/native/include'
           }
         }
-        binaries.all {
-          if (project.hasProperty('niLibraries')) {
-            project(':ni-libraries').addNiLibrariesToLinker(it)
-          }
+      }
+      binaries.all {
+        if (project.hasProperty('niLibraries')) {
+          project(':ni-libraries').addNiLibrariesToLinker(it)
         }
+        lib library: nativeName, linkage: 'shared'
+        lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
       }
     }
     // The TestingBase library is a workaround for an issue with the GoogleTest plugin.
@@ -191,14 +165,23 @@ model {
     def c = $.components
     project.tasks.create('runCpp', Exec) {
       def found = false
+      def systemArch = System.getProperty("os.arch")
       c.each {
         if (it in NativeExecutableSpec && it.name == "${nativeName}Dev") {
           it.binaries.each {
             if (!found) {
               def arch = it.targetPlatform.architecture.name
-              if (arch == 'x86-64' || arch == 'x86') {
+              if (arch == systemArch) {
                 dependsOn it.tasks.install
                 commandLine it.tasks.install.runScript
+                def filePath = it.tasks.install.installDirectory.get().toString() + File.separatorChar + 'lib'
+                test.dependsOn it.tasks.install
+                test.systemProperty 'java.library.path', filePath
+                test.workingDir filePath
+                run.dependsOn it.tasks.install
+                run.systemProperty 'java.library.path', filePath
+                run.workingDir filePath
+
                 found = true
               }
             }

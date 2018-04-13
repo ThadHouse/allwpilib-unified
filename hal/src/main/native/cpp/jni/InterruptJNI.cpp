@@ -84,7 +84,7 @@ void InterruptThreadJNI::Main() {
   args.version = JNI_VERSION_1_2;
   args.name = const_cast<char*>("Interrupt");
   args.group = nullptr;
-  jint rs = jvm->AttachCurrentThreadAsDaemon(reinterpret_cast<void**>(&env),
+  jint rs = GetJVM()->AttachCurrentThreadAsDaemon(reinterpret_cast<void**>(&env),
                                              &args);
   if (rs != JNI_OK) return;
 
@@ -111,7 +111,7 @@ void InterruptThreadJNI::Main() {
   if (m_func) env->DeleteGlobalRef(m_func);
   if (m_param) env->DeleteGlobalRef(m_param);
 
-  jvm->DetachCurrentThread();
+  GetJVM()->DetachCurrentThread();
 }
 
 void interruptHandler(uint32_t mask, void* param) {

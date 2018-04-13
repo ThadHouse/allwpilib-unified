@@ -73,25 +73,10 @@ dependencies {
     testCompile 'org.hamcrest:hamcrest-all:1.3'
     testCompile 'junit:junit:4.12'
     testCompile 'com.google.guava:guava:19.0'
-    testRuntime files(project(':hal').nativeTestFilesJar.archivePath)
-    testRuntime files(project(':ntcore').nativeTestFilesJar.archivePath)
-    testRuntime 'org.opencv:opencv-jni:3.2.0:all'
-    testRuntime files(project(':cscore').nativeTestFilesJar.archivePath)
     devCompile project(':hal')
     devCompile project(':wpiutil')
     devCompile project(':ntcore')
     devCompile 'org.opencv:opencv-java:3.2.0'
     devCompile project(':cscore')
     devCompile sourceSets.main.output
-    devRuntime files(project(':hal').nativeTestFilesJar.archivePath)
-    devRuntime files(project(':ntcore').nativeTestFilesJar.archivePath)
-    devRuntime 'org.opencv:opencv-jni:3.2.0:all'
-    devRuntime files(project(':cscore').nativeTestFilesJar.archivePath)
 }
-
-test.dependsOn project(':hal').nativeTestFilesJar
-run.dependsOn project(':hal').nativeTestFilesJar
-test.dependsOn project(':ntcore').nativeTestFilesJar
-run.dependsOn project(':ntcore').nativeTestFilesJar
-test.dependsOn project(':cscore').nativeTestFilesJar
-run.dependsOn project(':cscore').nativeTestFilesJar

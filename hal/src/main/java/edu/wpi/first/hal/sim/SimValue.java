@@ -1,28 +1,59 @@
 package edu.wpi.first.hal.sim;
 
 public class SimValue {
-  public static enum SimType {
+  private boolean v_boolean;
+  private long v_long;
+  private double v_double;
+
+  private SimValue(boolean b) {
+    v_boolean = b;
+  }
+
+  private SimValue(double v) {
+    v_double = v;
+  }
+
+  private SimValue(long v) {
+    v_long = v;
+  }
+
+  private SimValue() {
 
   }
 
+  public boolean getBoolean() {
+    return v_boolean;
+  }
+
+  public long getLong() {
+    return v_long;
+  }
+
+  public double getDouble() {
+    return v_double;
+  }
 
   public static SimValue makeBoolean(boolean value) {
-    return new SimValue();
+    return new SimValue(value);
   }
 
   public static SimValue makeEnum(int value) {
-    return new SimValue();
+    return new SimValue(value);
   }
 
   public static SimValue makeInt(int value) {
-    return new SimValue();
+    return new SimValue(value);
   }
 
   public static SimValue makeLong(long value) {
-    return new SimValue();
+    return new SimValue(value);
   }
 
   public static SimValue makeDouble(double value) {
+    return new SimValue(value);
+  }
+
+  public static SimValue makeUnassigned() {
     return new SimValue();
   }
 }

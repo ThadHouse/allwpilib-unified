@@ -12,8 +12,6 @@
 
 #include <jni.h>
 
-extern JavaVM *jvm;
-
 struct HAL_MatchInfo;
 
 namespace frc {
@@ -66,7 +64,7 @@ void SetMatchInfoObject(JNIEnv* env, jobject matchStatus,
 void SetAccumulatorResultObject(JNIEnv* env, jobject accumulatorResult,
                                 int64_t value, int64_t count);
 
-void ThrowSimException(JNIEnv* env);
+JavaVM* GetJVM();
 
 }  // namespace frc
 

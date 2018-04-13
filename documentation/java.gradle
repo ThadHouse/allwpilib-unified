@@ -65,6 +65,10 @@ task generateJavaDocs(type: Javadoc) {
 generateJavaDocs.dependsOn downloadAllJava
 generateJavaDocs.dependsOn project(':wpilibj').generateJavaVersion
 
+checkstyleDocs {
+    checkstyleDocs.enabled = false
+}
+
 task zipJavaDocs(type: Zip) {
     baseName = 'javaDocs'
     destinationDir = buildDir

@@ -47,3 +47,7 @@ model {
 checkstyle {
     sourceSets = []
 }
+
+pmdMain {
+  pmdMain.enabled = false
+}
