@@ -65,7 +65,7 @@ model {
     def c = $.components
     if (!project.hasProperty('onlyAthena')) {
       runCpp(Exec) {
-        def systemArch = System.getProperty("os.arch")
+        def systemArch = getCurrentArch()
         c.each {
           if (it in NativeExecutableSpec && it.name == "${nativeName}Dev") {
             it.binaries.each {

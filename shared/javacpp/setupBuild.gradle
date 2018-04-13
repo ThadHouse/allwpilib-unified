@@ -99,7 +99,7 @@ model {
     def c = $.components
     project.tasks.create('runCpp', Exec) {
       def found = false
-      def systemArch = System.getProperty("os.arch")
+      def systemArch = getCurrentArch()
       c.each {
         if (it in NativeExecutableSpec && it.name == "${nativeName}Dev") {
           it.binaries.each {

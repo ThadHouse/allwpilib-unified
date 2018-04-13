@@ -13,16 +13,15 @@
 #include <support/mutex.h>
 
 namespace hal {
-static llvm::SmallVector<HandleBase*, 32>* globalHandles;
+static llvm::SmallVector<HandleBase*, 32>* globalHandles = nullptr;
 static wpi::mutex globalHandleMutex;
-namespace init {
-void InitializeHandlesInternal() {
-  static llvm::SmallVector<HandleBase*, 32> gH;
-  globalHandles = &gH;
-}
-}  // namespace init
 HandleBase::HandleBase() {
+  static llvm::SmallVector<HandleBase*, 32> gH;
   std::lock_guard<wpi::mutex> lock(globalHandleMutex);
+  if (!globalHandles) {
+    globalHandles = &gH;
+  }
+
   auto index = std::find(globalHandles->begin(), globalHandles->end(), this);
   if (index == globalHandles->end()) {
     globalHandles->push_back(this);

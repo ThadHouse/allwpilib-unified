@@ -8,11 +8,7 @@
 typedef HAL_Handle SIM_JniHandle;
 
 namespace sim {
-void InitializeAccelerometerSim();
-
 JavaVM* GetJVM();
 
 jmethodID GetNotifyCallback();
-
-jobject MakeSimValue(JNIEnv* env, const HAL_Value* value);
 }
