@@ -243,10 +243,8 @@ void SetAccumulatorResultObject(JNIEnv* env, jobject accumulatorResult,
   env->CallObjectMethod(accumulatorResult, func, (jlong)value, (jlong)count);
 }
 
-void ThrowSimException(JNIEnv* env) {
-
-}
-
+jint SimOnLoad(JavaVM* vm, void* reserved);
+void SimOnUnload(JavaVM* vm, void* reserved);
 }  // namespace frc
 
 using namespace frc;
@@ -308,10 +306,12 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
   accumulatorResultCls = JClass(env, "edu/wpi/first/wpilibj/AccumulatorResult");
   if (!accumulatorResultCls) return JNI_ERR;
 
-  return JNI_VERSION_1_6;
+  return SimOnLoad(vm, reserved);
 }
 
 JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *vm, void *reserved) {
+  SimOnUnload(vm, reserved);
+
   JNIEnv *env;
   if (vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK)
     return;

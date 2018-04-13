@@ -68,19 +68,44 @@ task generateAthenaSimFiles() {
     athenaSimJniOutputDir.mkdirs()
     athenaSimJniOutputFile.withWriter { out->
       out.println '#include <jni.h>'
-      out.println 'namespace frc {'
-      out.println '  void ThrowSimException();'
-      out.println '}'
+      out.println '''
+JavaVM* jvm = nullptr;
+
+namespace frc {
+jint SimOnLoad(JavaVM* vm, void* reserved) {
+  jvm = vm;
+
+  Log::ReportingLevel() = logDEBUG;
+
+  JNIEnv *env;
+  if (vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK)
+    return JNI_ERR;
+
+  return JNI_VERSION_1_6;
+}
+
+void SimOnUnload(JavaVM * vm, void* reserved) {
+  JNIEnv *env;
+  if (vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK)
+    return;
+  jvm = nullptr;
+}
+}
+
+static void ThrowSimException() {
+
+}
+'''
       out.println 'extern "C" {'
       symbolList.each {
         def symbol = it.replace('JNIEnv *', 'JNIEnv * env')
         if (symbol.contains('JNIEXPORT void')) {
           symbol = symbol.replace(';', ''' {
-  frc::ThrowSimException(env);
+  ThrowSimException(env);
 }''')
         } else {
           symbol = symbol.replace(';', ''' {
-  frc::ThrowSimException(env);
+  ThrowSimException(env);
   return 0;
 }''')
         }

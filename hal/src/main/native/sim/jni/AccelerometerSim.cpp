@@ -1,5 +1,33 @@
 #include "edu_wpi_first_hal_sim_AccelerometerSim.h"
 #include "MockData/AccelerometerData.h"
+#include "HAL/handles/UnlimitedHandleResource.h"
+#include "SimJNI.h"
+#include "support/jni_util.h"
+
+using namespace wpi::java;
+
+namespace {
+  struct CallbackStore {
+    void create(JNIEnv* env, jobject obj) {
+      m_call = JGlobal<jobject>(env, obj);
+    }
+
+    void free(JNIEnv* env) {
+      m_call.free(env);
+    }
+
+    JGlobal<jobject> m_call;
+  };
+}
+
+static hal::UnlimitedHandleResource<SIM_JniHandle, CallbackStore, hal::HAL_HandleEnum::SimulationJni>* callbackHandles;
+
+namespace frc {
+  void InitializeAccelerometerSim() {
+    static hal::UnlimitedHandleResource<SIM_JniHandle, CallbackStore, hal::HAL_HandleEnum::SimulationJni> cb;
+    callbackHandles = &cb;
+  }
+}
 
 
 extern "C" {
