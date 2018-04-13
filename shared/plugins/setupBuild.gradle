@@ -64,10 +64,13 @@ model {
   tasks {
     def c = $.components
     if (!project.hasProperty('onlyAthena')) {
-      runCpp(Exec) {
+      project.tasks.create('runCpp', Exec) {
+        group = 'WPILib'
+        description = "Run the ${pluginName}Dev executable"
+        def found = false
         def systemArch = getCurrentArch()
         c.each {
-          if (it in NativeExecutableSpec && it.name == "${nativeName}Dev") {
+          if (it in NativeExecutableSpec && it.name == "${pluginName}Dev") {
             it.binaries.each {
               if (!found) {
                 def arch = it.targetPlatform.architecture.name

@@ -98,6 +98,8 @@ model {
   tasks {
     def c = $.components
     project.tasks.create('runCpp', Exec) {
+      group = 'WPILib'
+      description = "Run the ${nativeName}Dev executable"
       def found = false
       def systemArch = getCurrentArch()
       c.each {
