@@ -8,7 +8,6 @@
 package edu.wpi.first.wpilibj.communication;
 
 public class NIRioStatus {
-  // TODO: Should this file be auto-generated?
   public static final int kRioStatusOffset = -63000;
 
   public static final int kRioStatusSuccess = 0;

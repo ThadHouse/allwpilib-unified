@@ -6,7 +6,7 @@
 #include "MockData/HAL_Value.h"
 #include "MockData/NotifyListener.h"
 #include "HAL/types.h"
-#include "SimJni.h"
+#include "SimulatorJni.h"
 
 using namespace wpi::java;
 using namespace sim;
@@ -97,5 +97,47 @@ SIM_JniHandle sim::AllocateCallback(JNIEnv* env, jint index, jobject callback, j
 void sim::FreeCallback(JNIEnv* env, SIM_JniHandle handle, jint index, FreeCallbackFunc freeCallback) {
   auto callback = callbackHandles->Free(handle);
   freeCallback(index, callback->getCallbackId());
+  callback->free(env);
+}
+
+SIM_JniHandle sim::AllocateCallbackNoIndex(JNIEnv* env, jobject callback, jboolean initialNotify, RegisterCallbackNoIndexFunc createCallback) {
+
+  auto callbackStore = std::make_shared<CallbackStore>();
+
+  auto handle = callbackHandles->Allocate(callbackStore);
+
+  if (handle == HAL_kInvalidHandle) {
+    return -1;
+  }
+
+  uintptr_t handleAsPtr = static_cast<uintptr_t>(handle);
+  void* handleAsVoidPtr = reinterpret_cast<void*>(handleAsPtr);
+
+  callbackStore->create(env, callback);
+
+  auto callbackFunc = [](const char* name, void* param, const HAL_Value* value){
+    llvm::outs().flush();
+    uintptr_t handleTmp = reinterpret_cast<uintptr_t>(param);
+    SIM_JniHandle handle =
+        static_cast<SIM_JniHandle>(handleTmp);
+    auto data = callbackHandles->Get(handle);
+    if (!data) return;
+
+    data->performCallback(name, value);
+
+    llvm::outs().flush();
+
+  };
+
+  auto id = createCallback(callbackFunc, handleAsVoidPtr, initialNotify);
+
+  callbackStore->setCallbackId(id);
+
+  return handle;
+}
+
+void sim::FreeCallbackNoIndex(JNIEnv* env, SIM_JniHandle handle, FreeCallbackNoIndexFunc freeCallback) {
+  auto callback = callbackHandles->Free(handle);
+  freeCallback(callback->getCallbackId());
   callback->free(env);
 }

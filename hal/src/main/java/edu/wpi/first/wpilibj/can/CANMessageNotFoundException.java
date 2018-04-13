@@ -12,6 +12,8 @@ package edu.wpi.first.wpilibj.can;
  * usually just means we already have the most recent value cached locally.
  */
 public class CANMessageNotFoundException extends RuntimeException {
+  private static final long serialVersionUID = 8249780881928189975L;
+
   public CANMessageNotFoundException() {
     super();
   }

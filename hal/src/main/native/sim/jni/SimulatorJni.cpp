@@ -1,7 +1,10 @@
-#include "SimJni.h"
+#include "edu_wpi_first_hal_sim_SimulatorJni.h"
+#include "SimulatorJni.h"
 #include "HAL/cpp/Log.h"
 #include "HAL/HAL.h"
 #include "CallbackStore.h"
+#include "HAL/handles/HandlesInternal.h"
+#include "MockData/MockHooks.h"
 
 using namespace wpi::java;
 
@@ -48,4 +51,46 @@ JavaVM* GetJVM() {
 jmethodID GetNotifyCallback() {
   return notifyCallbackCallback;
 }
+}
+
+extern "C" {
+  /*
+ * Class:     edu_wpi_first_hal_sim_SimulatorJni
+ * Method:    waitForProgramStart
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_edu_wpi_first_hal_sim_SimulatorJni_waitForProgramStart
+  (JNIEnv *, jclass) {
+    HALSIM_WaitForProgramStart();
+  }
+
+/*
+ * Class:     edu_wpi_first_hal_sim_SimulatorJni
+ * Method:    setProgramStarted
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_edu_wpi_first_hal_sim_SimulatorJni_setProgramStarted
+  (JNIEnv *, jclass) {
+    HALSIM_SetProgramStarted();
+  }
+
+/*
+ * Class:     edu_wpi_first_hal_sim_SimulatorJni
+ * Method:    restartTiming
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_edu_wpi_first_hal_sim_SimulatorJni_restartTiming
+  (JNIEnv *, jclass) {
+  HALSIM_RestartTiming();
+}
+
+/*
+ * Class:     edu_wpi_first_hal_sim_SimulatorJni
+ * Method:    resetHandles
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_edu_wpi_first_hal_sim_SimulatorJni_resetHandles
+  (JNIEnv *, jclass) {
+    hal::HandleBase::ResetGlobalHandles();
+  }
 }

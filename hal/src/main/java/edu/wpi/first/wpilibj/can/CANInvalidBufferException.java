@@ -12,6 +12,8 @@ package edu.wpi.first.wpilibj.can;
  * Typically, this is due to a buffer being too small to include the needed safety token.
  */
 public class CANInvalidBufferException extends RuntimeException {
+  private static final long serialVersionUID = -7993785672956997939L;
+
   public CANInvalidBufferException() {
     super();
   }

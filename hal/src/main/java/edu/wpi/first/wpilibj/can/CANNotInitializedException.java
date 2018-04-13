@@ -12,6 +12,8 @@ package edu.wpi.first.wpilibj.can;
  * entry-point is called before a CAN driver plugin has been installed.
  */
 public class CANNotInitializedException extends RuntimeException {
+  private static final long serialVersionUID = -5982895147092686594L;
+
   public CANNotInitializedException() {
     super();
   }

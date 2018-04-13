@@ -12,6 +12,8 @@ package edu.wpi.first.wpilibj.can;
  * the CAN bus.
  */
 public class CANMessageNotAllowedException extends RuntimeException {
+  private static final long serialVersionUID = -638450112427013494L;
+
   public CANMessageNotAllowedException(String msg) {
     super(msg);
   }

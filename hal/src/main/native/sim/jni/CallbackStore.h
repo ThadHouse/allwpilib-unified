@@ -6,7 +6,7 @@
 #include "MockData/HAL_Value.h"
 #include "MockData/NotifyListener.h"
 #include "HAL/types.h"
-#include "SimJni.h"
+#include "SimulatorJni.h"
 
 namespace sim {
   class CallbackStore {
@@ -25,7 +25,11 @@ namespace sim {
 
   typedef int32_t (*RegisterCallbackFunc)(int32_t index, HAL_NotifyCallback callback, void* param, HAL_Bool initialNotify);
   typedef void (*FreeCallbackFunc)(int32_t index, int32_t uid);
+  typedef int32_t (*RegisterCallbackNoIndexFunc)(HAL_NotifyCallback callback, void* param, HAL_Bool initialNotify);
+  typedef void (*FreeCallbackNoIndexFunc)(int32_t uid);
 
   SIM_JniHandle AllocateCallback(JNIEnv* env, jint index, jobject callback, jboolean initialNotify, RegisterCallbackFunc createCallback);
+  SIM_JniHandle AllocateCallbackNoIndex(JNIEnv* env, jobject callback, jboolean initialNotify, RegisterCallbackNoIndexFunc createCallback);
   void FreeCallback(JNIEnv* env, SIM_JniHandle handle, jint index, FreeCallbackFunc freeCallback);
+  void FreeCallbackNoIndex(JNIEnv* env, SIM_JniHandle handle, FreeCallbackNoIndexFunc freeCallback);
 }
