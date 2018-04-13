@@ -243,6 +243,10 @@ void SetAccumulatorResultObject(JNIEnv* env, jobject accumulatorResult,
   env->CallObjectMethod(accumulatorResult, func, (jlong)value, (jlong)count);
 }
 
+void ThrowSimException(JNIEnv* env) {
+
+}
+
 }  // namespace frc
 
 using namespace frc;

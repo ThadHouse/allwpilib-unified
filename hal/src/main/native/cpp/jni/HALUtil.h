@@ -66,6 +66,8 @@ void SetMatchInfoObject(JNIEnv* env, jobject matchStatus,
 void SetAccumulatorResultObject(JNIEnv* env, jobject accumulatorResult,
                                 int64_t value, int64_t count);
 
+void ThrowSimException(JNIEnv* env);
+
 }  // namespace frc
 
 #endif  // HALUTIL_H

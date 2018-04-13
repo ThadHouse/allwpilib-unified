@@ -9,6 +9,7 @@ task generateAthenaSimFiles() {
   Set dirs = [];
 
   def createdTask = it
+  outputs.file athenaSimJniOutputFile
 
   model {
     components {
@@ -75,11 +76,11 @@ task generateAthenaSimFiles() {
         def symbol = it.replace('JNIEnv *', 'JNIEnv * env')
         if (symbol.contains('JNIEXPORT void')) {
           symbol = symbol.replace(';', ''' {
-  frc::ThrowSimException();
+  frc::ThrowSimException(env);
 }''')
         } else {
           symbol = symbol.replace(';', ''' {
-  frc::ThrowSimException();
+  frc::ThrowSimException(env);
   return 0;
 }''')
         }
