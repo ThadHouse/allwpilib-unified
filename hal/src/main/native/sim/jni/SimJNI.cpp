@@ -1,4 +1,4 @@
-#include "SimJNI.h"
+#include "SimJni.h"
 #include "HAL/cpp/Log.h"
 #include "HAL/HAL.h"
 
