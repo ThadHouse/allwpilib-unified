@@ -12,38 +12,26 @@ configurations {
 }
 
 dependencies {
-    javaSource 'org.opencv:opencv-java:+:sources'
+    javaSource 'org.opencv:opencv-java:3.2.0:sources'
 }
 
 def javaDepLocation = "${buildDir}/javaSrc"
-def javaFilesList = configurations.javaSource.files
 
-def javaDownloadList = []
+task downloadOpenCv(type: Sync) {
+    dependsOn configurations.javaSource
 
-task downloadAllJava {}
-
-configurations.javaSource.dependencies.each { dependency ->
-    def classifier = dependency.artifacts[0].classifier
-    def extension = dependency.artifacts[0].extension
-    def taskName = "download${dependency.group}${dependency.name}${classifier}"
-    def task = tasks.create(taskName, Copy) {
-        def file
-        javaFilesList.each {
-            if (it.toString().endsWith("${classifier}.${extension}") && it.toString().contains("${dependency.name}-".toString())) {
-                file = it
-            }
+    from {
+        configurations.javaSource.collect {
+            zipTree(it)
         }
-        from rootProject.zipTree(file)
-        into "$javaDepLocation/${dependency.name.toLowerCase()}/${classifier}"
     }
-    downloadAllJava.dependsOn task
-    javaDownloadList.add(task)
+    into javaDepLocation
 }
 
 sourceSets {
     docs {
         java {
-           srcDir "$projectDir/build/javaSrc"
+           srcDir javaDepLocation
         }
     }
 }
@@ -62,7 +50,7 @@ task generateJavaDocs(type: Javadoc) {
     failOnError = true
 }
 
-generateJavaDocs.dependsOn downloadAllJava
+generateJavaDocs.dependsOn downloadOpenCv
 generateJavaDocs.dependsOn project(':wpilibj').generateJavaVersion
 
 checkstyleDocs {
