@@ -105,3 +105,8 @@ subprojects {
 task wrapper(type: Wrapper) {
     gradleVersion = '4.7-rc-1'
 }
+
+task downloadAllDependencies() {
+    group = 'Dependencies'
+    description = 'Downloads and extracts all native c++ dependencies'
+}
