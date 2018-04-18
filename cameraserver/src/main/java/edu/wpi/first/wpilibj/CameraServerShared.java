@@ -1,10 +1,8 @@
 package edu.wpi.first.wpilibj;
 
-import edu.wpi.first.wpilibj.sharedinterfaces.CameraServerErrorFunc;
 import edu.wpi.first.wpilibj.sharedinterfaces.DriverStationErrorFunc;
 import edu.wpi.first.wpilibj.sharedinterfaces.ReportFunc;
 import edu.wpi.first.wpilibj.sharedinterfaces.RobotMainThreadIdFunc;
-import edu.wpi.first.wpilibj.sharedinterfaces.VisionRunnerErrorFunc;
 
 public class CameraServerShared {
   private static CameraServerShared cameraServerShared = null;
@@ -18,8 +16,6 @@ public class CameraServerShared {
       cameraServerShared.m_reportAxisCamera = (int id) -> { };
       cameraServerShared.m_reportUsbCamera = (int id) -> { };
       cameraServerShared.m_reportVideoServer = (int id) -> { };
-      cameraServerShared.m_setCameraServerError = (String err) -> { };
-      cameraServerShared.m_setVisionRunnerError = (String err) -> { };
       cameraServerShared.m_reportDriverStationError = (String err) -> { };
       cameraServerShared.m_robotMainThreadId = () -> {
         return null;
@@ -38,8 +34,6 @@ public class CameraServerShared {
   private ReportFunc m_reportUsbCamera;
   private ReportFunc m_reportAxisCamera;
   private ReportFunc m_reportVideoServer;
-  private CameraServerErrorFunc m_setCameraServerError;
-  private VisionRunnerErrorFunc m_setVisionRunnerError;
   private DriverStationErrorFunc m_reportDriverStationError;
   private RobotMainThreadIdFunc m_robotMainThreadId;
 
@@ -77,42 +71,6 @@ public class CameraServerShared {
    */
   public void setReportDriverStationError(DriverStationErrorFunc reportDriverStationError) {
     this.m_reportDriverStationError = reportDriverStationError;
-  }
-
-  /**
-   * get the setVisionRunnerError func.
-   *
-   * @return the setVisionRunnerError
-   */
-  public VisionRunnerErrorFunc getSetVisionRunnerError() {
-    return m_setVisionRunnerError;
-  }
-
-  /**
-   * set the setVisionRunnerError func.
-   *
-   * @param setVisionRunnerError the setVisionRunnerError to set
-   */
-  public void setSetVisionRunnerError(VisionRunnerErrorFunc setVisionRunnerError) {
-    this.m_setVisionRunnerError = setVisionRunnerError;
-  }
-
-  /**
-   * get the setCameraServerError func.
-   *
-   * @return the setCameraServerError
-   */
-  public CameraServerErrorFunc getSetCameraServerError() {
-    return m_setCameraServerError;
-  }
-
-  /**
-   * set the setCameraServerError func.
-   *
-   * @param setCameraServerError the setCameraServerError to set
-   */
-  public void setSetCameraServerError(CameraServerErrorFunc setCameraServerError) {
-    this.m_setCameraServerError = setCameraServerError;
   }
 
   /**

@@ -77,11 +77,11 @@ public class VisionRunner<P extends VisionPipeline> {
    * thread using a {@link VisionThread}.</p>
    */
   public void runOnce() {
-    Integer id = CameraServerShared.getCameraServerShared()
+    Long id = CameraServerShared.getCameraServerShared()
                                    .getRobotMainThreadId()
                                    .getMainThreadId();
 
-    if (id != null && Thread.currentThread().getId() == id.intValue()) {
+    if (id != null && Thread.currentThread().getId() == id.longValue()) {
       throw new IllegalStateException(
           "VisionRunner.runOnce() cannot be called from the main robot thread");
     }
@@ -112,11 +112,11 @@ public class VisionRunner<P extends VisionPipeline> {
    * @see VisionThread
    */
   public void runForever() {
-    Integer id = CameraServerShared.getCameraServerShared()
+    Long id = CameraServerShared.getCameraServerShared()
                                    .getRobotMainThreadId()
                                    .getMainThreadId();
 
-    if (id != null && Thread.currentThread().getId() == id.intValue()) {
+    if (id != null && Thread.currentThread().getId() == id.longValue()) {
       throw new IllegalStateException(
           "VisionRunner.runForever() cannot be called from the main robot thread");
     }
