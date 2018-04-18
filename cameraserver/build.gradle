@@ -69,14 +69,6 @@ model {
             def arch = it.targetPlatform.architecture.name
             if (arch == systemArch) {
               def filePath = it.tasks.install.installDirectory.get().toString() + File.separatorChar + 'lib'
-              /*
-              project(':wpilibj').test.dependsOn it.tasks.install
-              project(':wpilibj').test.systemProperty 'java.library.path', filePath
-              project(':wpilibj').test.workingDir filePath
-              project(':wpilibj').run.dependsOn it.tasks.install
-              project(':wpilibj').run.systemProperty 'java.library.path', filePath
-              project(':wpilibj').run.workingDir filePath
-              */
 
               found = true
             }
