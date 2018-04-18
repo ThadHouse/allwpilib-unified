@@ -129,7 +129,7 @@ model {
 
         def allJniTask
         if (!project.hasProperty('jenkinsBuild')) {
-            allJniTask = createAllCombined2(taskList, "${nativeName}JNI", jniBaseName, Jar, project)
+            allJniTask = createAllCombined2(jniTaskList, "${nativeName}JNI", jniBaseName, Jar, project)
         }
 
 /*

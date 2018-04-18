@@ -86,6 +86,7 @@ doxygen.dependsOn project(':wpilibc').generateCppVersion
 
 task zipCppDocs(type: Zip) {
     baseName = 'cppDocs'
+
     destinationDir = buildDir
     dependsOn doxygen
     from ("$buildDir/docs/doxygen/html")
