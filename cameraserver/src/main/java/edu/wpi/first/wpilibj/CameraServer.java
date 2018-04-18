@@ -488,7 +488,7 @@ public class CameraServer {
    */
   public UsbCamera startAutomaticCapture() {
     UsbCamera camera = startAutomaticCapture(m_defaultUsbDevice.getAndIncrement());
-    //HAL.report(tResourceType.kResourceType_PCVideoServer, camera.getHandle());
+    CameraServerShared.getCameraServerShared().getReportUsbCamera().report(camera.getHandle());
     return camera;
   }
 
@@ -503,7 +503,7 @@ public class CameraServer {
   public UsbCamera startAutomaticCapture(int dev) {
     UsbCamera camera = new UsbCamera("USB Camera " + dev, dev);
     startAutomaticCapture(camera);
-    //HAL.report(tResourceType.kResourceType_PCVideoServer, camera.getHandle());
+    CameraServerShared.getCameraServerShared().getReportUsbCamera().report(camera.getHandle());
     return camera;
   }
 
@@ -516,7 +516,7 @@ public class CameraServer {
   public UsbCamera startAutomaticCapture(String name, int dev) {
     UsbCamera camera = new UsbCamera(name, dev);
     startAutomaticCapture(camera);
-    //HAL.report(tResourceType.kResourceType_PCVideoServer, camera.getHandle());
+    CameraServerShared.getCameraServerShared().getReportUsbCamera().report(camera.getHandle());
     return camera;
   }
 
@@ -529,7 +529,7 @@ public class CameraServer {
   public UsbCamera startAutomaticCapture(String name, String path) {
     UsbCamera camera = new UsbCamera(name, path);
     startAutomaticCapture(camera);
-    //HAL.report(tResourceType.kResourceType_PCVideoServer, camera.getHandle());
+    CameraServerShared.getCameraServerShared().getReportUsbCamera().report(camera.getHandle());
     return camera;
   }
 
@@ -579,7 +579,7 @@ public class CameraServer {
     AxisCamera camera = new AxisCamera(name, host);
     // Create a passthrough MJPEG server for USB access
     startAutomaticCapture(camera);
-    //HAL.report(tResourceType.kResourceType_AxisCamera, camera.getHandle());
+    CameraServerShared.getCameraServerShared().getReportAxisCamera().report(camera.getHandle());
     return camera;
   }
 
@@ -593,7 +593,7 @@ public class CameraServer {
     AxisCamera camera = new AxisCamera(name, hosts);
     // Create a passthrough MJPEG server for USB access
     startAutomaticCapture(camera);
-    //HAL.report(tResourceType.kResourceType_AxisCamera, camera.getHandle());
+    CameraServerShared.getCameraServerShared().getReportAxisCamera().report(camera.getHandle());
     return camera;
   }
 
