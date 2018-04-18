@@ -1,6 +1,7 @@
 evaluationDependsOn(':hal')
 evaluationDependsOn(':ntcore')
 evaluationDependsOn(':cscore')
+evaluationDependsOn(':cameraserver')
 
 ext {
   baseId = 'wpilibj'
@@ -68,7 +69,6 @@ dependencies {
     compile project(':hal')
     compile project(':wpiutil')
     compile project(':ntcore')
-    compile 'org.opencv:opencv-java:3.2.0'
     compile project(':cscore')
     testCompile 'org.hamcrest:hamcrest-all:1.3'
     testCompile 'junit:junit:4.12'
@@ -76,7 +76,78 @@ dependencies {
     devCompile project(':hal')
     devCompile project(':wpiutil')
     devCompile project(':ntcore')
-    devCompile 'org.opencv:opencv-java:3.2.0'
     devCompile project(':cscore')
     devCompile sourceSets.main.output
+}
+
+apply plugin: 'cpp'
+apply plugin: 'edu.wpi.first.NativeUtils'
+apply plugin: ExtraTasks
+apply from: "${rootDir}/shared/config.gradle"
+
+ext {
+  sharedCvConfigs = [ wpilibjDev: [] ]
+  staticCvConfigs = [:]
+  useJava = true
+  useCpp = true
+}
+
+apply from: "${rootDir}/shared/opencv.gradle"
+
+model {
+  components {
+    wpilibjDev(NativeExecutableSpec) {
+      sources {
+        cpp {
+          source {
+            srcDirs 'src/dev/native/cpp'
+            include '**/*.cpp'
+            lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
+            lib project: ':cscore', library: 'cscore', linkage: 'shared'
+            lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
+            lib project: ':hal', library: 'hal', linkage: 'shared'
+            lib project: ':cameraserver', library: 'cameraserver', linkage: 'shared'
+          }
+          exportedHeaders {
+            srcDirs 'src/dev/native/include'
+          }
+        }
+      }
+      binaries.all {
+        project(':ni-libraries').addNiLibrariesToLinker(it)
+      }
+    }
+  }
+  tasks {
+    def c = $.components
+    project.tasks.create('runCpp', Exec) {
+      group = 'WPILib'
+      description = "Run the wpilibjDev executable"
+      def found = false
+      def systemArch = getCurrentArch()
+      c.each {
+        //println it.name
+        if (it in NativeExecutableSpec && it.name == "wpilibjDev") {
+          it.binaries.each {
+            if (!found) {
+              def arch = it.targetPlatform.architecture.name
+              if (arch == systemArch) {
+                dependsOn it.tasks.install
+                //commandLine it.tasks.install.runScriptFile.asFile
+                def filePath = it.tasks.install.installDirectory.get().toString() + File.separatorChar + 'lib'
+                test.dependsOn it.tasks.install
+                test.systemProperty 'java.library.path', filePath
+                test.workingDir filePath
+                run.dependsOn it.tasks.install
+                run.systemProperty 'java.library.path', filePath
+                run.workingDir filePath
+
+                found = true
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

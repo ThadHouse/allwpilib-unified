@@ -11,9 +11,11 @@ configurations {
     javaSource
 }
 
-dependencies {
-    javaSource 'org.opencv:opencv-java:3.2.0:sources'
+ext {
+    useDocumentation = true
 }
+
+apply from: "${rootDir}/shared/opencv.gradle"
 
 def javaDepLocation = "${buildDir}/javaSrc"
 

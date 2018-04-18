@@ -59,20 +59,19 @@ clean {
     delete wpilibVersionFile
 }
 
-model {
-  dependencyConfigs {
-    opencv(DependencyConfig) {
-      groupId = 'org.opencv'
-      artifactId = 'opencv-cpp'
-      headerClassifier = 'headers'
-      ext = 'zip'
-      version = '3.2.0'
-      sharedConfigs = [ wpilibc: [],
+ext {
+    sharedCvConfigs = [ wpilibc: [],
                         wpilibcBase: [],
                         wpilibcDev: [],
                         wpilibcTestingBaseTest: [] ]
-    }
-  }
+    staticCvConfigs = [:]
+    useJava = false
+    useCpp = true
+}
+
+apply from: "${rootDir}/shared/opencv.gradle"
+
+model {
   exportsConfigs {
     wpilibc(ExportsConfig) {
       x86ExcludeSymbols = [ '_CT??_R0?AV_System_error', '_CT??_R0?AVexception', '_CT??_R0?AVfailure',

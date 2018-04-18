@@ -29,18 +29,16 @@ if (!project.hasProperty('skipAthena')) {
         templatesMap.put(it, [])
     }
 
-    model {
-        dependencyConfigs {
-            opencv(DependencyConfig) {
-                groupId = 'org.opencv'
-                artifactId = 'opencv-cpp'
-                headerClassifier = 'headers'
-                ext = 'zip'
-                version = '3.2.0'
-                sharedConfigs = examplesMap + templatesMap
-            }
-        }
+    ext {
+        sharedCvConfigs = examplesMap + templatesMap
+        staticCvConfigs = [:]
+        useJava = false
+        useCpp = true
+    }
 
+    apply from: "${rootDir}/shared/opencv.gradle"
+
+    model {
         components {
             examplesMap.each { key, value->
                 "${key}"(NativeExecutableSpec) {

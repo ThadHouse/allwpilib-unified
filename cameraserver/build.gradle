@@ -5,7 +5,6 @@ ext {
 
 evaluationDependsOn(':ntcore')
 evaluationDependsOn(':cscore')
-evaluationDependsOn(':wpilibj')
 evaluationDependsOn(':hal')
 
 apply from: "${rootDir}/shared/javacpp/setupBuild.gradle"
@@ -13,15 +12,23 @@ apply from: "${rootDir}/shared/javacpp/setupBuild.gradle"
 dependencies {
     compile project(':wpiutil')
     compile project(':ntcore')
-    compile 'org.opencv:opencv-java:3.2.0'
     compile project(':cscore')
-    testRuntime 'org.opencv:opencv-jni:3.2.0:all'
     devCompile project(':wpiutil')
     devCompile project(':ntcore')
-    devCompile 'org.opencv:opencv-java:3.2.0'
     devCompile project(':cscore')
-    devRuntime 'org.opencv:opencv-jni:3.2.0:all'
 }
+
+ext {
+    sharedCvConfigs = [ cameraserver: [],
+                        cameraserverBase: [],
+                        cameraserverDev: [],
+                        cameraserverTestingBaseTest: [] ]
+    staticCvConfigs = [:]
+    useJava = true
+    useCpp = true
+}
+
+apply from: "${rootDir}/shared/opencv.gradle"
 
 model {
   // Exports config is a utility to enable exporting all symbols in a C++ library on windows to a DLL.
@@ -40,19 +47,6 @@ model {
                             '_TI3?AVout_of_range', '_CT??_R0?AVbad_cast' ]
     }
   }
-  dependencyConfigs {
-    opencv(DependencyConfig) {
-      groupId = 'org.opencv'
-      artifactId = 'opencv-cpp'
-      headerClassifier = 'headers'
-      ext = 'zip'
-      version = '3.2.0'
-      sharedConfigs = [ cameraserver: [],
-                        cameraserverBase: [],
-                        cameraserverDev: [],
-                        cameraserverTestingBaseTest: [] ]
-    }
-  }
   components {}
   binaries {
     all {
@@ -62,11 +56,6 @@ model {
       lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
       lib project: ':cscore', library: 'cscore', linkage: 'shared'
       lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
-      def component = it.component
-      if (component in NativeExecutableSpec && component.name == "${nativeName}Dev" &&
-          it.targetPlatform.architecture.name != 'athena') {
-        lib project: ':hal', library: 'hal', linkage: 'shared'
-      }
     }
   }
   tasks {
@@ -80,12 +69,14 @@ model {
             def arch = it.targetPlatform.architecture.name
             if (arch == systemArch) {
               def filePath = it.tasks.install.installDirectory.get().toString() + File.separatorChar + 'lib'
+              /*
               project(':wpilibj').test.dependsOn it.tasks.install
               project(':wpilibj').test.systemProperty 'java.library.path', filePath
               project(':wpilibj').test.workingDir filePath
               project(':wpilibj').run.dependsOn it.tasks.install
               project(':wpilibj').run.systemProperty 'java.library.path', filePath
               project(':wpilibj').run.workingDir filePath
+              */
 
               found = true
             }

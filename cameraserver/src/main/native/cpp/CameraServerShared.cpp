@@ -25,6 +25,7 @@ namespace frc {
       cameraServerShared.SetCameraServerError = [](llvm::StringRef err){};
       cameraServerShared.SetVisionRunnerError = [](llvm::StringRef err){};
       cameraServerShared.ReportDriverStationError = [](llvm::StringRef err){};
+
     }
     return cameraServerShared;
   }

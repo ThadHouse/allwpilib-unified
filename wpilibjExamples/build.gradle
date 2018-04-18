@@ -1,13 +1,22 @@
 apply plugin: 'java'
 apply plugin: 'pmd'
 
+ext {
+  useJava = true
+  useCpp = false
+  skipDev = true
+}
+
+apply from: "${rootDir}/shared/opencv.gradle"
+
+
+
 dependencies {
     compile project(':wpilibj')
 
     compile project(':hal')
     compile project(':wpiutil')
     compile project(':ntcore')
-    compile 'org.opencv:opencv-java:3.2.0'
     compile project(':cscore')
     compile project(':cameraserver')
 }
