@@ -19,6 +19,7 @@ if (project.hasProperty("publishVersion")) {
 
 def baseArtifactId = project.baseId
 def artifactGroupId = project.groupId
+def javaBaseName = "_GROUP_edu_wpi_first_${project.baseId}_ID_${project.baseId}-java_CLS"
 
 def outputsFolder = file("$project.buildDir/outputs")
 
@@ -32,20 +33,42 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
-if (project.hasProperty('jenkinsBuild')) {
-    jar {
-        classifier = 'javaArtifact'
-    }
+task outputJar(type: Jar, dependsOn: classes) {
+    baseName javaBaseName
+    destinationDir outputsFolder
+    from sourceSets.main.output
+}
+
+task outputSourcesJar(type: Jar, dependsOn: classes) {
+    baseName javaBaseName
+    destinationDir outputsFolder
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task outputJavadocJar(type: Jar, dependsOn: javadoc) {
+    baseName javaBaseName
+    destinationDir outputsFolder
+    classifier = 'javadoc'
+    from javadoc.destinationDir
 }
 
 artifacts {
     archives sourcesJar
     archives javadocJar
+    archives outputJar
+    archives outputSourcesJar
+    archives outputJavadocJar
 }
 
-addTaskToCopyAllOutputs(sourcesJar)
-addTaskToCopyAllOutputs(javadocJar)
-addTaskToCopyAllOutputs(jar)
+addTaskToCopyAllOutputs(outputSourcesJar)
+addTaskToCopyAllOutputs(outputJavadocJar)
+addTaskToCopyAllOutputs(outputJar)
+
+build.dependsOn outputSourcesJar
+build.dependsOn outputJavadocJar
+build.dependsOn outputJar
+
 
 publishing {
   publications {
