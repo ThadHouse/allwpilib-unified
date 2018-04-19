@@ -36,6 +36,16 @@ if (NOT WITHOUT_JAVA)
     install(FILES ${CSCORE_JAR_FILE} DESTINATION "${java_lib_dest}")
     install(FILES ${OPENCV_JAR_FILE} DESTINATION "${java_lib_dest}")
 
+    if (MSVC)
+        install(FILES ${OPENCV_JNI_FILE} DESTINATION "${jni_lib_dest}")
+
+        foreach(cvFile ${OpenCV_LIBS})
+            find_file(${cvFile}Loc NAMES ${cvFile}${OpenCV_VERSION_MAJOR}${OpenCV_VERSION_MINOR}${OpenCV_VERSION_PATCH}.dll
+                              PATHS ${OPENCV_JAVA_INSTALL_DIR} ${OpenCV_INSTALL_PATH}/bin ${OpenCV_INSTALL_PATH}/bin/Release ${OpenCV_INSTALL_PATH}/bin/Debug ${OpenCV_INSTALL_PATH}/lib NO_DEFAULT_PATH)
+            install(FILES ${${cvFile}Loc} DESTINATION "${jni_lib_dest}")
+        endforeach()
+    endif()
+
     set_property(TARGET cscore_jar PROPERTY FOLDER "java")
 
 endif()
@@ -61,6 +71,10 @@ endif()
 
 install(TARGETS cscore EXPORT cscore DESTINATION "${main_lib_dest}")
 install(DIRECTORY src/main/native/include/ DESTINATION "${include_dest}/cscore")
+
+if (NOT WITHOUT_JAVA AND MSVC)
+    install(TARGETS cscore RUNTIME DESTINATION "${jni_lib_dest}" COMPONENT Runtime)
+endif()
 
 if (MSVC)
     set (cscore_config_dir ${wpilib_dest})

@@ -38,6 +38,10 @@ set_property(TARGET cameraserver PROPERTY FOLDER "libraries")
 install(TARGETS cameraserver EXPORT cameraserver DESTINATION "${main_lib_dest}")
 install(DIRECTORY src/main/native/include/ DESTINATION "${include_dest}/cameraserver")
 
+if (NOT WITHOUT_JAVA AND MSVC)
+    install(TARGETS cameraserver RUNTIME DESTINATION "${jni_lib_dest}" COMPONENT Runtime)
+endif()
+
 if (MSVC)
     set (cameraserver_config_dir ${wpilib_dest})
 else()

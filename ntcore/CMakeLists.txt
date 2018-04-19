@@ -52,6 +52,10 @@ endif()
 install(TARGETS ntcore EXPORT ntcore DESTINATION "${main_lib_dest}")
 install(DIRECTORY src/main/native/include/ DESTINATION "${include_dest}/ntcore")
 
+if (NOT WITHOUT_JAVA AND MSVC)
+    install(TARGETS ntcore RUNTIME DESTINATION "${jni_lib_dest}" COMPONENT Runtime)
+endif()
+
 if (MSVC)
     set (ntcore_config_dir ${wpilib_dest})
 else()

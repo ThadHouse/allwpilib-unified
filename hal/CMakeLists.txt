@@ -34,7 +34,7 @@ file(GLOB
     hal_shared_native_src src/main/native/cpp/handles/*.cpp
     hal_sim_native_src src/main/native/sim/*.cpp
     hal_sim_native_src src/main/native/sim/MockData/*.cpp)
-add_library(wpiHal ${hal_shared_native_src} ${hal_shared_jni_src})
+add_library(hal ${hal_shared_native_src} ${hal_shared_jni_src})
 
 if(USE_EXTERNAL_HAL)
     include(${EXTERNAL_HAL_FILE})
@@ -62,6 +62,10 @@ endif()
 
 install(TARGETS hal EXPORT hal DESTINATION "${main_lib_dest}")
 install(DIRECTORY src/main/native/include/ DESTINATION "${include_dest}/hal")
+
+if (NOT WITHOUT_JAVA AND MSVC)
+    install(TARGETS hal RUNTIME DESTINATION "${jni_lib_dest}" COMPONENT Runtime)
+endif()
 
 if (MSVC)
     set (hal_config_dir ${wpilib_dest})

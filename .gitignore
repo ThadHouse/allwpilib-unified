@@ -219,3 +219,4 @@ ipch/
 .vs/
 hal/src/main/native/athena/simjni/simjni.cpp
 buildcmake/
+buildcmakewsl/

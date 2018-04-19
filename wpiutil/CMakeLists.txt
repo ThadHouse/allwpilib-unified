@@ -39,7 +39,11 @@ target_include_directories(wpiutil PUBLIC
                             $<INSTALL_INTERFACE:${include_dest}/wpiutil>)
 
 install(TARGETS wpiutil EXPORT wpiutil DESTINATION "${main_lib_dest}")
-install(DIRECTORY wpiutil/src/main/native/include/ DESTINATION "${include_dest}/wpiutil")
+install(DIRECTORY src/main/native/include/ DESTINATION "${include_dest}/wpiutil")
+
+if (NOT WITHOUT_JAVA AND MSVC)
+    install(TARGETS wpiutil RUNTIME DESTINATION "${jni_lib_dest}" COMPONENT Runtime)
+endif()
 
 if (MSVC)
     set (wpiutil_config_dir ${wpilib_dest})
