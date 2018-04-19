@@ -37,14 +37,6 @@ task cppSourcesZip(type: Zip) {
         into '/'
     }
 
-    from('src/main/native/athena') {
-        into '/athena'
-    }
-
-    from('src/main/native/sim') {
-        into '/sim'
-    }
-
     model {
       components {
         it.all {

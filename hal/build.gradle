@@ -20,7 +20,7 @@ ext {
       it.sources {
         simCpp(CppSourceSet) {
           source {
-            srcDirs 'src/main/native/sim'
+            srcDirs = ['src/main/native/sim', "$buildDir/generated/cpp"]
             include '**/*.cpp'
           }
           exportedHeaders {
@@ -34,6 +34,22 @@ ext {
 
 apply from: "${rootDir}/shared/jni/setupBuild.gradle"
 apply from: 'simjni.gradle'
+
+cppSourcesZip {
+  from('src/main/native/athena') {
+    into '/athena'
+  }
+
+  from('src/main/native/sim') {
+    into '/sim'
+  }
+
+  from("$buildDir/generated/cpp") {
+    into '/athena/jni'
+  }
+
+  dependsOn generateAthenaSimFiles
+}
 
 model {
   // Exports config is a utility to enable exporting all symbols in a C++ library on windows to a DLL.

@@ -1,9 +1,5 @@
-def athenaSimJniOutputDir = file("$projectDir/src/main/native/athena/simjni")
+def athenaSimJniOutputDir = file("$buildDir/generated/cpp")
 def athenaSimJniOutputFile = file("$athenaSimJniOutputDir/simjni.cpp")
-
-clean {
-    delete athenaSimJniOutputFile
-}
 
 task generateAthenaSimFiles() {
   Set dirs = [];
