@@ -4,6 +4,8 @@
 #include "HAL/HAL.h"
 #include "CallbackStore.h"
 #include "BufferCallbackStore.h"
+#include "ConstBufferCallbackStore.h"
+#include "SpiReadAutoReceiveBufferCallbackStore.h"
 #include "HAL/handles/HandlesInternal.h"
 #include "MockData/MockHooks.h"
 
@@ -14,9 +16,11 @@ static JClass simValueCls;
 static JClass notifyCallbackCls;
 static JClass bufferCallbackCls;
 static JClass constBufferCallbackCls;
+static JClass spiReadAutoReceiveBufferCallbackCls;
 static jmethodID notifyCallbackCallback;
 static jmethodID bufferCallbackCallback;
 static jmethodID constBufferCallbackCallback;
+static jmethodID spiReadAutoReceiveBufferCallbackCallback;
 
 namespace sim {
 jint SimOnLoad(JavaVM* vm, void* reserved) {
@@ -47,8 +51,17 @@ jint SimOnLoad(JavaVM* vm, void* reserved) {
   constBufferCallbackCallback = env->GetMethodID(constBufferCallbackCls, "callback", "(Ljava/lang/String;[BI)V");
   if (!constBufferCallbackCallback) return JNI_ERR;
 
+
+  spiReadAutoReceiveBufferCallbackCls = JClass(env, "edu/wpi/first/hal/sim/SpiReadAutoReceiveBufferCallback");
+  if (!spiReadAutoReceiveBufferCallbackCls) return JNI_ERR;
+
+  spiReadAutoReceiveBufferCallbackCallback = env->GetMethodID(spiReadAutoReceiveBufferCallbackCls, "callback", "(Ljava/lang/String;[BI)I");
+  if (!spiReadAutoReceiveBufferCallbackCallback) return JNI_ERR;
+
   InitializeStore();
   InitializeBufferStore();
+  InitializeConstBufferStore();
+  InitializeSpiBufferStore();
 
   return JNI_VERSION_1_6;
 }
@@ -62,6 +75,7 @@ void SimOnUnload(JavaVM * vm, void* reserved) {
   notifyCallbackCls.free(env);
   bufferCallbackCls.free(env);
   constBufferCallbackCls.free(env);
+  spiReadAutoReceiveBufferCallbackCls.free(env);
   jvm = nullptr;
 }
 
@@ -79,6 +93,10 @@ jmethodID GetBufferCallback() {
 
 jmethodID GetConstBufferCallback() {
   return constBufferCallbackCallback;
+}
+
+jmethodID GetSpiReadAutoReceiveBufferCallback() {
+  return spiReadAutoReceiveBufferCallbackCallback;
 }
 }
 
