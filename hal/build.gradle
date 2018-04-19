@@ -8,7 +8,7 @@ ext {
       it.sources {
         athenaCpp(CppSourceSet) {
           source {
-            srcDirs 'src/main/native/athena'
+            srcDirs = ['src/main/native/athena', "$buildDir/generated/cpp"]
             include '**/*.cpp'
           }
           exportedHeaders {
@@ -20,7 +20,7 @@ ext {
       it.sources {
         simCpp(CppSourceSet) {
           source {
-            srcDirs = ['src/main/native/sim', "$buildDir/generated/cpp"]
+            srcDirs 'src/main/native/sim'
             include '**/*.cpp'
           }
           exportedHeaders {

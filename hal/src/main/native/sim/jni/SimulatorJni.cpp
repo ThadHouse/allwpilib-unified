@@ -3,6 +3,7 @@
 #include "HAL/cpp/Log.h"
 #include "HAL/HAL.h"
 #include "CallbackStore.h"
+#include "BufferCallbackStore.h"
 #include "HAL/handles/HandlesInternal.h"
 #include "MockData/MockHooks.h"
 
@@ -11,7 +12,11 @@ using namespace wpi::java;
 static JavaVM* jvm = nullptr;
 static JClass simValueCls;
 static JClass notifyCallbackCls;
+static JClass bufferCallbackCls;
+static JClass constBufferCallbackCls;
 static jmethodID notifyCallbackCallback;
+static jmethodID bufferCallbackCallback;
+static jmethodID constBufferCallbackCallback;
 
 namespace sim {
 jint SimOnLoad(JavaVM* vm, void* reserved) {
@@ -30,7 +35,20 @@ jint SimOnLoad(JavaVM* vm, void* reserved) {
   notifyCallbackCallback = env->GetMethodID(notifyCallbackCls, "callbackNative", "(Ljava/lang/String;IJD)V");
   if (!notifyCallbackCallback) return JNI_ERR;
 
+  bufferCallbackCls = JClass(env, "edu/wpi/first/hal/sim/BufferCallback");
+  if (!bufferCallbackCls) return JNI_ERR;
+
+  bufferCallbackCallback = env->GetMethodID(bufferCallbackCls, "callback", "(Ljava/lang/String;[BI)V");
+  if (!bufferCallbackCallback) return JNI_ERR;
+
+  constBufferCallbackCls = JClass(env, "edu/wpi/first/hal/sim/ConstBufferCallback");
+  if (!constBufferCallbackCls) return JNI_ERR;
+
+  constBufferCallbackCallback = env->GetMethodID(constBufferCallbackCls, "callback", "(Ljava/lang/String;[BI)V");
+  if (!constBufferCallbackCallback) return JNI_ERR;
+
   InitializeStore();
+  InitializeBufferStore();
 
   return JNI_VERSION_1_6;
 }
@@ -41,6 +59,9 @@ void SimOnUnload(JavaVM * vm, void* reserved) {
     return;
 
   simValueCls.free(env);
+  notifyCallbackCls.free(env);
+  bufferCallbackCls.free(env);
+  constBufferCallbackCls.free(env);
   jvm = nullptr;
 }
 
@@ -50,6 +71,14 @@ JavaVM* GetJVM() {
 
 jmethodID GetNotifyCallback() {
   return notifyCallbackCallback;
+}
+
+jmethodID GetBufferCallback() {
+  return bufferCallbackCallback;
+}
+
+jmethodID GetConstBufferCallback() {
+  return constBufferCallbackCallback;
 }
 }
 

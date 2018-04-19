@@ -100,6 +100,48 @@ void sim::FreeCallback(JNIEnv* env, SIM_JniHandle handle, jint index, FreeCallba
   callback->free(env);
 }
 
+SIM_JniHandle sim::AllocateChannelCallback(JNIEnv* env, jint index, jint channel, jobject callback, jboolean initialNotify, RegisterChannelCallbackFunc createCallback) {
+
+  auto callbackStore = std::make_shared<CallbackStore>();
+
+  auto handle = callbackHandles->Allocate(callbackStore);
+
+  if (handle == HAL_kInvalidHandle) {
+    return -1;
+  }
+
+  uintptr_t handleAsPtr = static_cast<uintptr_t>(handle);
+  void* handleAsVoidPtr = reinterpret_cast<void*>(handleAsPtr);
+
+  callbackStore->create(env, callback);
+
+  auto callbackFunc = [](const char* name, void* param, const HAL_Value* value){
+    llvm::outs().flush();
+    uintptr_t handleTmp = reinterpret_cast<uintptr_t>(param);
+    SIM_JniHandle handle =
+        static_cast<SIM_JniHandle>(handleTmp);
+    auto data = callbackHandles->Get(handle);
+    if (!data) return;
+
+    data->performCallback(name, value);
+
+    llvm::outs().flush();
+
+  };
+
+  auto id = createCallback(index, channel, callbackFunc, handleAsVoidPtr, initialNotify);
+
+  callbackStore->setCallbackId(id);
+
+  return handle;
+}
+
+void sim::FreeChannelCallback(JNIEnv* env, SIM_JniHandle handle, jint index, jint channel, FreeChannelCallbackFunc freeCallback) {
+  auto callback = callbackHandles->Free(handle);
+  freeCallback(index, channel, callback->getCallbackId());
+  callback->free(env);
+}
+
 SIM_JniHandle sim::AllocateCallbackNoIndex(JNIEnv* env, jobject callback, jboolean initialNotify, RegisterCallbackNoIndexFunc createCallback) {
 
   auto callbackStore = std::make_shared<CallbackStore>();

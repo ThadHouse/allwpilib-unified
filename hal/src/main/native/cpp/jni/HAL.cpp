@@ -399,4 +399,35 @@ Java_edu_wpi_first_wpilibj_hal_HAL_sendError(JNIEnv* env, jclass,
   return returnValue;
 }
 
+/*
+ * Class:     edu_wpi_first_wpilibj_hal_HAL
+ * Method:    getPortWithModule
+ * Signature: (BB)I
+ */
+JNIEXPORT jint JNICALL
+Java_edu_wpi_first_wpilibj_hal_HAL_getPortWithModule(
+    JNIEnv* env, jclass, jbyte module, jbyte channel) {
+  // FILE_LOG(logDEBUG) << "Calling HAL getPortWithModlue";
+  // FILE_LOG(logDEBUG) << "Module = " << (jint)module;
+  // FILE_LOG(logDEBUG) << "Channel = " << (jint)channel;
+  HAL_PortHandle port = HAL_GetPortWithModule(module, channel);
+  // FILE_LOG(logDEBUG) << "Port Handle = " << port;
+  return (jint)port;
+}
+
+/*
+ * Class:     edu_wpi_first_wpilibj_hal_HAL
+ * Method:    getPort
+ * Signature: (B)I
+ */
+JNIEXPORT jint JNICALL Java_edu_wpi_first_wpilibj_hal_HAL_getPort(
+    JNIEnv* env, jclass, jbyte channel) {
+  // FILE_LOG(logDEBUG) << "Calling HAL getPortWithModlue";
+  // FILE_LOG(logDEBUG) << "Module = " << (jint)module;
+  // FILE_LOG(logDEBUG) << "Channel = " << (jint)channel;
+  HAL_PortHandle port = HAL_GetPort(channel);
+  // FILE_LOG(logDEBUG) << "Port Handle = " << port;
+  return (jint)port;
+}
+
 }  // extern "C"
