@@ -103,7 +103,7 @@ subprojects {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.7-rc-1'
+    gradleVersion = '4.7'
 }
 
 task downloadAllDependencies() {
