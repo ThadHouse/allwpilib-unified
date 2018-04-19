@@ -34,7 +34,7 @@ file(GLOB
     hal_shared_native_src src/main/native/cpp/handles/*.cpp
     hal_sim_native_src src/main/native/sim/*.cpp
     hal_sim_native_src src/main/native/sim/MockData/*.cpp)
-add_library(hal ${hal_shared_native_src} ${hal_shared_jni_src})
+add_library(wpiHal ${hal_shared_native_src} ${hal_shared_jni_src})
 
 if(USE_EXTERNAL_HAL)
     include(${EXTERNAL_HAL_FILE})
