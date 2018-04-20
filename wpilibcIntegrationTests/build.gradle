@@ -23,12 +23,12 @@ if (!project.hasProperty('skipAthena')) {
                 sources {
                     cpp {
                         source {
-                            srcDirs = ["${rootDir}/gmock/gtest/src", 'src/FRCUserProgram/cpp']
-                            includes = ['*-all.cc', '*_main.cc', '**/*.cpp']
+                            srcDirs = ['src/main/native/cpp']
+                            includes = ['**/*.cpp']
                         }
                         exportedHeaders {
-                            srcDirs = ["${rootDir}/gmock/gtest/include", "${rootDir}/gmock/gtest", 'src/FRCUserProgram/headers']
-                            includes = ['**/*.h', '**/*.cc']
+                            srcDirs = ['src/main/native/include']
+                            includes = ['**/*.h']
                         }
                     }
                 }
@@ -45,6 +45,7 @@ if (!project.hasProperty('skipAthena')) {
                         lib project: ':hal', library: 'hal', linkage: 'shared'
                         lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
                         lib project: ':cameraserver', library: 'cameraserver', linkage: 'shared'
+                        lib project: ':gmock', library: 'gmock', linkage: 'static'
                         project(':ni-libraries').addNiLibrariesToLinker(binary)
                     } else {
                         binary.buildable = false
