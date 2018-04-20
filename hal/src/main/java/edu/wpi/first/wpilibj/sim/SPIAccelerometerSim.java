@@ -1,6 +1,5 @@
 package edu.wpi.first.wpilibj.sim;
 
-import edu.wpi.first.wpilibj.sim.NotifyCallback;
 import edu.wpi.first.hal.sim.mockdata.SPIAccelerometerDataJNI;
 
 public class SPIAccelerometerSim {

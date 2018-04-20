@@ -30,29 +30,29 @@ jint SimOnLoad(JavaVM* vm, void* reserved) {
   if (vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK)
     return JNI_ERR;
 
-  simValueCls = JClass(env, "edu/wpi/first/hal/sim/SimValue");
+  simValueCls = JClass(env, "edu/wpi/first/wpilibj/sim/SimValue");
   if (!simValueCls) return JNI_ERR;
 
-  notifyCallbackCls = JClass(env, "edu/wpi/first/hal/sim/NotifyCallback");
+  notifyCallbackCls = JClass(env, "edu/wpi/first/wpilibj/sim/NotifyCallback");
   if (!notifyCallbackCls) return JNI_ERR;
 
   notifyCallbackCallback = env->GetMethodID(notifyCallbackCls, "callbackNative", "(Ljava/lang/String;IJD)V");
   if (!notifyCallbackCallback) return JNI_ERR;
 
-  bufferCallbackCls = JClass(env, "edu/wpi/first/hal/sim/BufferCallback");
+  bufferCallbackCls = JClass(env, "edu/wpi/first/wpilibj/sim/BufferCallback");
   if (!bufferCallbackCls) return JNI_ERR;
 
   bufferCallbackCallback = env->GetMethodID(bufferCallbackCls, "callback", "(Ljava/lang/String;[BI)V");
   if (!bufferCallbackCallback) return JNI_ERR;
 
-  constBufferCallbackCls = JClass(env, "edu/wpi/first/hal/sim/ConstBufferCallback");
+  constBufferCallbackCls = JClass(env, "edu/wpi/first/wpilibj/sim/ConstBufferCallback");
   if (!constBufferCallbackCls) return JNI_ERR;
 
   constBufferCallbackCallback = env->GetMethodID(constBufferCallbackCls, "callback", "(Ljava/lang/String;[BI)V");
   if (!constBufferCallbackCallback) return JNI_ERR;
 
 
-  spiReadAutoReceiveBufferCallbackCls = JClass(env, "edu/wpi/first/hal/sim/SpiReadAutoReceiveBufferCallback");
+  spiReadAutoReceiveBufferCallbackCls = JClass(env, "edu/wpi/first/wpilibj/sim/SpiReadAutoReceiveBufferCallback");
   if (!spiReadAutoReceiveBufferCallbackCls) return JNI_ERR;
 
   spiReadAutoReceiveBufferCallbackCallback = env->GetMethodID(spiReadAutoReceiveBufferCallbackCls, "callback", "(Ljava/lang/String;[BI)I");
