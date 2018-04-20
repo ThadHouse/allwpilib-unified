@@ -74,16 +74,6 @@ class CallbackStore {
     enum CancelType { Normal, Channel, NoIndex };
     CancelType cancelType;
 };
-
-// using CallbackUniquePtr = std::unique_ptr<CallbackStore<CancelCallbackFunc>, void(*)(CallbackStore<CancelCallbackFunc>*)>;
-// using ChannelCallbackUniquePtr = std::unique_ptr<CallbackStore<CancelCallbackChannelFunc>, void(*)(CallbackStore<CancelCallbackChannelFunc>*)>;
-// using NoIndexCallbackUniquePtr = std::unique_ptr<CallbackStore<CancelCallbackNoIndexFunc>, void(*)(CallbackStore<CancelCallbackNoIndexFunc>*)>;
-
-
-// void CallbackStoreCancel(CallbackStore<CancelCallbackFunc>* store);
-// void CallbackStoreCancel(CallbackStore<CancelCallbackChannelFunc>* store);
-// void CallbackStoreCancel(CallbackStore<CancelCallbackNoIndexFunc>* store);
-
 }
 }
 
