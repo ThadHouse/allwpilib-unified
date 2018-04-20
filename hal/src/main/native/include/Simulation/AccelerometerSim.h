@@ -1,6 +1,10 @@
 #pragma once
 
+#ifndef __FRC_ROBORIO__
+
 #include "MockData/AccelerometerData.h"
+#include "CallbackStore.h"
+
 
 namespace frc {
 namespace sim {
@@ -10,11 +14,13 @@ class AccelerometerSim {
     m_index = index;
   }
 
-  int RegisterActiveCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterAccelerometerActiveCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelActiveCallback(int uid) {
-    HALSIM_CancelAccelerometerActiveCallback(m_index, uid);
+  CallbackUniquePtr RegisterActiveCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore(m_index, -1, callback,
+                                              &HALSIM_CancelAccelerometerActiveCallback),
+                            &CallbackStoreCancel);
+
+    store->uid = HALSIM_RegisterAccelerometerActiveCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   bool GetActive() {
     return HALSIM_GetAccelerometerActive(m_index);
@@ -83,3 +89,5 @@ class AccelerometerSim {
 };
 }
 }
+
+#endif

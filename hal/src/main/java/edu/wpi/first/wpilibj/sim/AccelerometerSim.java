@@ -9,11 +9,10 @@ public class AccelerometerSim {
     m_index = index;
   }
 
-  public int registerActiveCallback(NotifyCallback callback, boolean initialNotify) {
-    return AccelerometerDataJNI.registerActiveCallback(m_index, callback, initialNotify);
-  }
-  public void cancelActiveCallback(int uid) {
-    AccelerometerDataJNI.cancelActiveCallback(m_index, uid);
+  public CallbackStore registerActiveCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = AccelerometerDataJNI.registerActiveCallback(m_index, callback, initialNotify);
+    CallbackStore cb = new CallbackStore(m_index, uid, callback, AccelerometerDataJNI::cancelActiveCallback);
+    return cb;
   }
   public boolean getActive() {
     return AccelerometerDataJNI.getActive(m_index);
