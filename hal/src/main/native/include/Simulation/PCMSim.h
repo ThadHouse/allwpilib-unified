@@ -3,6 +3,7 @@
 #ifndef __FRC_ROBORIO__
 
 #include "MockData/PCMData.h"
+#include <memory>
 #include "CallbackStore.h"
 
 namespace frc {
@@ -13,9 +14,9 @@ class PCMSim {
     m_index = index;
   }
 
-  ChannelCallbackUniquePtr RegisterSolenoidInitializedCallback(int channel, NotifyCallback callback, bool initialNotify) {
-    ChannelCallbackUniquePtr store(new CallbackStore<CancelCallbackChannelFunc>(m_index, channel, -1, callback, &HALSIM_CancelPCMSolenoidInitializedCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterPCMSolenoidInitializedCallback(m_index, channel, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterSolenoidInitializedCallback(int channel, NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, channel, -1, callback, &HALSIM_CancelPCMSolenoidInitializedCallback);
+    store->SetUid(HALSIM_RegisterPCMSolenoidInitializedCallback(m_index, channel, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetSolenoidInitialized(int channel) {
@@ -25,9 +26,9 @@ class PCMSim {
     HALSIM_SetPCMSolenoidInitialized(m_index, channel, solenoidInitialized);
   }
 
-  ChannelCallbackUniquePtr RegisterSolenoidOutputCallback(int channel, NotifyCallback callback, bool initialNotify) {
-    ChannelCallbackUniquePtr store(new CallbackStore<CancelCallbackChannelFunc>(m_index, channel, -1, callback, &HALSIM_CancelPCMSolenoidOutputCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterPCMSolenoidOutputCallback(m_index, channel, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterSolenoidOutputCallback(int channel, NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, channel, -1, callback, &HALSIM_CancelPCMSolenoidOutputCallback);
+    store->SetUid(HALSIM_RegisterPCMSolenoidOutputCallback(m_index, channel, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetSolenoidOutput(int channel) {
@@ -37,9 +38,9 @@ class PCMSim {
     HALSIM_SetPCMSolenoidOutput(m_index, channel, solenoidOutput);
   }
 
-  CallbackUniquePtr RegisterCompressorInitializedCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelPCMCompressorInitializedCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterPCMCompressorInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterCompressorInitializedCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelPCMCompressorInitializedCallback);
+    store->SetUid(HALSIM_RegisterPCMCompressorInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetCompressorInitialized() {
@@ -49,9 +50,9 @@ class PCMSim {
     HALSIM_SetPCMCompressorInitialized(m_index, compressorInitialized);
   }
 
-  CallbackUniquePtr RegisterCompressorOnCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelPCMCompressorOnCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterPCMCompressorOnCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterCompressorOnCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelPCMCompressorOnCallback);
+    store->SetUid(HALSIM_RegisterPCMCompressorOnCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetCompressorOn() {
@@ -61,9 +62,9 @@ class PCMSim {
     HALSIM_SetPCMCompressorOn(m_index, compressorOn);
   }
 
-  CallbackUniquePtr RegisterClosedLoopEnabledCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelPCMClosedLoopEnabledCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterPCMClosedLoopEnabledCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterClosedLoopEnabledCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelPCMClosedLoopEnabledCallback);
+    store->SetUid(HALSIM_RegisterPCMClosedLoopEnabledCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetClosedLoopEnabled() {
@@ -73,9 +74,9 @@ class PCMSim {
     HALSIM_SetPCMClosedLoopEnabled(m_index, closedLoopEnabled);
   }
 
-  CallbackUniquePtr RegisterPressureSwitchCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelPCMPressureSwitchCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterPCMPressureSwitchCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterPressureSwitchCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelPCMPressureSwitchCallback);
+    store->SetUid(HALSIM_RegisterPCMPressureSwitchCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetPressureSwitch() {
@@ -85,9 +86,9 @@ class PCMSim {
     HALSIM_SetPCMPressureSwitch(m_index, pressureSwitch);
   }
 
-  CallbackUniquePtr RegisterCompressorCurrentCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelPCMCompressorCurrentCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterPCMCompressorCurrentCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterCompressorCurrentCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelPCMCompressorCurrentCallback);
+    store->SetUid(HALSIM_RegisterPCMCompressorCurrentCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   double GetCompressorCurrent() {

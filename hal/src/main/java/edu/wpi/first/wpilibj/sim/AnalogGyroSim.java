@@ -9,11 +9,9 @@ public class AnalogGyroSim {
     m_index = index;
   }
 
-  public int registerAngleCallback(NotifyCallback callback, boolean initialNotify) {
-    return AnalogGyroDataJNI.registerAngleCallback(m_index, callback, initialNotify);
-  }
-  public void cancelAngleCallback(int uid) {
-    AnalogGyroDataJNI.cancelAngleCallback(m_index, uid);
+  public CallbackStore registerAngleCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = AnalogGyroDataJNI.registerAngleCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, AnalogGyroDataJNI::cancelAngleCallback);
   }
   public double getAngle() {
     return AnalogGyroDataJNI.getAngle(m_index);
@@ -22,11 +20,9 @@ public class AnalogGyroSim {
     AnalogGyroDataJNI.setAngle(m_index, angle);
   }
 
-  public int registerRateCallback(NotifyCallback callback, boolean initialNotify) {
-    return AnalogGyroDataJNI.registerRateCallback(m_index, callback, initialNotify);
-  }
-  public void cancelRateCallback(int uid) {
-    AnalogGyroDataJNI.cancelRateCallback(m_index, uid);
+  public CallbackStore registerRateCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = AnalogGyroDataJNI.registerRateCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, AnalogGyroDataJNI::cancelRateCallback);
   }
   public double getRate() {
     return AnalogGyroDataJNI.getRate(m_index);
@@ -35,11 +31,9 @@ public class AnalogGyroSim {
     AnalogGyroDataJNI.setRate(m_index, rate);
   }
 
-  public int registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
-    return AnalogGyroDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
-  }
-  public void cancelInitializedCallback(int uid) {
-    AnalogGyroDataJNI.cancelInitializedCallback(m_index, uid);
+  public CallbackStore registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = AnalogGyroDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, AnalogGyroDataJNI::cancelInitializedCallback);
   }
   public boolean getInitialized() {
     return AnalogGyroDataJNI.getInitialized(m_index);

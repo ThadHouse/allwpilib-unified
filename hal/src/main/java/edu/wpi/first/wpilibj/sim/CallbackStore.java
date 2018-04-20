@@ -1,36 +1,74 @@
 package edu.wpi.first.wpilibj.sim;
 
 import java.io.Closeable;
-import java.io.IOException;
 
 public class CallbackStore implements Closeable {
-  public static interface CancelCallbackFunc {
+  interface CancelCallbackFunc {
     void cancel(int index, int uid);
   }
 
-  public CallbackStore(int index, int uid, NotifyCallback cb, CancelCallbackFunc ccf) {
+  interface CancelCallbackChannelFunc {
+    void cancel(int index, int channel, int uid);
+  }
+
+  interface CancelCallbackNoIndexFunc {
+    void cancel(int uid);
+  }
+
+  public CallbackStore(int index, int uid, CancelCallbackFunc ccf) {
+    this.cancelType = normalCancel;
     this.index = index;
     this.uid = uid;
-    this.callback = cb;
     this.cancelCallback = ccf;
   }
 
-  public int index;
-  public int uid;
-  public NotifyCallback callback;
-  CancelCallbackFunc cancelCallback;
+  public CallbackStore(int index, int channel, int uid, CancelCallbackChannelFunc ccf) {
+    this.cancelType = channelCancel;
+    this.index = index;
+    this.uid = uid;
+    this.channel = channel;
+    this.cancelCallbackChannel = ccf;
+  }
+
+  public CallbackStore(int uid, CancelCallbackNoIndexFunc ccf) {
+    this.cancelType = noIndexCancel;
+    this.uid = uid;
+    this.cancelCallbackNoIndex = ccf;
+  }
+
+  private int index;
+  private int channel;
+  private int uid;
+  private CancelCallbackFunc cancelCallback;
+  private CancelCallbackChannelFunc cancelCallbackChannel;
+  private CancelCallbackNoIndexFunc cancelCallbackNoIndex;
+  private static final int normalCancel = 0;
+  private static final int channelCancel = 1;
+  private static final int noIndexCancel = 2;
+  private int cancelType;
 
   @Override
-  public void close() throws IOException {
-    if (cancelCallback != null) {
-      cancelCallback.cancel(index, uid);
+  public void close() {
+    switch (cancelType) {
+      case normalCancel:
+        cancelCallback.cancel(index, uid);
+        break;
+      case channelCancel:
+        cancelCallbackChannel.cancel(index, channel, uid);
+        break;
+      case noIndexCancel:
+        cancelCallbackNoIndex.cancel(uid);
+        break;
     }
+    cancelType = -1;
   }
 
   @Override
   protected void finalize() throws Throwable {
     try {
+      if (cancelType >= 0) {
         close();        // close open files
+      }
     } finally {
         super.finalize();
     }

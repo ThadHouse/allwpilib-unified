@@ -9,11 +9,9 @@ public class EncoderSim {
     m_index = index;
   }
 
-  public int registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
-    return EncoderDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
-  }
-  public void cancelInitializedCallback(int uid) {
-    EncoderDataJNI.cancelInitializedCallback(m_index, uid);
+  public CallbackStore registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = EncoderDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, EncoderDataJNI::cancelInitializedCallback);
   }
   public boolean getInitialized() {
     return EncoderDataJNI.getInitialized(m_index);
@@ -22,11 +20,9 @@ public class EncoderSim {
     EncoderDataJNI.setInitialized(m_index, initialized);
   }
 
-  public int registerCountCallback(NotifyCallback callback, boolean initialNotify) {
-    return EncoderDataJNI.registerCountCallback(m_index, callback, initialNotify);
-  }
-  public void cancelCountCallback(int uid) {
-    EncoderDataJNI.cancelCountCallback(m_index, uid);
+  public CallbackStore registerCountCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = EncoderDataJNI.registerCountCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, EncoderDataJNI::cancelCountCallback);
   }
   public int getCount() {
     return EncoderDataJNI.getCount(m_index);
@@ -35,11 +31,9 @@ public class EncoderSim {
     EncoderDataJNI.setCount(m_index, count);
   }
 
-  public int registerPeriodCallback(NotifyCallback callback, boolean initialNotify) {
-    return EncoderDataJNI.registerPeriodCallback(m_index, callback, initialNotify);
-  }
-  public void cancelPeriodCallback(int uid) {
-    EncoderDataJNI.cancelPeriodCallback(m_index, uid);
+  public CallbackStore registerPeriodCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = EncoderDataJNI.registerPeriodCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, EncoderDataJNI::cancelPeriodCallback);
   }
   public double getPeriod() {
     return EncoderDataJNI.getPeriod(m_index);
@@ -48,11 +42,9 @@ public class EncoderSim {
     EncoderDataJNI.setPeriod(m_index, period);
   }
 
-  public int registerResetCallback(NotifyCallback callback, boolean initialNotify) {
-    return EncoderDataJNI.registerResetCallback(m_index, callback, initialNotify);
-  }
-  public void cancelResetCallback(int uid) {
-    EncoderDataJNI.cancelResetCallback(m_index, uid);
+  public CallbackStore registerResetCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = EncoderDataJNI.registerResetCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, EncoderDataJNI::cancelResetCallback);
   }
   public boolean getReset() {
     return EncoderDataJNI.getReset(m_index);
@@ -61,11 +53,9 @@ public class EncoderSim {
     EncoderDataJNI.setReset(m_index, reset);
   }
 
-  public int registerMaxPeriodCallback(NotifyCallback callback, boolean initialNotify) {
-    return EncoderDataJNI.registerMaxPeriodCallback(m_index, callback, initialNotify);
-  }
-  public void cancelMaxPeriodCallback(int uid) {
-    EncoderDataJNI.cancelMaxPeriodCallback(m_index, uid);
+  public CallbackStore registerMaxPeriodCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = EncoderDataJNI.registerMaxPeriodCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, EncoderDataJNI::cancelMaxPeriodCallback);
   }
   public double getMaxPeriod() {
     return EncoderDataJNI.getMaxPeriod(m_index);
@@ -74,11 +64,9 @@ public class EncoderSim {
     EncoderDataJNI.setMaxPeriod(m_index, maxPeriod);
   }
 
-  public int registerDirectionCallback(NotifyCallback callback, boolean initialNotify) {
-    return EncoderDataJNI.registerDirectionCallback(m_index, callback, initialNotify);
-  }
-  public void cancelDirectionCallback(int uid) {
-    EncoderDataJNI.cancelDirectionCallback(m_index, uid);
+  public CallbackStore registerDirectionCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = EncoderDataJNI.registerDirectionCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, EncoderDataJNI::cancelDirectionCallback);
   }
   public boolean getDirection() {
     return EncoderDataJNI.getDirection(m_index);
@@ -87,11 +75,9 @@ public class EncoderSim {
     EncoderDataJNI.setDirection(m_index, direction);
   }
 
-  public int registerReverseDirectionCallback(NotifyCallback callback, boolean initialNotify) {
-    return EncoderDataJNI.registerReverseDirectionCallback(m_index, callback, initialNotify);
-  }
-  public void cancelReverseDirectionCallback(int uid) {
-    EncoderDataJNI.cancelReverseDirectionCallback(m_index, uid);
+  public CallbackStore registerReverseDirectionCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = EncoderDataJNI.registerReverseDirectionCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, EncoderDataJNI::cancelReverseDirectionCallback);
   }
   public boolean getReverseDirection() {
     return EncoderDataJNI.getReverseDirection(m_index);
@@ -100,11 +86,9 @@ public class EncoderSim {
     EncoderDataJNI.setReverseDirection(m_index, reverseDirection);
   }
 
-  public int registerSamplesToAverageCallback(NotifyCallback callback, boolean initialNotify) {
-    return EncoderDataJNI.registerSamplesToAverageCallback(m_index, callback, initialNotify);
-  }
-  public void cancelSamplesToAverageCallback(int uid) {
-    EncoderDataJNI.cancelSamplesToAverageCallback(m_index, uid);
+  public CallbackStore registerSamplesToAverageCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = EncoderDataJNI.registerSamplesToAverageCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, EncoderDataJNI::cancelSamplesToAverageCallback);
   }
   public int getSamplesToAverage() {
     return EncoderDataJNI.getSamplesToAverage(m_index);

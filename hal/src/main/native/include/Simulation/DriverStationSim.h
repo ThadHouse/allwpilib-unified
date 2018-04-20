@@ -3,15 +3,16 @@
 #ifndef __FRC_ROBORIO__
 
 #include "MockData/DriverStationData.h"
+#include <memory>
 #include "CallbackStore.h"
 
 namespace frc {
 namespace sim {
 class DriverStationSim {
  public:
-  NoIndexCallbackUniquePtr RegisterEnabledCallback(NotifyCallback callback, bool initialNotify) {
-    NoIndexCallbackUniquePtr store(new CallbackStore<CancelCallbackNoIndexFunc>(-1, callback, &HALSIM_CancelDriverStationEnabledCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterDriverStationEnabledCallback(&CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterEnabledCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(-1, callback, &HALSIM_CancelDriverStationEnabledCallback);
+    store->SetUid(HALSIM_RegisterDriverStationEnabledCallback(&CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetEnabled() {
@@ -21,9 +22,9 @@ class DriverStationSim {
     HALSIM_SetDriverStationEnabled(enabled);
   }
 
-  NoIndexCallbackUniquePtr RegisterAutonomousCallback(NotifyCallback callback, bool initialNotify) {
-    NoIndexCallbackUniquePtr store(new CallbackStore<CancelCallbackNoIndexFunc>(-1, callback, &HALSIM_CancelDriverStationAutonomousCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterDriverStationAutonomousCallback(&CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterAutonomousCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(-1, callback, &HALSIM_CancelDriverStationAutonomousCallback);
+    store->SetUid(HALSIM_RegisterDriverStationAutonomousCallback(&CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetAutonomous() {
@@ -33,9 +34,9 @@ class DriverStationSim {
     HALSIM_SetDriverStationAutonomous(autonomous);
   }
 
-  NoIndexCallbackUniquePtr RegisterTestCallback(NotifyCallback callback, bool initialNotify) {
-    NoIndexCallbackUniquePtr store(new CallbackStore<CancelCallbackNoIndexFunc>(-1, callback, &HALSIM_CancelDriverStationTestCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterDriverStationTestCallback(&CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterTestCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(-1, callback, &HALSIM_CancelDriverStationTestCallback);
+    store->SetUid(HALSIM_RegisterDriverStationTestCallback(&CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetTest() {
@@ -45,9 +46,9 @@ class DriverStationSim {
     HALSIM_SetDriverStationTest(test);
   }
 
-  NoIndexCallbackUniquePtr RegisterEStopCallback(NotifyCallback callback, bool initialNotify) {
-    NoIndexCallbackUniquePtr store(new CallbackStore<CancelCallbackNoIndexFunc>(-1, callback, &HALSIM_CancelDriverStationEStopCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterDriverStationEStopCallback(&CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterEStopCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(-1, callback, &HALSIM_CancelDriverStationEStopCallback);
+    store->SetUid(HALSIM_RegisterDriverStationEStopCallback(&CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetEStop() {
@@ -57,9 +58,9 @@ class DriverStationSim {
     HALSIM_SetDriverStationEStop(eStop);
   }
 
-  NoIndexCallbackUniquePtr RegisterFmsAttachedCallback(NotifyCallback callback, bool initialNotify) {
-    NoIndexCallbackUniquePtr store(new CallbackStore<CancelCallbackNoIndexFunc>(-1, callback, &HALSIM_CancelDriverStationFmsAttachedCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterDriverStationFmsAttachedCallback(&CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterFmsAttachedCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(-1, callback, &HALSIM_CancelDriverStationFmsAttachedCallback);
+    store->SetUid(HALSIM_RegisterDriverStationFmsAttachedCallback(&CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetFmsAttached() {
@@ -69,9 +70,9 @@ class DriverStationSim {
     HALSIM_SetDriverStationFmsAttached(fmsAttached);
   }
 
-  NoIndexCallbackUniquePtr RegisterDsAttachedCallback(NotifyCallback callback, bool initialNotify) {
-    NoIndexCallbackUniquePtr store(new CallbackStore<CancelCallbackNoIndexFunc>(-1, callback, &HALSIM_CancelDriverStationDsAttachedCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterDriverStationDsAttachedCallback(&CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterDsAttachedCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(-1, callback, &HALSIM_CancelDriverStationDsAttachedCallback);
+    store->SetUid(HALSIM_RegisterDriverStationDsAttachedCallback(&CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetDsAttached() {

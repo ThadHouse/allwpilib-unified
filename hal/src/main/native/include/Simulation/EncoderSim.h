@@ -3,6 +3,7 @@
 #ifndef __FRC_ROBORIO__
 
 #include "MockData/EncoderData.h"
+#include <memory>
 #include "CallbackStore.h"
 
 namespace frc {
@@ -13,9 +14,9 @@ class EncoderSim {
     m_index = index;
   }
 
-  CallbackUniquePtr RegisterInitializedCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelEncoderInitializedCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterEncoderInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterInitializedCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelEncoderInitializedCallback);
+    store->SetUid(HALSIM_RegisterEncoderInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetInitialized() {
@@ -25,9 +26,9 @@ class EncoderSim {
     HALSIM_SetEncoderInitialized(m_index, initialized);
   }
 
-  CallbackUniquePtr RegisterCountCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelEncoderCountCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterEncoderCountCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterCountCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelEncoderCountCallback);
+    store->SetUid(HALSIM_RegisterEncoderCountCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   int GetCount() {
@@ -37,9 +38,9 @@ class EncoderSim {
     HALSIM_SetEncoderCount(m_index, count);
   }
 
-  CallbackUniquePtr RegisterPeriodCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelEncoderPeriodCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterEncoderPeriodCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterPeriodCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelEncoderPeriodCallback);
+    store->SetUid(HALSIM_RegisterEncoderPeriodCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   double GetPeriod() {
@@ -49,9 +50,9 @@ class EncoderSim {
     HALSIM_SetEncoderPeriod(m_index, period);
   }
 
-  CallbackUniquePtr RegisterResetCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelEncoderResetCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterEncoderResetCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterResetCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelEncoderResetCallback);
+    store->SetUid(HALSIM_RegisterEncoderResetCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetReset() {
@@ -61,9 +62,9 @@ class EncoderSim {
     HALSIM_SetEncoderReset(m_index, reset);
   }
 
-  CallbackUniquePtr RegisterMaxPeriodCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelEncoderMaxPeriodCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterEncoderMaxPeriodCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterMaxPeriodCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelEncoderMaxPeriodCallback);
+    store->SetUid(HALSIM_RegisterEncoderMaxPeriodCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   double GetMaxPeriod() {
@@ -73,9 +74,9 @@ class EncoderSim {
     HALSIM_SetEncoderMaxPeriod(m_index, maxPeriod);
   }
 
-  CallbackUniquePtr RegisterDirectionCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelEncoderDirectionCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterEncoderDirectionCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterDirectionCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelEncoderDirectionCallback);
+    store->SetUid(HALSIM_RegisterEncoderDirectionCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetDirection() {
@@ -85,9 +86,9 @@ class EncoderSim {
     HALSIM_SetEncoderDirection(m_index, direction);
   }
 
-  CallbackUniquePtr RegisterReverseDirectionCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelEncoderReverseDirectionCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterEncoderReverseDirectionCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterReverseDirectionCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelEncoderReverseDirectionCallback);
+    store->SetUid(HALSIM_RegisterEncoderReverseDirectionCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetReverseDirection() {
@@ -97,9 +98,9 @@ class EncoderSim {
     HALSIM_SetEncoderReverseDirection(m_index, reverseDirection);
   }
 
-  CallbackUniquePtr RegisterSamplesToAverageCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelEncoderSamplesToAverageCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterEncoderSamplesToAverageCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterSamplesToAverageCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelEncoderSamplesToAverageCallback);
+    store->SetUid(HALSIM_RegisterEncoderSamplesToAverageCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   int GetSamplesToAverage() {

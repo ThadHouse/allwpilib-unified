@@ -9,11 +9,9 @@ public class AnalogTriggerSim {
     m_index = index;
   }
 
-  public int registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
-    return AnalogTriggerDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
-  }
-  public void cancelInitializedCallback(int uid) {
-    AnalogTriggerDataJNI.cancelInitializedCallback(m_index, uid);
+  public CallbackStore registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = AnalogTriggerDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, AnalogTriggerDataJNI::cancelInitializedCallback);
   }
   public boolean getInitialized() {
     return AnalogTriggerDataJNI.getInitialized(m_index);
@@ -22,11 +20,9 @@ public class AnalogTriggerSim {
     AnalogTriggerDataJNI.setInitialized(m_index, initialized);
   }
 
-  public int registerTriggerLowerBoundCallback(NotifyCallback callback, boolean initialNotify) {
-    return AnalogTriggerDataJNI.registerTriggerLowerBoundCallback(m_index, callback, initialNotify);
-  }
-  public void cancelTriggerLowerBoundCallback(int uid) {
-    AnalogTriggerDataJNI.cancelTriggerLowerBoundCallback(m_index, uid);
+  public CallbackStore registerTriggerLowerBoundCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = AnalogTriggerDataJNI.registerTriggerLowerBoundCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, AnalogTriggerDataJNI::cancelTriggerLowerBoundCallback);
   }
   public double getTriggerLowerBound() {
     return AnalogTriggerDataJNI.getTriggerLowerBound(m_index);
@@ -35,11 +31,9 @@ public class AnalogTriggerSim {
     AnalogTriggerDataJNI.setTriggerLowerBound(m_index, triggerLowerBound);
   }
 
-  public int registerTriggerUpperBoundCallback(NotifyCallback callback, boolean initialNotify) {
-    return AnalogTriggerDataJNI.registerTriggerUpperBoundCallback(m_index, callback, initialNotify);
-  }
-  public void cancelTriggerUpperBoundCallback(int uid) {
-    AnalogTriggerDataJNI.cancelTriggerUpperBoundCallback(m_index, uid);
+  public CallbackStore registerTriggerUpperBoundCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = AnalogTriggerDataJNI.registerTriggerUpperBoundCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, AnalogTriggerDataJNI::cancelTriggerUpperBoundCallback);
   }
   public double getTriggerUpperBound() {
     return AnalogTriggerDataJNI.getTriggerUpperBound(m_index);

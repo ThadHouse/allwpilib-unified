@@ -3,7 +3,6 @@
 #ifndef __FRC_ROBORIO__
 
 #include <functional>
-#include <memory>
 #include <llvm/StringRef.h>
 #include "MockData/HAL_Value.h"
 
@@ -15,44 +14,75 @@ typedef void(*CancelCallbackFunc)(int32_t index, int32_t uid);
 typedef void(*CancelCallbackNoIndexFunc)(int32_t uid);
 typedef void(*CancelCallbackChannelFunc)(int32_t index, int32_t channel, int32_t uid);
 
-struct CallbackStoreBase {
-  NotifyCallback callback;
-};
+void CallbackStoreThunk(const char* name, void* param, const HAL_Value* value);
 
-template<typename T>
-struct CallbackStore : public CallbackStoreBase {
-    CallbackStore(int32_t i, NotifyCallback cb, T ccf) {
+class CallbackStore {
+ public:
+  CallbackStore(int32_t i, NotifyCallback cb, CancelCallbackNoIndexFunc ccf) {
     index = i;
     callback = cb;
-    cancelCallback = ccf;
+    this->ccnif = ccf;
+    cancelType = NoIndex;
   }
-  CallbackStore(int32_t i, int32_t u, NotifyCallback cb, T ccf) {
+  CallbackStore(int32_t i, int32_t u, NotifyCallback cb, CancelCallbackFunc ccf) {
     index = i;
     uid = u;
     callback = cb;
-    cancelCallback = ccf;
+    this->ccf = ccf;
+    cancelType = Normal;
   }
-  CallbackStore(int32_t i, int32_t c, int32_t u, NotifyCallback cb, T ccf) {
+  CallbackStore(int32_t i, int32_t c, int32_t u, NotifyCallback cb, CancelCallbackChannelFunc ccf) {
     index = i;
     channel = c;
     uid = u;
     callback = cb;
-    cancelCallback = ccf;
+    this->cccf = ccf;
+    cancelType = Channel;
   }
+  ~CallbackStore() {
+    switch(cancelType) {
+      case Normal:
+        ccf(index, uid);
+        break;
+      case Channel:
+        cccf(index, channel, uid);
+        break;
+      case NoIndex:
+        ccnif(uid);
+        break;
+    }
+  }
+
+  void SetUid(int32_t uid) {
+    this->uid = uid;
+  }
+
+  friend void CallbackStoreThunk(const char* name, void* param, const HAL_Value* value);
+
+ private:
+
   int32_t index;
   int32_t channel;
   int32_t uid;
-  T cancelCallback;
+
+  NotifyCallback callback;
+  union {
+    CancelCallbackFunc ccf;
+    CancelCallbackChannelFunc cccf;
+    CancelCallbackNoIndexFunc ccnif;
+  };
+    enum CancelType { Normal, Channel, NoIndex };
+    CancelType cancelType;
 };
 
-using CallbackUniquePtr = std::unique_ptr<CallbackStore<CancelCallbackFunc>, void(*)(CallbackStore<CancelCallbackFunc>*)>;
-using ChannelCallbackUniquePtr = std::unique_ptr<CallbackStore<CancelCallbackChannelFunc>, void(*)(CallbackStore<CancelCallbackChannelFunc>*)>;
-using NoIndexCallbackUniquePtr = std::unique_ptr<CallbackStore<CancelCallbackNoIndexFunc>, void(*)(CallbackStore<CancelCallbackNoIndexFunc>*)>;
+// using CallbackUniquePtr = std::unique_ptr<CallbackStore<CancelCallbackFunc>, void(*)(CallbackStore<CancelCallbackFunc>*)>;
+// using ChannelCallbackUniquePtr = std::unique_ptr<CallbackStore<CancelCallbackChannelFunc>, void(*)(CallbackStore<CancelCallbackChannelFunc>*)>;
+// using NoIndexCallbackUniquePtr = std::unique_ptr<CallbackStore<CancelCallbackNoIndexFunc>, void(*)(CallbackStore<CancelCallbackNoIndexFunc>*)>;
 
-void CallbackStoreThunk(const char* name, void* param, const HAL_Value* value);
-void CallbackStoreCancel(CallbackStore<CancelCallbackFunc>* store);
-void CallbackStoreCancel(CallbackStore<CancelCallbackChannelFunc>* store);
-void CallbackStoreCancel(CallbackStore<CancelCallbackNoIndexFunc>* store);
+
+// void CallbackStoreCancel(CallbackStore<CancelCallbackFunc>* store);
+// void CallbackStoreCancel(CallbackStore<CancelCallbackChannelFunc>* store);
+// void CallbackStoreCancel(CallbackStore<CancelCallbackNoIndexFunc>* store);
 
 }
 }

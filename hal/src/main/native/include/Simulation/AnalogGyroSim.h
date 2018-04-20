@@ -3,6 +3,7 @@
 #ifndef __FRC_ROBORIO__
 
 #include "MockData/AnalogGyroData.h"
+#include <memory>
 #include "CallbackStore.h"
 
 namespace frc {
@@ -13,9 +14,9 @@ class AnalogGyroSim {
     m_index = index;
   }
 
-  CallbackUniquePtr RegisterAngleCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogGyroAngleCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterAnalogGyroAngleCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterAngleCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelAnalogGyroAngleCallback);
+    store->SetUid(HALSIM_RegisterAnalogGyroAngleCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   double GetAngle() {
@@ -25,9 +26,9 @@ class AnalogGyroSim {
     HALSIM_SetAnalogGyroAngle(m_index, angle);
   }
 
-  CallbackUniquePtr RegisterRateCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogGyroRateCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterAnalogGyroRateCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterRateCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelAnalogGyroRateCallback);
+    store->SetUid(HALSIM_RegisterAnalogGyroRateCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   double GetRate() {
@@ -37,9 +38,9 @@ class AnalogGyroSim {
     HALSIM_SetAnalogGyroRate(m_index, rate);
   }
 
-  CallbackUniquePtr RegisterInitializedCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogGyroInitializedCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterAnalogGyroInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterInitializedCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelAnalogGyroInitializedCallback);
+    store->SetUid(HALSIM_RegisterAnalogGyroInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetInitialized() {

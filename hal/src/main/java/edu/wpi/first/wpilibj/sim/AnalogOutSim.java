@@ -9,11 +9,9 @@ public class AnalogOutSim {
     m_index = index;
   }
 
-  public int registerVoltageCallback(NotifyCallback callback, boolean initialNotify) {
-    return AnalogOutDataJNI.registerVoltageCallback(m_index, callback, initialNotify);
-  }
-  public void cancelVoltageCallback(int uid) {
-    AnalogOutDataJNI.cancelVoltageCallback(m_index, uid);
+  public CallbackStore registerVoltageCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = AnalogOutDataJNI.registerVoltageCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, AnalogOutDataJNI::cancelVoltageCallback);
   }
   public double getVoltage() {
     return AnalogOutDataJNI.getVoltage(m_index);
@@ -22,11 +20,9 @@ public class AnalogOutSim {
     AnalogOutDataJNI.setVoltage(m_index, voltage);
   }
 
-  public int registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
-    return AnalogOutDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
-  }
-  public void cancelInitializedCallback(int uid) {
-    AnalogOutDataJNI.cancelInitializedCallback(m_index, uid);
+  public CallbackStore registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = AnalogOutDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, AnalogOutDataJNI::cancelInitializedCallback);
   }
   public boolean getInitialized() {
     return AnalogOutDataJNI.getInitialized(m_index);

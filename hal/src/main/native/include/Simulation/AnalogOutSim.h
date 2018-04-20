@@ -3,6 +3,7 @@
 #ifndef __FRC_ROBORIO__
 
 #include "MockData/AnalogOutData.h"
+#include <memory>
 #include "CallbackStore.h"
 
 namespace frc {
@@ -13,9 +14,9 @@ class AnalogOutSim {
     m_index = index;
   }
 
-  CallbackUniquePtr RegisterVoltageCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogOutVoltageCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterAnalogOutVoltageCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterVoltageCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelAnalogOutVoltageCallback);
+    store->SetUid(HALSIM_RegisterAnalogOutVoltageCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   double GetVoltage() {
@@ -25,9 +26,9 @@ class AnalogOutSim {
     HALSIM_SetAnalogOutVoltage(m_index, voltage);
   }
 
-  CallbackUniquePtr RegisterInitializedCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogOutInitializedCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterAnalogOutInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterInitializedCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelAnalogOutInitializedCallback);
+    store->SetUid(HALSIM_RegisterAnalogOutInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetInitialized() {

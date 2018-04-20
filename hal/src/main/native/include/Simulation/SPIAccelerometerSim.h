@@ -3,6 +3,7 @@
 #ifndef __FRC_ROBORIO__
 
 #include "MockData/SPIAccelerometerData.h"
+#include <memory>
 #include "CallbackStore.h"
 
 namespace frc {
@@ -13,9 +14,9 @@ class SPIAccelerometerSim {
     m_index = index;
   }
 
-  CallbackUniquePtr RegisterActiveCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelSPIAccelerometerActiveCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterSPIAccelerometerActiveCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterActiveCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelSPIAccelerometerActiveCallback);
+    store->SetUid(HALSIM_RegisterSPIAccelerometerActiveCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetActive() {
@@ -25,9 +26,9 @@ class SPIAccelerometerSim {
     HALSIM_SetSPIAccelerometerActive(m_index, active);
   }
 
-  CallbackUniquePtr RegisterRangeCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelSPIAccelerometerRangeCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterSPIAccelerometerRangeCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterRangeCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelSPIAccelerometerRangeCallback);
+    store->SetUid(HALSIM_RegisterSPIAccelerometerRangeCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   int GetRange() {
@@ -37,9 +38,9 @@ class SPIAccelerometerSim {
     HALSIM_SetSPIAccelerometerRange(m_index, range);
   }
 
-  CallbackUniquePtr RegisterXCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelSPIAccelerometerXCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterSPIAccelerometerXCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterXCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelSPIAccelerometerXCallback);
+    store->SetUid(HALSIM_RegisterSPIAccelerometerXCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   double GetX() {
@@ -49,9 +50,9 @@ class SPIAccelerometerSim {
     HALSIM_SetSPIAccelerometerX(m_index, x);
   }
 
-  CallbackUniquePtr RegisterYCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelSPIAccelerometerYCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterSPIAccelerometerYCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterYCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelSPIAccelerometerYCallback);
+    store->SetUid(HALSIM_RegisterSPIAccelerometerYCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   double GetY() {
@@ -61,9 +62,9 @@ class SPIAccelerometerSim {
     HALSIM_SetSPIAccelerometerY(m_index, y);
   }
 
-  CallbackUniquePtr RegisterZCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelSPIAccelerometerZCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterSPIAccelerometerZCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterZCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelSPIAccelerometerZCallback);
+    store->SetUid(HALSIM_RegisterSPIAccelerometerZCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   double GetZ() {

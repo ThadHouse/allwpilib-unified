@@ -3,6 +3,7 @@
 #ifndef __FRC_ROBORIO__
 
 #include "MockData/PDPData.h"
+#include <memory>
 #include "CallbackStore.h"
 
 namespace frc {
@@ -13,9 +14,9 @@ class PDPSim {
     m_index = index;
   }
 
-  CallbackUniquePtr RegisterInitializedCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelPDPInitializedCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterPDPInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterInitializedCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelPDPInitializedCallback);
+    store->SetUid(HALSIM_RegisterPDPInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetInitialized() {
@@ -25,9 +26,9 @@ class PDPSim {
     HALSIM_SetPDPInitialized(m_index, initialized);
   }
 
-  CallbackUniquePtr RegisterTemperatureCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelPDPTemperatureCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterPDPTemperatureCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterTemperatureCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelPDPTemperatureCallback);
+    store->SetUid(HALSIM_RegisterPDPTemperatureCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   double GetTemperature() {
@@ -37,9 +38,9 @@ class PDPSim {
     HALSIM_SetPDPTemperature(m_index, temperature);
   }
 
-  CallbackUniquePtr RegisterVoltageCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelPDPVoltageCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterPDPVoltageCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterVoltageCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelPDPVoltageCallback);
+    store->SetUid(HALSIM_RegisterPDPVoltageCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   double GetVoltage() {
@@ -49,9 +50,9 @@ class PDPSim {
     HALSIM_SetPDPVoltage(m_index, voltage);
   }
 
-  ChannelCallbackUniquePtr RegisterCurrentCallback(int channel, NotifyCallback callback, bool initialNotify) {
-    ChannelCallbackUniquePtr store(new CallbackStore<CancelCallbackChannelFunc>(m_index, channel, -1, callback, &HALSIM_CancelPDPCurrentCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterPDPCurrentCallback(m_index, channel, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterCurrentCallback(int channel, NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, channel, -1, callback, &HALSIM_CancelPDPCurrentCallback);
+    store->SetUid(HALSIM_RegisterPDPCurrentCallback(m_index, channel, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   double GetCurrent(int channel) {

@@ -3,6 +3,7 @@
 #ifndef __FRC_ROBORIO__
 
 #include "MockData/DIOData.h"
+#include <memory>
 #include "CallbackStore.h"
 
 namespace frc {
@@ -13,9 +14,9 @@ class DIOSim {
     m_index = index;
   }
 
-  CallbackUniquePtr RegisterInitializedCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelDIOInitializedCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterDIOInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterInitializedCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelDIOInitializedCallback);
+    store->SetUid(HALSIM_RegisterDIOInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetInitialized() {
@@ -25,9 +26,9 @@ class DIOSim {
     HALSIM_SetDIOInitialized(m_index, initialized);
   }
 
-  CallbackUniquePtr RegisterValueCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelDIOValueCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterDIOValueCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterValueCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelDIOValueCallback);
+    store->SetUid(HALSIM_RegisterDIOValueCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetValue() {
@@ -37,9 +38,9 @@ class DIOSim {
     HALSIM_SetDIOValue(m_index, value);
   }
 
-  CallbackUniquePtr RegisterPulseLengthCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelDIOPulseLengthCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterDIOPulseLengthCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterPulseLengthCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelDIOPulseLengthCallback);
+    store->SetUid(HALSIM_RegisterDIOPulseLengthCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   double GetPulseLength() {
@@ -49,9 +50,9 @@ class DIOSim {
     HALSIM_SetDIOPulseLength(m_index, pulseLength);
   }
 
-  CallbackUniquePtr RegisterIsInputCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelDIOIsInputCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterDIOIsInputCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterIsInputCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelDIOIsInputCallback);
+    store->SetUid(HALSIM_RegisterDIOIsInputCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetIsInput() {
@@ -61,9 +62,9 @@ class DIOSim {
     HALSIM_SetDIOIsInput(m_index, isInput);
   }
 
-  CallbackUniquePtr RegisterFilterIndexCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelDIOFilterIndexCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterDIOFilterIndexCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterFilterIndexCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelDIOFilterIndexCallback);
+    store->SetUid(HALSIM_RegisterDIOFilterIndexCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   int GetFilterIndex() {

@@ -3,6 +3,7 @@
 #ifndef __FRC_ROBORIO__
 
 #include "MockData/DigitalPWMData.h"
+#include <memory>
 #include "CallbackStore.h"
 
 namespace frc {
@@ -13,9 +14,9 @@ class DigitalPWMSim {
     m_index = index;
   }
 
-  CallbackUniquePtr RegisterInitializedCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelDigitalPWMInitializedCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterDigitalPWMInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterInitializedCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelDigitalPWMInitializedCallback);
+    store->SetUid(HALSIM_RegisterDigitalPWMInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetInitialized() {
@@ -25,9 +26,9 @@ class DigitalPWMSim {
     HALSIM_SetDigitalPWMInitialized(m_index, initialized);
   }
 
-  CallbackUniquePtr RegisterDutyCycleCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelDigitalPWMDutyCycleCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterDigitalPWMDutyCycleCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterDutyCycleCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelDigitalPWMDutyCycleCallback);
+    store->SetUid(HALSIM_RegisterDigitalPWMDutyCycleCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   double GetDutyCycle() {
@@ -37,9 +38,9 @@ class DigitalPWMSim {
     HALSIM_SetDigitalPWMDutyCycle(m_index, dutyCycle);
   }
 
-  CallbackUniquePtr RegisterPinCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelDigitalPWMPinCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterDigitalPWMPinCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterPinCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelDigitalPWMPinCallback);
+    store->SetUid(HALSIM_RegisterDigitalPWMPinCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   int GetPin() {

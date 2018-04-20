@@ -1,8 +1,10 @@
 #include "Simulation/CallbackStore.h"
 
 void frc::sim::CallbackStoreThunk(const char* name, void* param, const HAL_Value* value) {
-  reinterpret_cast<CallbackStoreBase*>(param)->callback(name, value);
+  reinterpret_cast<CallbackStore*>(param)->callback(name, value);
 }
+
+/*
 void frc::sim::CallbackStoreCancel(CallbackStore<CancelCallbackFunc>* store) {
   if (store->uid >= 0) {
     store->cancelCallback(store->index, store->uid);
@@ -22,3 +24,4 @@ void frc::sim::CallbackStoreCancel(CallbackStore<CancelCallbackNoIndexFunc>* sto
   }
   delete store;
 }
+*/

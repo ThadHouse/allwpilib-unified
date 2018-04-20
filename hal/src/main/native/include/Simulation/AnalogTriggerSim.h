@@ -3,6 +3,7 @@
 #ifndef __FRC_ROBORIO__
 
 #include "MockData/AnalogTriggerData.h"
+#include <memory>
 #include "CallbackStore.h"
 
 namespace frc {
@@ -13,9 +14,9 @@ class AnalogTriggerSim {
     m_index = index;
   }
 
-  CallbackUniquePtr RegisterInitializedCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogTriggerInitializedCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterAnalogTriggerInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterInitializedCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelAnalogTriggerInitializedCallback);
+    store->SetUid(HALSIM_RegisterAnalogTriggerInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetInitialized() {
@@ -25,9 +26,9 @@ class AnalogTriggerSim {
     HALSIM_SetAnalogTriggerInitialized(m_index, initialized);
   }
 
-  CallbackUniquePtr RegisterTriggerLowerBoundCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogTriggerTriggerLowerBoundCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterAnalogTriggerTriggerLowerBoundCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterTriggerLowerBoundCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelAnalogTriggerTriggerLowerBoundCallback);
+    store->SetUid(HALSIM_RegisterAnalogTriggerTriggerLowerBoundCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   double GetTriggerLowerBound() {
@@ -37,9 +38,9 @@ class AnalogTriggerSim {
     HALSIM_SetAnalogTriggerTriggerLowerBound(m_index, triggerLowerBound);
   }
 
-  CallbackUniquePtr RegisterTriggerUpperBoundCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogTriggerTriggerUpperBoundCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterAnalogTriggerTriggerUpperBoundCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterTriggerUpperBoundCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelAnalogTriggerTriggerUpperBoundCallback);
+    store->SetUid(HALSIM_RegisterAnalogTriggerTriggerUpperBoundCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   double GetTriggerUpperBound() {

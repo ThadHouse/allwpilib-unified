@@ -9,11 +9,9 @@ public class AnalogInSim {
     m_index = index;
   }
 
-  public int registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
-    return AnalogInDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
-  }
-  public void cancelInitializedCallback(int uid) {
-    AnalogInDataJNI.cancelInitializedCallback(m_index, uid);
+  public CallbackStore registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = AnalogInDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, AnalogInDataJNI::cancelInitializedCallback);
   }
   public boolean getInitialized() {
     return AnalogInDataJNI.getInitialized(m_index);
@@ -22,11 +20,9 @@ public class AnalogInSim {
     AnalogInDataJNI.setInitialized(m_index, initialized);
   }
 
-  public int registerAverageBitsCallback(NotifyCallback callback, boolean initialNotify) {
-    return AnalogInDataJNI.registerAverageBitsCallback(m_index, callback, initialNotify);
-  }
-  public void cancelAverageBitsCallback(int uid) {
-    AnalogInDataJNI.cancelAverageBitsCallback(m_index, uid);
+  public CallbackStore registerAverageBitsCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = AnalogInDataJNI.registerAverageBitsCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, AnalogInDataJNI::cancelAverageBitsCallback);
   }
   public int getAverageBits() {
     return AnalogInDataJNI.getAverageBits(m_index);
@@ -35,11 +31,9 @@ public class AnalogInSim {
     AnalogInDataJNI.setAverageBits(m_index, averageBits);
   }
 
-  public int registerOversampleBitsCallback(NotifyCallback callback, boolean initialNotify) {
-    return AnalogInDataJNI.registerOversampleBitsCallback(m_index, callback, initialNotify);
-  }
-  public void cancelOversampleBitsCallback(int uid) {
-    AnalogInDataJNI.cancelOversampleBitsCallback(m_index, uid);
+  public CallbackStore registerOversampleBitsCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = AnalogInDataJNI.registerOversampleBitsCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, AnalogInDataJNI::cancelOversampleBitsCallback);
   }
   public int getOversampleBits() {
     return AnalogInDataJNI.getOversampleBits(m_index);
@@ -48,11 +42,9 @@ public class AnalogInSim {
     AnalogInDataJNI.setOversampleBits(m_index, oversampleBits);
   }
 
-  public int registerVoltageCallback(NotifyCallback callback, boolean initialNotify) {
-    return AnalogInDataJNI.registerVoltageCallback(m_index, callback, initialNotify);
-  }
-  public void cancelVoltageCallback(int uid) {
-    AnalogInDataJNI.cancelVoltageCallback(m_index, uid);
+  public CallbackStore registerVoltageCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = AnalogInDataJNI.registerVoltageCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, AnalogInDataJNI::cancelVoltageCallback);
   }
   public double getVoltage() {
     return AnalogInDataJNI.getVoltage(m_index);
@@ -61,11 +53,9 @@ public class AnalogInSim {
     AnalogInDataJNI.setVoltage(m_index, voltage);
   }
 
-  public int registerAccumulatorInitializedCallback(NotifyCallback callback, boolean initialNotify) {
-    return AnalogInDataJNI.registerAccumulatorInitializedCallback(m_index, callback, initialNotify);
-  }
-  public void cancelAccumulatorInitializedCallback(int uid) {
-    AnalogInDataJNI.cancelAccumulatorInitializedCallback(m_index, uid);
+  public CallbackStore registerAccumulatorInitializedCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = AnalogInDataJNI.registerAccumulatorInitializedCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, AnalogInDataJNI::cancelAccumulatorInitializedCallback);
   }
   public boolean getAccumulatorInitialized() {
     return AnalogInDataJNI.getAccumulatorInitialized(m_index);
@@ -74,11 +64,9 @@ public class AnalogInSim {
     AnalogInDataJNI.setAccumulatorInitialized(m_index, accumulatorInitialized);
   }
 
-  public int registerAccumulatorValueCallback(NotifyCallback callback, boolean initialNotify) {
-    return AnalogInDataJNI.registerAccumulatorValueCallback(m_index, callback, initialNotify);
-  }
-  public void cancelAccumulatorValueCallback(int uid) {
-    AnalogInDataJNI.cancelAccumulatorValueCallback(m_index, uid);
+  public CallbackStore registerAccumulatorValueCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = AnalogInDataJNI.registerAccumulatorValueCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, AnalogInDataJNI::cancelAccumulatorValueCallback);
   }
   public long getAccumulatorValue() {
     return AnalogInDataJNI.getAccumulatorValue(m_index);
@@ -87,11 +75,9 @@ public class AnalogInSim {
     AnalogInDataJNI.setAccumulatorValue(m_index, accumulatorValue);
   }
 
-  public int registerAccumulatorCountCallback(NotifyCallback callback, boolean initialNotify) {
-    return AnalogInDataJNI.registerAccumulatorCountCallback(m_index, callback, initialNotify);
-  }
-  public void cancelAccumulatorCountCallback(int uid) {
-    AnalogInDataJNI.cancelAccumulatorCountCallback(m_index, uid);
+  public CallbackStore registerAccumulatorCountCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = AnalogInDataJNI.registerAccumulatorCountCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, AnalogInDataJNI::cancelAccumulatorCountCallback);
   }
   public long getAccumulatorCount() {
     return AnalogInDataJNI.getAccumulatorCount(m_index);
@@ -100,11 +86,9 @@ public class AnalogInSim {
     AnalogInDataJNI.setAccumulatorCount(m_index, accumulatorCount);
   }
 
-  public int registerAccumulatorCenterCallback(NotifyCallback callback, boolean initialNotify) {
-    return AnalogInDataJNI.registerAccumulatorCenterCallback(m_index, callback, initialNotify);
-  }
-  public void cancelAccumulatorCenterCallback(int uid) {
-    AnalogInDataJNI.cancelAccumulatorCenterCallback(m_index, uid);
+  public CallbackStore registerAccumulatorCenterCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = AnalogInDataJNI.registerAccumulatorCenterCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, AnalogInDataJNI::cancelAccumulatorCenterCallback);
   }
   public int getAccumulatorCenter() {
     return AnalogInDataJNI.getAccumulatorCenter(m_index);
@@ -113,11 +97,9 @@ public class AnalogInSim {
     AnalogInDataJNI.setAccumulatorCenter(m_index, accumulatorCenter);
   }
 
-  public int registerAccumulatorDeadbandCallback(NotifyCallback callback, boolean initialNotify) {
-    return AnalogInDataJNI.registerAccumulatorDeadbandCallback(m_index, callback, initialNotify);
-  }
-  public void cancelAccumulatorDeadbandCallback(int uid) {
-    AnalogInDataJNI.cancelAccumulatorDeadbandCallback(m_index, uid);
+  public CallbackStore registerAccumulatorDeadbandCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = AnalogInDataJNI.registerAccumulatorDeadbandCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, AnalogInDataJNI::cancelAccumulatorDeadbandCallback);
   }
   public int getAccumulatorDeadband() {
     return AnalogInDataJNI.getAccumulatorDeadband(m_index);

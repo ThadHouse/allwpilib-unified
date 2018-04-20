@@ -9,11 +9,9 @@ public class PCMSim {
     m_index = index;
   }
 
-  public int registerSolenoidInitializedCallback(int channel, NotifyCallback callback, boolean initialNotify) {
-    return PCMDataJNI.registerSolenoidInitializedCallback(m_index, channel, callback, initialNotify);
-  }
-  public void cancelSolenoidInitializedCallback(int channel, int uid) {
-    PCMDataJNI.cancelSolenoidInitializedCallback(m_index, channel, uid);
+  public CallbackStore registerSolenoidInitializedCallback(int channel, NotifyCallback callback, boolean initialNotify) {
+    int uid = PCMDataJNI.registerSolenoidInitializedCallback(m_index, channel, callback, initialNotify);
+    return new CallbackStore(m_index, channel, uid, PCMDataJNI::cancelSolenoidInitializedCallback);
   }
   public boolean getSolenoidInitialized(int channel) {
     return PCMDataJNI.getSolenoidInitialized(m_index, channel);
@@ -22,11 +20,9 @@ public class PCMSim {
     PCMDataJNI.setSolenoidInitialized(m_index, channel, solenoidInitialized);
   }
 
-  public int registerSolenoidOutputCallback(int channel, NotifyCallback callback, boolean initialNotify) {
-    return PCMDataJNI.registerSolenoidOutputCallback(m_index, channel, callback, initialNotify);
-  }
-  public void cancelSolenoidOutputCallback(int channel, int uid) {
-    PCMDataJNI.cancelSolenoidOutputCallback(m_index, channel, uid);
+  public CallbackStore registerSolenoidOutputCallback(int channel, NotifyCallback callback, boolean initialNotify) {
+    int uid = PCMDataJNI.registerSolenoidOutputCallback(m_index, channel, callback, initialNotify);
+    return new CallbackStore(m_index, channel, uid, PCMDataJNI::cancelSolenoidOutputCallback);
   }
   public boolean getSolenoidOutput(int channel) {
     return PCMDataJNI.getSolenoidOutput(m_index, channel);
@@ -35,11 +31,9 @@ public class PCMSim {
     PCMDataJNI.setSolenoidOutput(m_index, channel, solenoidOutput);
   }
 
-  public int registerCompressorInitializedCallback(NotifyCallback callback, boolean initialNotify) {
-    return PCMDataJNI.registerCompressorInitializedCallback(m_index, callback, initialNotify);
-  }
-  public void cancelCompressorInitializedCallback(int uid) {
-    PCMDataJNI.cancelCompressorInitializedCallback(m_index, uid);
+  public CallbackStore registerCompressorInitializedCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = PCMDataJNI.registerCompressorInitializedCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, PCMDataJNI::cancelCompressorInitializedCallback);
   }
   public boolean getCompressorInitialized() {
     return PCMDataJNI.getCompressorInitialized(m_index);
@@ -48,11 +42,9 @@ public class PCMSim {
     PCMDataJNI.setCompressorInitialized(m_index, compressorInitialized);
   }
 
-  public int registerCompressorOnCallback(NotifyCallback callback, boolean initialNotify) {
-    return PCMDataJNI.registerCompressorOnCallback(m_index, callback, initialNotify);
-  }
-  public void cancelCompressorOnCallback(int uid) {
-    PCMDataJNI.cancelCompressorOnCallback(m_index, uid);
+  public CallbackStore registerCompressorOnCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = PCMDataJNI.registerCompressorOnCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, PCMDataJNI::cancelCompressorOnCallback);
   }
   public boolean getCompressorOn() {
     return PCMDataJNI.getCompressorOn(m_index);
@@ -61,11 +53,9 @@ public class PCMSim {
     PCMDataJNI.setCompressorOn(m_index, compressorOn);
   }
 
-  public int registerClosedLoopEnabledCallback(NotifyCallback callback, boolean initialNotify) {
-    return PCMDataJNI.registerClosedLoopEnabledCallback(m_index, callback, initialNotify);
-  }
-  public void cancelClosedLoopEnabledCallback(int uid) {
-    PCMDataJNI.cancelClosedLoopEnabledCallback(m_index, uid);
+  public CallbackStore registerClosedLoopEnabledCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = PCMDataJNI.registerClosedLoopEnabledCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, PCMDataJNI::cancelClosedLoopEnabledCallback);
   }
   public boolean getClosedLoopEnabled() {
     return PCMDataJNI.getClosedLoopEnabled(m_index);
@@ -74,11 +64,9 @@ public class PCMSim {
     PCMDataJNI.setClosedLoopEnabled(m_index, closedLoopEnabled);
   }
 
-  public int registerPressureSwitchCallback(NotifyCallback callback, boolean initialNotify) {
-    return PCMDataJNI.registerPressureSwitchCallback(m_index, callback, initialNotify);
-  }
-  public void cancelPressureSwitchCallback(int uid) {
-    PCMDataJNI.cancelPressureSwitchCallback(m_index, uid);
+  public CallbackStore registerPressureSwitchCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = PCMDataJNI.registerPressureSwitchCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, PCMDataJNI::cancelPressureSwitchCallback);
   }
   public boolean getPressureSwitch() {
     return PCMDataJNI.getPressureSwitch(m_index);
@@ -87,11 +75,9 @@ public class PCMSim {
     PCMDataJNI.setPressureSwitch(m_index, pressureSwitch);
   }
 
-  public int registerCompressorCurrentCallback(NotifyCallback callback, boolean initialNotify) {
-    return PCMDataJNI.registerCompressorCurrentCallback(m_index, callback, initialNotify);
-  }
-  public void cancelCompressorCurrentCallback(int uid) {
-    PCMDataJNI.cancelCompressorCurrentCallback(m_index, uid);
+  public CallbackStore registerCompressorCurrentCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = PCMDataJNI.registerCompressorCurrentCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, PCMDataJNI::cancelCompressorCurrentCallback);
   }
   public double getCompressorCurrent() {
     return PCMDataJNI.getCompressorCurrent(m_index);

@@ -9,11 +9,9 @@ public class DigitalPWMSim {
     m_index = index;
   }
 
-  public int registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
-    return DigitalPWMDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
-  }
-  public void cancelInitializedCallback(int uid) {
-    DigitalPWMDataJNI.cancelInitializedCallback(m_index, uid);
+  public CallbackStore registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = DigitalPWMDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, DigitalPWMDataJNI::cancelInitializedCallback);
   }
   public boolean getInitialized() {
     return DigitalPWMDataJNI.getInitialized(m_index);
@@ -22,11 +20,9 @@ public class DigitalPWMSim {
     DigitalPWMDataJNI.setInitialized(m_index, initialized);
   }
 
-  public int registerDutyCycleCallback(NotifyCallback callback, boolean initialNotify) {
-    return DigitalPWMDataJNI.registerDutyCycleCallback(m_index, callback, initialNotify);
-  }
-  public void cancelDutyCycleCallback(int uid) {
-    DigitalPWMDataJNI.cancelDutyCycleCallback(m_index, uid);
+  public CallbackStore registerDutyCycleCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = DigitalPWMDataJNI.registerDutyCycleCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, DigitalPWMDataJNI::cancelDutyCycleCallback);
   }
   public double getDutyCycle() {
     return DigitalPWMDataJNI.getDutyCycle(m_index);
@@ -35,11 +31,9 @@ public class DigitalPWMSim {
     DigitalPWMDataJNI.setDutyCycle(m_index, dutyCycle);
   }
 
-  public int registerPinCallback(NotifyCallback callback, boolean initialNotify) {
-    return DigitalPWMDataJNI.registerPinCallback(m_index, callback, initialNotify);
-  }
-  public void cancelPinCallback(int uid) {
-    DigitalPWMDataJNI.cancelPinCallback(m_index, uid);
+  public CallbackStore registerPinCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = DigitalPWMDataJNI.registerPinCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, DigitalPWMDataJNI::cancelPinCallback);
   }
   public int getPin() {
     return DigitalPWMDataJNI.getPin(m_index);

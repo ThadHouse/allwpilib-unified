@@ -9,11 +9,9 @@ public class PDPSim {
     m_index = index;
   }
 
-  public int registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
-    return PDPDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
-  }
-  public void cancelInitializedCallback(int uid) {
-    PDPDataJNI.cancelInitializedCallback(m_index, uid);
+  public CallbackStore registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = PDPDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, PDPDataJNI::cancelInitializedCallback);
   }
   public boolean getInitialized() {
     return PDPDataJNI.getInitialized(m_index);
@@ -22,11 +20,9 @@ public class PDPSim {
     PDPDataJNI.setInitialized(m_index, initialized);
   }
 
-  public int registerTemperatureCallback(NotifyCallback callback, boolean initialNotify) {
-    return PDPDataJNI.registerTemperatureCallback(m_index, callback, initialNotify);
-  }
-  public void cancelTemperatureCallback(int uid) {
-    PDPDataJNI.cancelTemperatureCallback(m_index, uid);
+  public CallbackStore registerTemperatureCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = PDPDataJNI.registerTemperatureCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, PDPDataJNI::cancelTemperatureCallback);
   }
   public double getTemperature() {
     return PDPDataJNI.getTemperature(m_index);
@@ -35,11 +31,9 @@ public class PDPSim {
     PDPDataJNI.setTemperature(m_index, temperature);
   }
 
-  public int registerVoltageCallback(NotifyCallback callback, boolean initialNotify) {
-    return PDPDataJNI.registerVoltageCallback(m_index, callback, initialNotify);
-  }
-  public void cancelVoltageCallback(int uid) {
-    PDPDataJNI.cancelVoltageCallback(m_index, uid);
+  public CallbackStore registerVoltageCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = PDPDataJNI.registerVoltageCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, PDPDataJNI::cancelVoltageCallback);
   }
   public double getVoltage() {
     return PDPDataJNI.getVoltage(m_index);
@@ -48,14 +42,12 @@ public class PDPSim {
     PDPDataJNI.setVoltage(m_index, voltage);
   }
 
-  public int registerCurrentCallback(int channel, NotifyCallback callback, boolean initialNotify) {
-    return PDPDataJNI.registerCurrentCallback(m_index, channel, callback, initialNotify);
-  }
-  public void cancelCurrentCallback(int channel, int uid) {
-    PDPDataJNI.cancelCurrentCallback(m_index, channel, uid);
+  public CallbackStore registerCurrentCallback(int channel, NotifyCallback callback, boolean initialNotify) {
+    int uid = PDPDataJNI.registerCurrentCallback(m_index, channel, callback, initialNotify);
+    return new CallbackStore(m_index, channel, uid, PDPDataJNI::cancelCurrentCallback);
   }
   public double getCurrent(int channel) {
-    return PDPDataJNI.getCurrent(m_index, channel);
+    return PDPDataJNI.getCurrent(channel, m_index);
   }
   public void setCurrent(int channel, double current) {
     PDPDataJNI.setCurrent(m_index, channel, current);

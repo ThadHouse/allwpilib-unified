@@ -9,11 +9,9 @@ public class PWMSim {
     m_index = index;
   }
 
-  public int registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
-    return PWMDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
-  }
-  public void cancelInitializedCallback(int uid) {
-    PWMDataJNI.cancelInitializedCallback(m_index, uid);
+  public CallbackStore registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = PWMDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, PWMDataJNI::cancelInitializedCallback);
   }
   public boolean getInitialized() {
     return PWMDataJNI.getInitialized(m_index);
@@ -22,11 +20,9 @@ public class PWMSim {
     PWMDataJNI.setInitialized(m_index, initialized);
   }
 
-  public int registerRawValueCallback(NotifyCallback callback, boolean initialNotify) {
-    return PWMDataJNI.registerRawValueCallback(m_index, callback, initialNotify);
-  }
-  public void cancelRawValueCallback(int uid) {
-    PWMDataJNI.cancelRawValueCallback(m_index, uid);
+  public CallbackStore registerRawValueCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = PWMDataJNI.registerRawValueCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, PWMDataJNI::cancelRawValueCallback);
   }
   public int getRawValue() {
     return PWMDataJNI.getRawValue(m_index);
@@ -35,11 +31,9 @@ public class PWMSim {
     PWMDataJNI.setRawValue(m_index, rawValue);
   }
 
-  public int registerSpeedCallback(NotifyCallback callback, boolean initialNotify) {
-    return PWMDataJNI.registerSpeedCallback(m_index, callback, initialNotify);
-  }
-  public void cancelSpeedCallback(int uid) {
-    PWMDataJNI.cancelSpeedCallback(m_index, uid);
+  public CallbackStore registerSpeedCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = PWMDataJNI.registerSpeedCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, PWMDataJNI::cancelSpeedCallback);
   }
   public double getSpeed() {
     return PWMDataJNI.getSpeed(m_index);
@@ -48,11 +42,9 @@ public class PWMSim {
     PWMDataJNI.setSpeed(m_index, speed);
   }
 
-  public int registerPositionCallback(NotifyCallback callback, boolean initialNotify) {
-    return PWMDataJNI.registerPositionCallback(m_index, callback, initialNotify);
-  }
-  public void cancelPositionCallback(int uid) {
-    PWMDataJNI.cancelPositionCallback(m_index, uid);
+  public CallbackStore registerPositionCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = PWMDataJNI.registerPositionCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, PWMDataJNI::cancelPositionCallback);
   }
   public double getPosition() {
     return PWMDataJNI.getPosition(m_index);
@@ -61,11 +53,9 @@ public class PWMSim {
     PWMDataJNI.setPosition(m_index, position);
   }
 
-  public int registerPeriodScaleCallback(NotifyCallback callback, boolean initialNotify) {
-    return PWMDataJNI.registerPeriodScaleCallback(m_index, callback, initialNotify);
-  }
-  public void cancelPeriodScaleCallback(int uid) {
-    PWMDataJNI.cancelPeriodScaleCallback(m_index, uid);
+  public CallbackStore registerPeriodScaleCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = PWMDataJNI.registerPeriodScaleCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, PWMDataJNI::cancelPeriodScaleCallback);
   }
   public int getPeriodScale() {
     return PWMDataJNI.getPeriodScale(m_index);
@@ -74,11 +64,9 @@ public class PWMSim {
     PWMDataJNI.setPeriodScale(m_index, periodScale);
   }
 
-  public int registerZeroLatchCallback(NotifyCallback callback, boolean initialNotify) {
-    return PWMDataJNI.registerZeroLatchCallback(m_index, callback, initialNotify);
-  }
-  public void cancelZeroLatchCallback(int uid) {
-    PWMDataJNI.cancelZeroLatchCallback(m_index, uid);
+  public CallbackStore registerZeroLatchCallback(NotifyCallback callback, boolean initialNotify) {
+    int uid = PWMDataJNI.registerZeroLatchCallback(m_index, callback, initialNotify);
+    return new CallbackStore(m_index, uid, PWMDataJNI::cancelZeroLatchCallback);
   }
   public boolean getZeroLatch() {
     return PWMDataJNI.getZeroLatch(m_index);

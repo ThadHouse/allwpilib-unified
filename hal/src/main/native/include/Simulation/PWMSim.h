@@ -3,6 +3,7 @@
 #ifndef __FRC_ROBORIO__
 
 #include "MockData/PWMData.h"
+#include <memory>
 #include "CallbackStore.h"
 
 namespace frc {
@@ -13,9 +14,9 @@ class PWMSim {
     m_index = index;
   }
 
-  CallbackUniquePtr RegisterInitializedCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelPWMInitializedCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterPWMInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterInitializedCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelPWMInitializedCallback);
+    store->SetUid(HALSIM_RegisterPWMInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetInitialized() {
@@ -25,9 +26,9 @@ class PWMSim {
     HALSIM_SetPWMInitialized(m_index, initialized);
   }
 
-  CallbackUniquePtr RegisterRawValueCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelPWMRawValueCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterPWMRawValueCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterRawValueCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelPWMRawValueCallback);
+    store->SetUid(HALSIM_RegisterPWMRawValueCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   int GetRawValue() {
@@ -37,9 +38,9 @@ class PWMSim {
     HALSIM_SetPWMRawValue(m_index, rawValue);
   }
 
-  CallbackUniquePtr RegisterSpeedCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelPWMSpeedCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterPWMSpeedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterSpeedCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelPWMSpeedCallback);
+    store->SetUid(HALSIM_RegisterPWMSpeedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   double GetSpeed() {
@@ -49,9 +50,9 @@ class PWMSim {
     HALSIM_SetPWMSpeed(m_index, speed);
   }
 
-  CallbackUniquePtr RegisterPositionCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelPWMPositionCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterPWMPositionCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterPositionCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelPWMPositionCallback);
+    store->SetUid(HALSIM_RegisterPWMPositionCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   double GetPosition() {
@@ -61,9 +62,9 @@ class PWMSim {
     HALSIM_SetPWMPosition(m_index, position);
   }
 
-  CallbackUniquePtr RegisterPeriodScaleCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelPWMPeriodScaleCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterPWMPeriodScaleCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterPeriodScaleCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelPWMPeriodScaleCallback);
+    store->SetUid(HALSIM_RegisterPWMPeriodScaleCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   int GetPeriodScale() {
@@ -73,9 +74,9 @@ class PWMSim {
     HALSIM_SetPWMPeriodScale(m_index, periodScale);
   }
 
-  CallbackUniquePtr RegisterZeroLatchCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelPWMZeroLatchCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterPWMZeroLatchCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterZeroLatchCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelPWMZeroLatchCallback);
+    store->SetUid(HALSIM_RegisterPWMZeroLatchCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetZeroLatch() {

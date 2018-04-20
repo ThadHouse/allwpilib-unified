@@ -3,6 +3,7 @@
 #ifndef __FRC_ROBORIO__
 
 #include "MockData/RelayData.h"
+#include <memory>
 #include "CallbackStore.h"
 
 namespace frc {
@@ -13,9 +14,9 @@ class RelaySim {
     m_index = index;
   }
 
-  CallbackUniquePtr RegisterInitializedForwardCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelRelayInitializedForwardCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterRelayInitializedForwardCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterInitializedForwardCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelRelayInitializedForwardCallback);
+    store->SetUid(HALSIM_RegisterRelayInitializedForwardCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetInitializedForward() {
@@ -25,9 +26,9 @@ class RelaySim {
     HALSIM_SetRelayInitializedForward(m_index, initializedForward);
   }
 
-  CallbackUniquePtr RegisterInitializedReverseCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelRelayInitializedReverseCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterRelayInitializedReverseCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterInitializedReverseCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelRelayInitializedReverseCallback);
+    store->SetUid(HALSIM_RegisterRelayInitializedReverseCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetInitializedReverse() {
@@ -37,9 +38,9 @@ class RelaySim {
     HALSIM_SetRelayInitializedReverse(m_index, initializedReverse);
   }
 
-  CallbackUniquePtr RegisterForwardCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelRelayForwardCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterRelayForwardCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterForwardCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelRelayForwardCallback);
+    store->SetUid(HALSIM_RegisterRelayForwardCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetForward() {
@@ -49,9 +50,9 @@ class RelaySim {
     HALSIM_SetRelayForward(m_index, forward);
   }
 
-  CallbackUniquePtr RegisterReverseCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelRelayReverseCallback), &CallbackStoreCancel);
-    store->uid = HALSIM_RegisterRelayReverseCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+  std::unique_ptr<CallbackStore> RegisterReverseCallback(NotifyCallback callback, bool initialNotify) {
+    auto store = std::make_unique<CallbackStore>(m_index, -1, callback, &HALSIM_CancelRelayReverseCallback);
+    store->SetUid(HALSIM_RegisterRelayReverseCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify));
     return std::move(store);
   }
   bool GetReverse() {
