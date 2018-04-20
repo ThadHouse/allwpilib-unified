@@ -4,13 +4,14 @@
 
 #include "MockData/RoboRioData.h"
 #include <memory>
+#include <utility>
 #include "CallbackStore.h"
 
 namespace frc {
 namespace sim {
 class RoboRioSim {
  public:
-  RoboRioSim(int index) {
+  explicit RoboRioSim(int index) {
     m_index = index;
   }
 

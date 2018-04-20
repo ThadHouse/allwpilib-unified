@@ -4,13 +4,14 @@
 
 #include "MockData/PCMData.h"
 #include <memory>
+#include <utility>
 #include "CallbackStore.h"
 
 namespace frc {
 namespace sim {
 class PCMSim {
  public:
-  PCMSim(int index) {
+  explicit PCMSim(int index) {
     m_index = index;
   }
 

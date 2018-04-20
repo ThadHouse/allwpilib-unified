@@ -4,13 +4,14 @@
 
 #include "MockData/AnalogOutData.h"
 #include <memory>
+#include <utility>
 #include "CallbackStore.h"
 
 namespace frc {
 namespace sim {
 class AnalogOutSim {
  public:
-  AnalogOutSim(int index) {
+  explicit AnalogOutSim(int index) {
     m_index = index;
   }
 

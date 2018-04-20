@@ -4,13 +4,14 @@
 
 #include "MockData/DIOData.h"
 #include <memory>
+#include <utility>
 #include "CallbackStore.h"
 
 namespace frc {
 namespace sim {
 class DIOSim {
  public:
-  DIOSim(int index) {
+  explicit DIOSim(int index) {
     m_index = index;
   }
 

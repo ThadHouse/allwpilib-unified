@@ -4,13 +4,14 @@
 
 #include "MockData/AnalogInData.h"
 #include <memory>
+#include <utility>
 #include "CallbackStore.h"
 
 namespace frc {
 namespace sim {
 class AnalogInSim {
  public:
-  AnalogInSim(int index) {
+  explicit AnalogInSim(int index) {
     m_index = index;
   }
 

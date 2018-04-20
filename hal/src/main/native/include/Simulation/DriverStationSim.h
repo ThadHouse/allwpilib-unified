@@ -4,6 +4,7 @@
 
 #include "MockData/DriverStationData.h"
 #include <memory>
+#include <utility>
 #include "CallbackStore.h"
 
 namespace frc {

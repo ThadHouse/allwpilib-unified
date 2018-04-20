@@ -36,8 +36,8 @@ licenseUpdateExclude {
 }
 
 modifiableFileExclude {
-  wpilibj/src/arm-linux-jni/
-  wpilibj/src/main/native/cpp/
+  shared/arm-linux-jni/
+  hal/src/main/native/cpp/jni/
   \.patch$
   \.png$
   \.py$

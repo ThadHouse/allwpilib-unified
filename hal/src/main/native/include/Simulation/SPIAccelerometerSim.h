@@ -4,13 +4,14 @@
 
 #include "MockData/SPIAccelerometerData.h"
 #include <memory>
+#include <utility>
 #include "CallbackStore.h"
 
 namespace frc {
 namespace sim {
 class SPIAccelerometerSim {
  public:
-  SPIAccelerometerSim(int index) {
+  explicit SPIAccelerometerSim(int index) {
     m_index = index;
   }
 

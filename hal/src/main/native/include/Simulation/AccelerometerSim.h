@@ -4,13 +4,14 @@
 
 #include "MockData/AccelerometerData.h"
 #include <memory>
+#include <utility>
 #include "CallbackStore.h"
 
 namespace frc {
 namespace sim {
 class AccelerometerSim {
  public:
-  AccelerometerSim(int index) {
+  explicit AccelerometerSim(int index) {
     m_index = index;
   }
 

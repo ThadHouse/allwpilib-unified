@@ -4,13 +4,14 @@
 
 #include "MockData/EncoderData.h"
 #include <memory>
+#include <utility>
 #include "CallbackStore.h"
 
 namespace frc {
 namespace sim {
 class EncoderSim {
  public:
-  EncoderSim(int index) {
+  explicit EncoderSim(int index) {
     m_index = index;
   }
 

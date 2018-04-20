@@ -4,13 +4,14 @@
 
 #include "MockData/AnalogTriggerData.h"
 #include <memory>
+#include <utility>
 #include "CallbackStore.h"
 
 namespace frc {
 namespace sim {
 class AnalogTriggerSim {
  public:
-  AnalogTriggerSim(int index) {
+  explicit AnalogTriggerSim(int index) {
     m_index = index;
   }
 

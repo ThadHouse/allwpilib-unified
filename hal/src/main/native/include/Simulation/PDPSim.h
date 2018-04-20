@@ -4,13 +4,14 @@
 
 #include "MockData/PDPData.h"
 #include <memory>
+#include <utility>
 #include "CallbackStore.h"
 
 namespace frc {
 namespace sim {
 class PDPSim {
  public:
-  PDPSim(int index) {
+  explicit PDPSim(int index) {
     m_index = index;
   }
 

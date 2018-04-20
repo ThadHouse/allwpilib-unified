@@ -4,13 +4,14 @@
 
 #include "MockData/AnalogGyroData.h"
 #include <memory>
+#include <utility>
 #include "CallbackStore.h"
 
 namespace frc {
 namespace sim {
 class AnalogGyroSim {
  public:
-  AnalogGyroSim(int index) {
+  explicit AnalogGyroSim(int index) {
     m_index = index;
   }
 

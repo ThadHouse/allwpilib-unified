@@ -4,13 +4,14 @@
 
 #include "MockData/PWMData.h"
 #include <memory>
+#include <utility>
 #include "CallbackStore.h"
 
 namespace frc {
 namespace sim {
 class PWMSim {
  public:
-  PWMSim(int index) {
+  explicit PWMSim(int index) {
     m_index = index;
   }
 

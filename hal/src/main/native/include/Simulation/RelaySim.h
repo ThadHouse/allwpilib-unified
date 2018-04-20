@@ -4,13 +4,14 @@
 
 #include "MockData/RelayData.h"
 #include <memory>
+#include <utility>
 #include "CallbackStore.h"
 
 namespace frc {
 namespace sim {
 class RelaySim {
  public:
-  RelaySim(int index) {
+  explicit RelaySim(int index) {
     m_index = index;
   }
 
