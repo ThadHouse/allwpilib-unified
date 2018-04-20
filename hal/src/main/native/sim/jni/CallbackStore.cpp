@@ -74,7 +74,6 @@ SIM_JniHandle sim::AllocateCallback(JNIEnv* env, jint index, jobject callback, j
   callbackStore->create(env, callback);
 
   auto callbackFunc = [](const char* name, void* param, const HAL_Value* value){
-    llvm::outs().flush();
     uintptr_t handleTmp = reinterpret_cast<uintptr_t>(param);
     SIM_JniHandle handle =
         static_cast<SIM_JniHandle>(handleTmp);
@@ -82,9 +81,6 @@ SIM_JniHandle sim::AllocateCallback(JNIEnv* env, jint index, jobject callback, j
     if (!data) return;
 
     data->performCallback(name, value);
-
-    llvm::outs().flush();
-
   };
 
   auto id = createCallback(index, callbackFunc, handleAsVoidPtr, initialNotify);
@@ -116,7 +112,6 @@ SIM_JniHandle sim::AllocateChannelCallback(JNIEnv* env, jint index, jint channel
   callbackStore->create(env, callback);
 
   auto callbackFunc = [](const char* name, void* param, const HAL_Value* value){
-    llvm::outs().flush();
     uintptr_t handleTmp = reinterpret_cast<uintptr_t>(param);
     SIM_JniHandle handle =
         static_cast<SIM_JniHandle>(handleTmp);
@@ -124,9 +119,6 @@ SIM_JniHandle sim::AllocateChannelCallback(JNIEnv* env, jint index, jint channel
     if (!data) return;
 
     data->performCallback(name, value);
-
-    llvm::outs().flush();
-
   };
 
   auto id = createCallback(index, channel, callbackFunc, handleAsVoidPtr, initialNotify);
@@ -158,7 +150,6 @@ SIM_JniHandle sim::AllocateCallbackNoIndex(JNIEnv* env, jobject callback, jboole
   callbackStore->create(env, callback);
 
   auto callbackFunc = [](const char* name, void* param, const HAL_Value* value){
-    llvm::outs().flush();
     uintptr_t handleTmp = reinterpret_cast<uintptr_t>(param);
     SIM_JniHandle handle =
         static_cast<SIM_JniHandle>(handleTmp);
@@ -166,9 +157,6 @@ SIM_JniHandle sim::AllocateCallbackNoIndex(JNIEnv* env, jobject callback, jboole
     if (!data) return;
 
     data->performCallback(name, value);
-
-    llvm::outs().flush();
-
   };
 
   auto id = createCallback(callbackFunc, handleAsVoidPtr, initialNotify);

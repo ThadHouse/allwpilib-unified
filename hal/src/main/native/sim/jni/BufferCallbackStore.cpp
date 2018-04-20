@@ -85,7 +85,6 @@ SIM_JniHandle sim::AllocateBufferCallback(JNIEnv* env, jint index, jobject callb
   callbackStore->create(env, callback);
 
   auto callbackFunc = [](const char* name, void* param, uint8_t* buffer, uint32_t length){
-    llvm::outs().flush();
     uintptr_t handleTmp = reinterpret_cast<uintptr_t>(param);
     SIM_JniHandle handle =
         static_cast<SIM_JniHandle>(handleTmp);
@@ -93,9 +92,6 @@ SIM_JniHandle sim::AllocateBufferCallback(JNIEnv* env, jint index, jobject callb
     if (!data) return;
 
     data->performCallback(name, buffer, length);
-
-    llvm::outs().flush();
-
   };
 
   auto id = createCallback(index, callbackFunc, handleAsVoidPtr);

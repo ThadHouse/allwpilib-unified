@@ -93,7 +93,6 @@ SIM_JniHandle sim::AllocateSpiBufferCallback(JNIEnv* env, jint index, jobject ca
     if (!data) return;
 
     *outputCount = data->performCallback(name, buffer, numToRead);
-
   };
 
   auto id = createCallback(index, callbackFunc, handleAsVoidPtr);
