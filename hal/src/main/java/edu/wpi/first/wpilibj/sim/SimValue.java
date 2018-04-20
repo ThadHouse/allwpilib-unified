@@ -1,4 +1,4 @@
-package edu.wpi.first.hal.sim;
+package edu.wpi.first.wpilibj.sim;
 
 public class SimValue {
   private boolean v_boolean;

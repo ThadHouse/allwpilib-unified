@@ -65,27 +65,27 @@ JNIEXPORT void JNICALL Java_edu_wpi_first_hal_sim_mockdata_PDPDataJNI_setVoltage
   HALSIM_SetPDPVoltage(index, value);
 }
 
-/*
+
 JNIEXPORT jint JNICALL Java_edu_wpi_first_hal_sim_mockdata_PDPDataJNI_registerCurrentCallback
-  (JNIEnv * env, jclass, jint index, jobject callback, jboolean initialNotify) {
-  return sim::AllocateCallback(env, index, callback, initialNotify, &HALSIM_RegisterPDPCurrentCallback);
+  (JNIEnv * env, jclass, jint index, jint channel, jobject callback, jboolean initialNotify) {
+  return sim::AllocateChannelCallback(env, index, channel, callback, initialNotify, &HALSIM_RegisterPDPCurrentCallback);
 }
 
 JNIEXPORT void JNICALL Java_edu_wpi_first_hal_sim_mockdata_PDPDataJNI_cancelCurrentCallback
-  (JNIEnv * env, jclass, jint index, jint handle) {
-  return sim::FreeCallback(env, handle, index, &HALSIM_CancelPDPCurrentCallback);
+  (JNIEnv * env, jclass, jint index, jint channel, jint handle) {
+  return sim::FreeChannelCallback(env, handle, index, channel, &HALSIM_CancelPDPCurrentCallback);
 }
 
 JNIEXPORT jdouble JNICALL Java_edu_wpi_first_hal_sim_mockdata_PDPDataJNI_getCurrent
-  (JNIEnv *, jclass, jint index) {
-  return HALSIM_GetPDPCurrent(index);
+  (JNIEnv *, jclass, jint index, jint channel) {
+  return HALSIM_GetPDPCurrent(index, channel);
 }
 
 JNIEXPORT void JNICALL Java_edu_wpi_first_hal_sim_mockdata_PDPDataJNI_setCurrent
-  (JNIEnv *, jclass, jint index, jdouble value) {
-  HALSIM_SetPDPCurrent(index, value);
+  (JNIEnv *, jclass, jint index, jint channel, jdouble value) {
+  HALSIM_SetPDPCurrent(index, channel, value);
 }
-*/
+
 
 JNIEXPORT void JNICALL Java_edu_wpi_first_hal_sim_mockdata_PDPDataJNI_resetData
   (JNIEnv*, jclass, jint index) {

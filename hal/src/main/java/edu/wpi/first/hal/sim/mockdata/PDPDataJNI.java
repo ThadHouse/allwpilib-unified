@@ -1,6 +1,6 @@
 package edu.wpi.first.hal.sim.mockdata;
 
-import edu.wpi.first.hal.sim.NotifyCallback;
+import edu.wpi.first.wpilibj.sim.NotifyCallback;
 import edu.wpi.first.wpilibj.hal.JNIWrapper;
 
 public class PDPDataJNI extends JNIWrapper {
@@ -19,12 +19,11 @@ public class PDPDataJNI extends JNIWrapper {
   public static native double getVoltage(int index);
   public static native void setVoltage(int index, double voltage);
 
-/*
-  public static native int registerCurrentCallback(int index, NotifyCallback callback, boolean initialNotify);
-  public static native void cancelCurrentCallback(int index, int uid);
-  public static native double getCurrent(int index);
-  public static native void setCurrent(int index, double current);
-*/
+
+  public static native int registerCurrentCallback(int index, int channel, NotifyCallback callback, boolean initialNotify);
+  public static native void cancelCurrentCallback(int index, int channel, int uid);
+  public static native double getCurrent(int index, int channel);
+  public static native void setCurrent(int index, int channel, double current);
 
   public static native void resetData(int index);
 }
