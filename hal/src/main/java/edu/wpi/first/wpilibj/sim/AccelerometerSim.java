@@ -5,8 +5,8 @@ import edu.wpi.first.hal.sim.mockdata.AccelerometerDataJNI;
 public class AccelerometerSim {
   private int m_index;
 
-  public AccelerometerSim(int index) {
-    m_index = index;
+  public AccelerometerSim() {
+    m_index = 0;
   }
 
   public CallbackStore registerActiveCallback(NotifyCallback callback, boolean initialNotify) {

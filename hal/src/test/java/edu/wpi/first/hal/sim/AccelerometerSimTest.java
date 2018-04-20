@@ -21,7 +21,7 @@ public class AccelerometerSimTest {
   @Test
   public void testCallbacks() {
     HAL.initialize(500, 0);
-    AccelerometerSim sim = new AccelerometerSim(0);
+    AccelerometerSim sim = new AccelerometerSim();
     sim.resetData();
 
     TriggeredStore store = new TriggeredStore();
