@@ -28,11 +28,11 @@ void CallbackStore::performCallback(const char* name, const HAL_Value* value) {
   JNIEnv* env;
   JavaVM* vm = sim::GetJVM();
   bool didAttachThread = false;
-  int tryGetEnv = vm->GetEnv((void**)&env, JNI_VERSION_1_6);
+  int tryGetEnv = vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6);
   if (tryGetEnv == JNI_EDETACHED) {
     // Thread not attached
     didAttachThread = true;
-    if (vm->AttachCurrentThread((void**)&env, nullptr) != 0) {
+    if (vm->AttachCurrentThread(reinterpret_cast<void**>(&env), nullptr) != 0) {
       // Failed to attach, log and return
       llvm::outs() << "Failed to attach\n";
       llvm::outs().flush();
