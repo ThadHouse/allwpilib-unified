@@ -10,6 +10,7 @@ cppSrcFileInclude {
 
 generatedFileExclude {
   gmock/
+  llvm/
   ni-libraries/include/
   ni-libraries/lib/
   hal/src/main/native/athena/ctre/
