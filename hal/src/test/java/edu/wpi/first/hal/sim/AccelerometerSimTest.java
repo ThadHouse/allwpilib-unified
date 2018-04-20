@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import edu.wpi.first.hal.sim.mockdata.AccelerometerDataJNI;
 import edu.wpi.first.wpilibj.hal.HAL;
 
 
@@ -21,11 +22,11 @@ public class AccelerometerSimTest {
 
     System.out.println(property);
     HAL.initialize(500, 0);
-    AccelerometerSim.resetData(0);
-    AccelerometerSim.setActive(0, false);
+    AccelerometerDataJNI.resetData(0);
+    AccelerometerDataJNI.setActive(0, false);
 
     TriggeredStore store = new TriggeredStore();
-    int uid = AccelerometerSim.registerActiveCallback(0, (s, v) -> {
+    int uid = AccelerometerDataJNI.registerActiveCallback(0, (s, v) -> {
       store.wasTriggered = true;
       store.setValue = v.getBoolean();
     }, false);
@@ -33,12 +34,12 @@ public class AccelerometerSimTest {
     try {
       assertFalse(store.wasTriggered);
 
-      AccelerometerSim.setActive(0, true);
+      AccelerometerDataJNI.setActive(0, true);
 
       assertTrue(store.wasTriggered);
       assertTrue(store.setValue);
     } finally {
-      AccelerometerSim.cancelActiveCallback(0, uid);
+      AccelerometerDataJNI.cancelActiveCallback(0, uid);
     }
 
   }

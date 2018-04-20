@@ -6,7 +6,7 @@
 #include "MockData/HAL_Value.h"
 #include "MockData/NotifyListener.h"
 #include "HAL/types.h"
-#include "SimulatorJni.h"
+#include "SimulatorJNI.h"
 
 using namespace wpi::java;
 using namespace sim;

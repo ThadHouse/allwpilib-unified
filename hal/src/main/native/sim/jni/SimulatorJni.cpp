@@ -1,5 +1,5 @@
-#include "edu_wpi_first_hal_sim_SimulatorJni.h"
-#include "SimulatorJni.h"
+#include "edu_wpi_first_hal_sim_mockdata_SimulatorJNI.h"
+#include "SimulatorJNI.h"
 #include "HAL/cpp/Log.h"
 #include "HAL/HAL.h"
 #include "CallbackStore.h"
@@ -102,41 +102,41 @@ jmethodID GetSpiReadAutoReceiveBufferCallback() {
 
 extern "C" {
   /*
- * Class:     edu_wpi_first_hal_sim_SimulatorJni
+ * Class:     edu_wpi_first_hal_sim_mockdata_SimulatorJNI
  * Method:    waitForProgramStart
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_edu_wpi_first_hal_sim_SimulatorJni_waitForProgramStart
+JNIEXPORT void JNICALL Java_edu_wpi_first_hal_sim_mockdata_SimulatorJNI_waitForProgramStart
   (JNIEnv *, jclass) {
     HALSIM_WaitForProgramStart();
   }
 
 /*
- * Class:     edu_wpi_first_hal_sim_SimulatorJni
+ * Class:     edu_wpi_first_hal_sim_mockdata_SimulatorJNI
  * Method:    setProgramStarted
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_edu_wpi_first_hal_sim_SimulatorJni_setProgramStarted
+JNIEXPORT void JNICALL Java_edu_wpi_first_hal_sim_mockdata_SimulatorJNI_setProgramStarted
   (JNIEnv *, jclass) {
     HALSIM_SetProgramStarted();
   }
 
 /*
- * Class:     edu_wpi_first_hal_sim_SimulatorJni
+ * Class:     edu_wpi_first_hal_sim_mockdata_SimulatorJNI
  * Method:    restartTiming
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_edu_wpi_first_hal_sim_SimulatorJni_restartTiming
+JNIEXPORT void JNICALL Java_edu_wpi_first_hal_sim_mockdata_SimulatorJNI_restartTiming
   (JNIEnv *, jclass) {
   HALSIM_RestartTiming();
 }
 
 /*
- * Class:     edu_wpi_first_hal_sim_SimulatorJni
+ * Class:     edu_wpi_first_hal_sim_mockdata_SimulatorJNI
  * Method:    resetHandles
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_edu_wpi_first_hal_sim_SimulatorJni_resetHandles
+JNIEXPORT void JNICALL Java_edu_wpi_first_hal_sim_mockdata_SimulatorJNI_resetHandles
   (JNIEnv *, jclass) {
     hal::HandleBase::ResetGlobalHandles();
   }
