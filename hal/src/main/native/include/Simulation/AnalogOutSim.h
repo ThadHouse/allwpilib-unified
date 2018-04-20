@@ -1,6 +1,9 @@
 #pragma once
 
+#ifndef __FRC_ROBORIO__
+
 #include "MockData/AnalogOutData.h"
+#include "CallbackStore.h"
 
 namespace frc {
 namespace sim {
@@ -10,11 +13,10 @@ class AnalogOutSim {
     m_index = index;
   }
 
-  int RegisterVoltageCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterAnalogOutVoltageCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelVoltageCallback(int uid) {
-    HALSIM_CancelAnalogOutVoltageCallback(m_index, uid);
+  CallbackUniquePtr RegisterVoltageCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogOutVoltageCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterAnalogOutVoltageCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   double GetVoltage() {
     return HALSIM_GetAnalogOutVoltage(m_index);
@@ -23,11 +25,10 @@ class AnalogOutSim {
     HALSIM_SetAnalogOutVoltage(m_index, voltage);
   }
 
-  int RegisterInitializedCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterAnalogOutInitializedCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelInitializedCallback(int uid) {
-    HALSIM_CancelAnalogOutInitializedCallback(m_index, uid);
+  CallbackUniquePtr RegisterInitializedCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogOutInitializedCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterAnalogOutInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   bool GetInitialized() {
     return HALSIM_GetAnalogOutInitialized(m_index);
@@ -42,5 +43,6 @@ class AnalogOutSim {
  private:
   int m_index;
 };
-}
-}
+} // namespace sim
+} // namespace frc
+#endif // __FRC_ROBORIO__

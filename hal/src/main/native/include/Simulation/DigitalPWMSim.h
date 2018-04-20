@@ -1,6 +1,9 @@
 #pragma once
 
+#ifndef __FRC_ROBORIO__
+
 #include "MockData/DigitalPWMData.h"
+#include "CallbackStore.h"
 
 namespace frc {
 namespace sim {
@@ -10,11 +13,10 @@ class DigitalPWMSim {
     m_index = index;
   }
 
-  int RegisterInitializedCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterDigitalPWMInitializedCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelInitializedCallback(int uid) {
-    HALSIM_CancelDigitalPWMInitializedCallback(m_index, uid);
+  CallbackUniquePtr RegisterInitializedCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelDigitalPWMInitializedCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterDigitalPWMInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   bool GetInitialized() {
     return HALSIM_GetDigitalPWMInitialized(m_index);
@@ -23,11 +25,10 @@ class DigitalPWMSim {
     HALSIM_SetDigitalPWMInitialized(m_index, initialized);
   }
 
-  int RegisterDutyCycleCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterDigitalPWMDutyCycleCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelDutyCycleCallback(int uid) {
-    HALSIM_CancelDigitalPWMDutyCycleCallback(m_index, uid);
+  CallbackUniquePtr RegisterDutyCycleCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelDigitalPWMDutyCycleCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterDigitalPWMDutyCycleCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   double GetDutyCycle() {
     return HALSIM_GetDigitalPWMDutyCycle(m_index);
@@ -36,11 +37,10 @@ class DigitalPWMSim {
     HALSIM_SetDigitalPWMDutyCycle(m_index, dutyCycle);
   }
 
-  int RegisterPinCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterDigitalPWMPinCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelPinCallback(int uid) {
-    HALSIM_CancelDigitalPWMPinCallback(m_index, uid);
+  CallbackUniquePtr RegisterPinCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelDigitalPWMPinCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterDigitalPWMPinCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   int GetPin() {
     return HALSIM_GetDigitalPWMPin(m_index);
@@ -55,5 +55,6 @@ class DigitalPWMSim {
  private:
   int m_index;
 };
-}
-}
+} // namespace sim
+} // namespace frc
+#endif // __FRC_ROBORIO__

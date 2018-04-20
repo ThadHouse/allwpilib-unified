@@ -1,6 +1,9 @@
 #pragma once
 
+#ifndef __FRC_ROBORIO__
+
 #include "MockData/RoboRioData.h"
+#include "CallbackStore.h"
 
 namespace frc {
 namespace sim {
@@ -10,11 +13,10 @@ class RoboRioSim {
     m_index = index;
   }
 
-  int RegisterFPGAButtonCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterRoboRioFPGAButtonCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelFPGAButtonCallback(int uid) {
-    HALSIM_CancelRoboRioFPGAButtonCallback(m_index, uid);
+  CallbackUniquePtr RegisterFPGAButtonCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelRoboRioFPGAButtonCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterRoboRioFPGAButtonCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   bool GetFPGAButton() {
     return HALSIM_GetRoboRioFPGAButton(m_index);
@@ -23,11 +25,10 @@ class RoboRioSim {
     HALSIM_SetRoboRioFPGAButton(m_index, fPGAButton);
   }
 
-  int RegisterVInVoltageCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterRoboRioVInVoltageCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelVInVoltageCallback(int uid) {
-    HALSIM_CancelRoboRioVInVoltageCallback(m_index, uid);
+  CallbackUniquePtr RegisterVInVoltageCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelRoboRioVInVoltageCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterRoboRioVInVoltageCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   double GetVInVoltage() {
     return HALSIM_GetRoboRioVInVoltage(m_index);
@@ -36,11 +37,10 @@ class RoboRioSim {
     HALSIM_SetRoboRioVInVoltage(m_index, vInVoltage);
   }
 
-  int RegisterVInCurrentCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterRoboRioVInCurrentCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelVInCurrentCallback(int uid) {
-    HALSIM_CancelRoboRioVInCurrentCallback(m_index, uid);
+  CallbackUniquePtr RegisterVInCurrentCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelRoboRioVInCurrentCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterRoboRioVInCurrentCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   double GetVInCurrent() {
     return HALSIM_GetRoboRioVInCurrent(m_index);
@@ -49,11 +49,10 @@ class RoboRioSim {
     HALSIM_SetRoboRioVInCurrent(m_index, vInCurrent);
   }
 
-  int RegisterUserVoltage6VCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterRoboRioUserVoltage6VCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelUserVoltage6VCallback(int uid) {
-    HALSIM_CancelRoboRioUserVoltage6VCallback(m_index, uid);
+  CallbackUniquePtr RegisterUserVoltage6VCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelRoboRioUserVoltage6VCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterRoboRioUserVoltage6VCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   double GetUserVoltage6V() {
     return HALSIM_GetRoboRioUserVoltage6V(m_index);
@@ -62,11 +61,10 @@ class RoboRioSim {
     HALSIM_SetRoboRioUserVoltage6V(m_index, userVoltage6V);
   }
 
-  int RegisterUserCurrent6VCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterRoboRioUserCurrent6VCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelUserCurrent6VCallback(int uid) {
-    HALSIM_CancelRoboRioUserCurrent6VCallback(m_index, uid);
+  CallbackUniquePtr RegisterUserCurrent6VCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelRoboRioUserCurrent6VCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterRoboRioUserCurrent6VCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   double GetUserCurrent6V() {
     return HALSIM_GetRoboRioUserCurrent6V(m_index);
@@ -75,11 +73,10 @@ class RoboRioSim {
     HALSIM_SetRoboRioUserCurrent6V(m_index, userCurrent6V);
   }
 
-  int RegisterUserActive6VCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterRoboRioUserActive6VCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelUserActive6VCallback(int uid) {
-    HALSIM_CancelRoboRioUserActive6VCallback(m_index, uid);
+  CallbackUniquePtr RegisterUserActive6VCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelRoboRioUserActive6VCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterRoboRioUserActive6VCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   bool GetUserActive6V() {
     return HALSIM_GetRoboRioUserActive6V(m_index);
@@ -88,11 +85,10 @@ class RoboRioSim {
     HALSIM_SetRoboRioUserActive6V(m_index, userActive6V);
   }
 
-  int RegisterUserVoltage5VCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterRoboRioUserVoltage5VCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelUserVoltage5VCallback(int uid) {
-    HALSIM_CancelRoboRioUserVoltage5VCallback(m_index, uid);
+  CallbackUniquePtr RegisterUserVoltage5VCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelRoboRioUserVoltage5VCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterRoboRioUserVoltage5VCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   double GetUserVoltage5V() {
     return HALSIM_GetRoboRioUserVoltage5V(m_index);
@@ -101,11 +97,10 @@ class RoboRioSim {
     HALSIM_SetRoboRioUserVoltage5V(m_index, userVoltage5V);
   }
 
-  int RegisterUserCurrent5VCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterRoboRioUserCurrent5VCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelUserCurrent5VCallback(int uid) {
-    HALSIM_CancelRoboRioUserCurrent5VCallback(m_index, uid);
+  CallbackUniquePtr RegisterUserCurrent5VCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelRoboRioUserCurrent5VCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterRoboRioUserCurrent5VCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   double GetUserCurrent5V() {
     return HALSIM_GetRoboRioUserCurrent5V(m_index);
@@ -114,11 +109,10 @@ class RoboRioSim {
     HALSIM_SetRoboRioUserCurrent5V(m_index, userCurrent5V);
   }
 
-  int RegisterUserActive5VCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterRoboRioUserActive5VCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelUserActive5VCallback(int uid) {
-    HALSIM_CancelRoboRioUserActive5VCallback(m_index, uid);
+  CallbackUniquePtr RegisterUserActive5VCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelRoboRioUserActive5VCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterRoboRioUserActive5VCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   bool GetUserActive5V() {
     return HALSIM_GetRoboRioUserActive5V(m_index);
@@ -127,11 +121,10 @@ class RoboRioSim {
     HALSIM_SetRoboRioUserActive5V(m_index, userActive5V);
   }
 
-  int RegisterUserVoltage3V3Callback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterRoboRioUserVoltage3V3Callback(m_index, callback, param, initialNotify);
-  }
-  void CancelUserVoltage3V3Callback(int uid) {
-    HALSIM_CancelRoboRioUserVoltage3V3Callback(m_index, uid);
+  CallbackUniquePtr RegisterUserVoltage3V3Callback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelRoboRioUserVoltage3V3Callback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterRoboRioUserVoltage3V3Callback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   double GetUserVoltage3V3() {
     return HALSIM_GetRoboRioUserVoltage3V3(m_index);
@@ -140,11 +133,10 @@ class RoboRioSim {
     HALSIM_SetRoboRioUserVoltage3V3(m_index, userVoltage3V3);
   }
 
-  int RegisterUserCurrent3V3Callback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterRoboRioUserCurrent3V3Callback(m_index, callback, param, initialNotify);
-  }
-  void CancelUserCurrent3V3Callback(int uid) {
-    HALSIM_CancelRoboRioUserCurrent3V3Callback(m_index, uid);
+  CallbackUniquePtr RegisterUserCurrent3V3Callback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelRoboRioUserCurrent3V3Callback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterRoboRioUserCurrent3V3Callback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   double GetUserCurrent3V3() {
     return HALSIM_GetRoboRioUserCurrent3V3(m_index);
@@ -153,11 +145,10 @@ class RoboRioSim {
     HALSIM_SetRoboRioUserCurrent3V3(m_index, userCurrent3V3);
   }
 
-  int RegisterUserActive3V3Callback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterRoboRioUserActive3V3Callback(m_index, callback, param, initialNotify);
-  }
-  void CancelUserActive3V3Callback(int uid) {
-    HALSIM_CancelRoboRioUserActive3V3Callback(m_index, uid);
+  CallbackUniquePtr RegisterUserActive3V3Callback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelRoboRioUserActive3V3Callback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterRoboRioUserActive3V3Callback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   bool GetUserActive3V3() {
     return HALSIM_GetRoboRioUserActive3V3(m_index);
@@ -166,11 +157,10 @@ class RoboRioSim {
     HALSIM_SetRoboRioUserActive3V3(m_index, userActive3V3);
   }
 
-  int RegisterUserFaults6VCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterRoboRioUserFaults6VCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelUserFaults6VCallback(int uid) {
-    HALSIM_CancelRoboRioUserFaults6VCallback(m_index, uid);
+  CallbackUniquePtr RegisterUserFaults6VCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelRoboRioUserFaults6VCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterRoboRioUserFaults6VCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   int GetUserFaults6V() {
     return HALSIM_GetRoboRioUserFaults6V(m_index);
@@ -179,11 +169,10 @@ class RoboRioSim {
     HALSIM_SetRoboRioUserFaults6V(m_index, userFaults6V);
   }
 
-  int RegisterUserFaults5VCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterRoboRioUserFaults5VCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelUserFaults5VCallback(int uid) {
-    HALSIM_CancelRoboRioUserFaults5VCallback(m_index, uid);
+  CallbackUniquePtr RegisterUserFaults5VCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelRoboRioUserFaults5VCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterRoboRioUserFaults5VCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   int GetUserFaults5V() {
     return HALSIM_GetRoboRioUserFaults5V(m_index);
@@ -192,11 +181,10 @@ class RoboRioSim {
     HALSIM_SetRoboRioUserFaults5V(m_index, userFaults5V);
   }
 
-  int RegisterUserFaults3V3Callback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterRoboRioUserFaults3V3Callback(m_index, callback, param, initialNotify);
-  }
-  void CancelUserFaults3V3Callback(int uid) {
-    HALSIM_CancelRoboRioUserFaults3V3Callback(m_index, uid);
+  CallbackUniquePtr RegisterUserFaults3V3Callback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelRoboRioUserFaults3V3Callback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterRoboRioUserFaults3V3Callback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   int GetUserFaults3V3() {
     return HALSIM_GetRoboRioUserFaults3V3(m_index);
@@ -211,5 +199,6 @@ class RoboRioSim {
  private:
   int m_index;
 };
-}
-}
+} // namespace sim
+} // namespace frc
+#endif // __FRC_ROBORIO__

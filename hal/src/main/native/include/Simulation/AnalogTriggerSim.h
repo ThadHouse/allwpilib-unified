@@ -1,6 +1,9 @@
 #pragma once
 
+#ifndef __FRC_ROBORIO__
+
 #include "MockData/AnalogTriggerData.h"
+#include "CallbackStore.h"
 
 namespace frc {
 namespace sim {
@@ -10,11 +13,10 @@ class AnalogTriggerSim {
     m_index = index;
   }
 
-  int RegisterInitializedCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterAnalogTriggerInitializedCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelInitializedCallback(int uid) {
-    HALSIM_CancelAnalogTriggerInitializedCallback(m_index, uid);
+  CallbackUniquePtr RegisterInitializedCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogTriggerInitializedCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterAnalogTriggerInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   bool GetInitialized() {
     return HALSIM_GetAnalogTriggerInitialized(m_index);
@@ -23,11 +25,10 @@ class AnalogTriggerSim {
     HALSIM_SetAnalogTriggerInitialized(m_index, initialized);
   }
 
-  int RegisterTriggerLowerBoundCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterAnalogTriggerTriggerLowerBoundCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelTriggerLowerBoundCallback(int uid) {
-    HALSIM_CancelAnalogTriggerTriggerLowerBoundCallback(m_index, uid);
+  CallbackUniquePtr RegisterTriggerLowerBoundCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogTriggerTriggerLowerBoundCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterAnalogTriggerTriggerLowerBoundCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   double GetTriggerLowerBound() {
     return HALSIM_GetAnalogTriggerTriggerLowerBound(m_index);
@@ -36,11 +37,10 @@ class AnalogTriggerSim {
     HALSIM_SetAnalogTriggerTriggerLowerBound(m_index, triggerLowerBound);
   }
 
-  int RegisterTriggerUpperBoundCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterAnalogTriggerTriggerUpperBoundCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelTriggerUpperBoundCallback(int uid) {
-    HALSIM_CancelAnalogTriggerTriggerUpperBoundCallback(m_index, uid);
+  CallbackUniquePtr RegisterTriggerUpperBoundCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogTriggerTriggerUpperBoundCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterAnalogTriggerTriggerUpperBoundCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   double GetTriggerUpperBound() {
     return HALSIM_GetAnalogTriggerTriggerUpperBound(m_index);
@@ -55,5 +55,6 @@ class AnalogTriggerSim {
  private:
   int m_index;
 };
-}
-}
+} // namespace sim
+} // namespace frc
+#endif // __FRC_ROBORIO__

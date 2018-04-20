@@ -5,7 +5,6 @@
 #include "MockData/AccelerometerData.h"
 #include "CallbackStore.h"
 
-
 namespace frc {
 namespace sim {
 class AccelerometerSim {
@@ -15,10 +14,7 @@ class AccelerometerSim {
   }
 
   CallbackUniquePtr RegisterActiveCallback(NotifyCallback callback, bool initialNotify) {
-    CallbackUniquePtr store(new CallbackStore(m_index, -1, callback,
-                                              &HALSIM_CancelAccelerometerActiveCallback),
-                            &CallbackStoreCancel);
-
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAccelerometerActiveCallback), &CallbackStoreCancel);
     store->uid = HALSIM_RegisterAccelerometerActiveCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
     return std::move(store);
   }
@@ -29,11 +25,10 @@ class AccelerometerSim {
     HALSIM_SetAccelerometerActive(m_index, active);
   }
 
-  int RegisterRangeCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterAccelerometerRangeCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelRangeCallback(int uid) {
-    HALSIM_CancelAccelerometerRangeCallback(m_index, uid);
+  CallbackUniquePtr RegisterRangeCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAccelerometerRangeCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterAccelerometerRangeCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   HAL_AccelerometerRange GetRange() {
     return HALSIM_GetAccelerometerRange(m_index);
@@ -42,11 +37,10 @@ class AccelerometerSim {
     HALSIM_SetAccelerometerRange(m_index, range);
   }
 
-  int RegisterXCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterAccelerometerXCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelXCallback(int uid) {
-    HALSIM_CancelAccelerometerXCallback(m_index, uid);
+  CallbackUniquePtr RegisterXCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAccelerometerXCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterAccelerometerXCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   double GetX() {
     return HALSIM_GetAccelerometerX(m_index);
@@ -55,11 +49,10 @@ class AccelerometerSim {
     HALSIM_SetAccelerometerX(m_index, x);
   }
 
-  int RegisterYCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterAccelerometerYCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelYCallback(int uid) {
-    HALSIM_CancelAccelerometerYCallback(m_index, uid);
+  CallbackUniquePtr RegisterYCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAccelerometerYCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterAccelerometerYCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   double GetY() {
     return HALSIM_GetAccelerometerY(m_index);
@@ -68,11 +61,10 @@ class AccelerometerSim {
     HALSIM_SetAccelerometerY(m_index, y);
   }
 
-  int RegisterZCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterAccelerometerZCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelZCallback(int uid) {
-    HALSIM_CancelAccelerometerZCallback(m_index, uid);
+  CallbackUniquePtr RegisterZCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAccelerometerZCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterAccelerometerZCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   double GetZ() {
     return HALSIM_GetAccelerometerZ(m_index);
@@ -87,7 +79,6 @@ class AccelerometerSim {
  private:
   int m_index;
 };
-}
-}
-
-#endif
+} // namespace sim
+} // namespace frc
+#endif // __FRC_ROBORIO__

@@ -1,6 +1,9 @@
 #pragma once
 
+#ifndef __FRC_ROBORIO__
+
 #include "MockData/AnalogInData.h"
+#include "CallbackStore.h"
 
 namespace frc {
 namespace sim {
@@ -10,11 +13,10 @@ class AnalogInSim {
     m_index = index;
   }
 
-  int RegisterInitializedCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterAnalogInInitializedCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelInitializedCallback(int uid) {
-    HALSIM_CancelAnalogInInitializedCallback(m_index, uid);
+  CallbackUniquePtr RegisterInitializedCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogInInitializedCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterAnalogInInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   bool GetInitialized() {
     return HALSIM_GetAnalogInInitialized(m_index);
@@ -23,11 +25,10 @@ class AnalogInSim {
     HALSIM_SetAnalogInInitialized(m_index, initialized);
   }
 
-  int RegisterAverageBitsCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterAnalogInAverageBitsCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelAverageBitsCallback(int uid) {
-    HALSIM_CancelAnalogInAverageBitsCallback(m_index, uid);
+  CallbackUniquePtr RegisterAverageBitsCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogInAverageBitsCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterAnalogInAverageBitsCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   int GetAverageBits() {
     return HALSIM_GetAnalogInAverageBits(m_index);
@@ -36,11 +37,10 @@ class AnalogInSim {
     HALSIM_SetAnalogInAverageBits(m_index, averageBits);
   }
 
-  int RegisterOversampleBitsCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterAnalogInOversampleBitsCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelOversampleBitsCallback(int uid) {
-    HALSIM_CancelAnalogInOversampleBitsCallback(m_index, uid);
+  CallbackUniquePtr RegisterOversampleBitsCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogInOversampleBitsCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterAnalogInOversampleBitsCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   int GetOversampleBits() {
     return HALSIM_GetAnalogInOversampleBits(m_index);
@@ -49,11 +49,10 @@ class AnalogInSim {
     HALSIM_SetAnalogInOversampleBits(m_index, oversampleBits);
   }
 
-  int RegisterVoltageCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterAnalogInVoltageCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelVoltageCallback(int uid) {
-    HALSIM_CancelAnalogInVoltageCallback(m_index, uid);
+  CallbackUniquePtr RegisterVoltageCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogInVoltageCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterAnalogInVoltageCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   double GetVoltage() {
     return HALSIM_GetAnalogInVoltage(m_index);
@@ -62,11 +61,10 @@ class AnalogInSim {
     HALSIM_SetAnalogInVoltage(m_index, voltage);
   }
 
-  int RegisterAccumulatorInitializedCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterAnalogInAccumulatorInitializedCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelAccumulatorInitializedCallback(int uid) {
-    HALSIM_CancelAnalogInAccumulatorInitializedCallback(m_index, uid);
+  CallbackUniquePtr RegisterAccumulatorInitializedCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogInAccumulatorInitializedCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterAnalogInAccumulatorInitializedCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   bool GetAccumulatorInitialized() {
     return HALSIM_GetAnalogInAccumulatorInitialized(m_index);
@@ -75,11 +73,10 @@ class AnalogInSim {
     HALSIM_SetAnalogInAccumulatorInitialized(m_index, accumulatorInitialized);
   }
 
-  int RegisterAccumulatorValueCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterAnalogInAccumulatorValueCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelAccumulatorValueCallback(int uid) {
-    HALSIM_CancelAnalogInAccumulatorValueCallback(m_index, uid);
+  CallbackUniquePtr RegisterAccumulatorValueCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogInAccumulatorValueCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterAnalogInAccumulatorValueCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   int64_t GetAccumulatorValue() {
     return HALSIM_GetAnalogInAccumulatorValue(m_index);
@@ -88,11 +85,10 @@ class AnalogInSim {
     HALSIM_SetAnalogInAccumulatorValue(m_index, accumulatorValue);
   }
 
-  int RegisterAccumulatorCountCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterAnalogInAccumulatorCountCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelAccumulatorCountCallback(int uid) {
-    HALSIM_CancelAnalogInAccumulatorCountCallback(m_index, uid);
+  CallbackUniquePtr RegisterAccumulatorCountCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogInAccumulatorCountCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterAnalogInAccumulatorCountCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   int64_t GetAccumulatorCount() {
     return HALSIM_GetAnalogInAccumulatorCount(m_index);
@@ -101,11 +97,10 @@ class AnalogInSim {
     HALSIM_SetAnalogInAccumulatorCount(m_index, accumulatorCount);
   }
 
-  int RegisterAccumulatorCenterCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterAnalogInAccumulatorCenterCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelAccumulatorCenterCallback(int uid) {
-    HALSIM_CancelAnalogInAccumulatorCenterCallback(m_index, uid);
+  CallbackUniquePtr RegisterAccumulatorCenterCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogInAccumulatorCenterCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterAnalogInAccumulatorCenterCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   int GetAccumulatorCenter() {
     return HALSIM_GetAnalogInAccumulatorCenter(m_index);
@@ -114,11 +109,10 @@ class AnalogInSim {
     HALSIM_SetAnalogInAccumulatorCenter(m_index, accumulatorCenter);
   }
 
-  int RegisterAccumulatorDeadbandCallback(HAL_NotifyCallback callback, void* param, bool initialNotify) {
-    return HALSIM_RegisterAnalogInAccumulatorDeadbandCallback(m_index, callback, param, initialNotify);
-  }
-  void CancelAccumulatorDeadbandCallback(int uid) {
-    HALSIM_CancelAnalogInAccumulatorDeadbandCallback(m_index, uid);
+  CallbackUniquePtr RegisterAccumulatorDeadbandCallback(NotifyCallback callback, bool initialNotify) {
+    CallbackUniquePtr store(new CallbackStore<CancelCallbackFunc>(m_index, -1, callback, &HALSIM_CancelAnalogInAccumulatorDeadbandCallback), &CallbackStoreCancel);
+    store->uid = HALSIM_RegisterAnalogInAccumulatorDeadbandCallback(m_index, &CallbackStoreThunk, store.get(), initialNotify);
+    return std::move(store);
   }
   int GetAccumulatorDeadband() {
     return HALSIM_GetAnalogInAccumulatorDeadband(m_index);
@@ -133,5 +127,6 @@ class AnalogInSim {
  private:
   int m_index;
 };
-}
-}
+} // namespace sim
+} // namespace frc
+#endif // __FRC_ROBORIO__
