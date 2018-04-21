@@ -11,8 +11,8 @@
 #include <llvm/raw_ostream.h>
 #include <networktables/NetworkTableInstance.h>
 
-#include "ntcore_cpp.h"
 #include "CameraServerShared.h"
+#include "ntcore_cpp.h"
 
 using namespace frc;
 

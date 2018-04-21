@@ -7,9 +7,10 @@
 
 #include "vision/VisionRunner.h"
 
+#include <thread>
+
 #include <opencv2/core/mat.hpp>
 
-#include <thread>
 #include "CameraServerShared.h"
 
 using namespace frc;
@@ -47,7 +48,8 @@ void VisionRunnerBase::RunOnce() {
   auto& csShared = frc::GetCameraServerShared();
   auto res = csShared.GetRobotMainThreadId();
   if (res.second && (std::this_thread::get_id() == res.first)) {
-    csShared.SetVisionRunnerError("VisionRunner::RunOnce() cannot be called from the main robot thread");
+    csShared.SetVisionRunnerError(
+        "VisionRunner::RunOnce() cannot be called from the main robot thread");
     return;
   }
   auto frameTime = m_cvSink.GrabFrame(*m_image);
@@ -70,8 +72,9 @@ void VisionRunnerBase::RunForever() {
   auto& csShared = frc::GetCameraServerShared();
   auto res = csShared.GetRobotMainThreadId();
   if (res.second && (std::this_thread::get_id() == res.first)) {
-    csShared.SetVisionRunnerError("VisionRunner::RunForever() cannot be called from the main robot "
-                                  "thread");
+    csShared.SetVisionRunnerError(
+        "VisionRunner::RunForever() cannot be called from the main robot "
+        "thread");
     return;
   }
   while (m_enabled) {
