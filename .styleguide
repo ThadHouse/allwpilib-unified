@@ -58,8 +58,14 @@ includeProject {
 }
 
 includeGuardRoots {
-  src/main/native/cpp/
-  src/main/native/include/
-  src/test/native/cpp/
+  wpiutil/src/main/native/cpp/
+  wpiutil/src/main/native/include/
+  wpiutil/src/test/native/cpp/
+  cscore/src/main/native/cpp/
+  cscore/src/main/native/include/
+  cscore/src/test/native/cpp/
+  ntcore/src/main/native/cpp/
+  ntcore/src/main/native/include/
+  ntcore/src/test/native/cpp/
 }
 
