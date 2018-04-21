@@ -6,7 +6,7 @@ apply plugin: SingleNativeBuild
 apply plugin: ExtraTasks
 
 ext {
-  nativeName = 'wpilibc'
+    nativeName = 'wpilibc'
 }
 
 apply from: "${rootDir}/shared/config.gradle"
@@ -49,10 +49,10 @@ gradle.taskGraph.addTaskExecutionGraphListener { graph ->
 }
 
 ext {
-    sharedCvConfigs = [ wpilibc: [],
-                        wpilibcBase: [],
-                        wpilibcDev: [],
-                        wpilibcTestingBaseTest: [] ]
+    sharedCvConfigs = [wpilibc               : [],
+                       wpilibcBase           : [],
+                       wpilibcDev            : [],
+                       wpilibcTestingBaseTest: []]
     staticCvConfigs = [:]
     useJava = false
     useCpp = true
@@ -61,151 +61,151 @@ ext {
 apply from: "${rootDir}/shared/opencv.gradle"
 
 model {
-  exportsConfigs {
-    wpilibc(ExportsConfig) {
-      x86ExcludeSymbols = [ '_CT??_R0?AV_System_error', '_CT??_R0?AVexception', '_CT??_R0?AVfailure',
-                            '_CT??_R0?AVbad_cast',
-                            '_CT??_R0?AVruntime_error', '_CT??_R0?AVsystem_error', '_CTA5?AVfailure',
-                            '_TI5?AVfailure' ]
-      x64ExcludeSymbols = [ '_CT??_R0?AV_System_error', '_CT??_R0?AVexception', '_CT??_R0?AVfailure',
-                            '_CT??_R0?AVbad_cast',
-                            '_CT??_R0?AVruntime_error', '_CT??_R0?AVsystem_error', '_CTA5?AVfailure',
-                            '_TI5?AVfailure' ]
-    }
-  }
-  components {
-    "${nativeName}Base"(NativeLibrarySpec) {
-      sources {
-        cpp {
-          source {
-            srcDirs = ['src/main/native/cpp', "$buildDir/generated/cpp"]
-            include '**/*.cpp'
-          }
-          exportedHeaders {
-            srcDirs 'src/main/native/include'
-          }
+    exportsConfigs {
+        wpilibc(ExportsConfig) {
+            x86ExcludeSymbols = ['_CT??_R0?AV_System_error', '_CT??_R0?AVexception', '_CT??_R0?AVfailure',
+                                 '_CT??_R0?AVbad_cast',
+                                 '_CT??_R0?AVruntime_error', '_CT??_R0?AVsystem_error', '_CTA5?AVfailure',
+                                 '_TI5?AVfailure']
+            x64ExcludeSymbols = ['_CT??_R0?AV_System_error', '_CT??_R0?AVexception', '_CT??_R0?AVfailure',
+                                 '_CT??_R0?AVbad_cast',
+                                 '_CT??_R0?AVruntime_error', '_CT??_R0?AVsystem_error', '_CTA5?AVfailure',
+                                 '_TI5?AVfailure']
         }
-      }
-      binaries.all {
-        if (it instanceof SharedLibraryBinarySpec) {
-          it.buildable = false
-          return
-        }
-        lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
-        lib project: ':cscore', library: 'cscore', linkage: 'shared'
-        lib project: ':hal', library: 'hal', linkage: 'shared'
-        lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
-        lib project: ':cameraserver', library: 'cameraserver', linkage: 'shared'
-        project(':ni-libraries').addNiLibrariesToLinker(it)
-      }
     }
-    "${nativeName}"(NativeLibrarySpec) {
-      sources {
-        cpp {
-          source {
-            srcDirs "${rootDir}/shared/singlelib"
-            include '**/*.cpp'
-          }
-          exportedHeaders {
-            srcDirs 'src/main/native/include'
-          }
-        }
-      }
-      binaries.all {
-        lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
-        lib project: ':cscore', library: 'cscore', linkage: 'shared'
-        lib project: ':hal', library: 'hal', linkage: 'shared'
-        lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
-        lib project: ':cameraserver', library: 'cameraserver', linkage: 'shared'
-        project(':ni-libraries').addNiLibrariesToLinker(it)
-      }
-    }
-    // By default, a development executable will be generated. This is to help the case of
-    // testing specific functionality of the library.
-    "${nativeName}Dev"(NativeExecutableSpec) {
-      sources {
-        cpp {
-          source {
-            srcDirs 'src/dev/native/cpp'
-            include '**/*.cpp'
-            lib library: 'wpilibc'
-          }
-          exportedHeaders {
-            srcDirs 'src/dev/native/include'
-          }
-        }
-      }
-      binaries.all {
-        lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
-        lib project: ':cscore', library: 'cscore', linkage: 'shared'
-        lib project: ':hal', library: 'hal', linkage: 'shared'
-        lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
-        lib project: ':cameraserver', library: 'cameraserver', linkage: 'shared'
-        project(':ni-libraries').addNiLibrariesToLinker(it)
-      }
-    }
-    // The TestingBase library is a workaround for an issue with the GoogleTest plugin.
-    // The plugin by default will rebuild the entire test source set, which increases
-    // build time. By testing an empty library, and then just linking the already built component
-    // into the test, we save the extra build
-    "${nativeName}TestingBase"(NativeLibrarySpec) { }
-  }
-  testSuites {
-    "${nativeName}TestingBaseTest" {
-      sources {
-        cpp {
-          source {
-            srcDirs 'src/test/native/cpp'
-            include '**/*.cpp'
-          }
-          exportedHeaders {
-            srcDirs 'src/test/native/include', 'src/main/native/cpp'
-          }
-        }
-      }
-    }
-  }
-  binaries {
-    all {
-      tasks.withType(CppCompile) {
-          dependsOn generateCppVersion
-      }
-    }
-    withType(GoogleTestTestSuiteBinarySpec) {
-      if (it.component.testedComponent.name.contains('TestingBase') && !project.hasProperty('onlyAthena')) {
-        lib project: ':gmock', library: 'gmock', linkage: 'static'
-        lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
-        lib project: ':cscore', library: 'cscore', linkage: 'shared'
-        lib project: ':hal', library: 'hal', linkage: 'shared'
-        lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
-        lib project: ':cameraserver', library: 'cameraserver', linkage: 'shared'
-        project(':ni-libraries').addNiLibrariesToLinker(it)
-        lib library: nativeName, linkage: 'shared'
-      } else {
-        it.buildable = false
-      }
-    }
-  }
-  tasks {
-    def c = $.components
-    project.tasks.create('runCpp', Exec) {
-      def found = false
-      c.each {
-        if (it in NativeExecutableSpec && it.name == "${nativeName}Dev") {
-          it.binaries.each {
-            if (!found) {
-              def arch = it.targetPlatform.architecture.name
-              if (arch == 'x86-64' || arch == 'x86') {
-                dependsOn it.tasks.install
-
-                found = true
-              }
+    components {
+        "${nativeName}Base"(NativeLibrarySpec) {
+            sources {
+                cpp {
+                    source {
+                        srcDirs = ['src/main/native/cpp', "$buildDir/generated/cpp"]
+                        include '**/*.cpp'
+                    }
+                    exportedHeaders {
+                        srcDirs 'src/main/native/include'
+                    }
+                }
             }
-          }
+            binaries.all {
+                if (it instanceof SharedLibraryBinarySpec) {
+                    it.buildable = false
+                    return
+                }
+                lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
+                lib project: ':cscore', library: 'cscore', linkage: 'shared'
+                lib project: ':hal', library: 'hal', linkage: 'shared'
+                lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
+                lib project: ':cameraserver', library: 'cameraserver', linkage: 'shared'
+                project(':ni-libraries').addNiLibrariesToLinker(it)
+            }
         }
-      }
+        "${nativeName}"(NativeLibrarySpec) {
+            sources {
+                cpp {
+                    source {
+                        srcDirs "${rootDir}/shared/singlelib"
+                        include '**/*.cpp'
+                    }
+                    exportedHeaders {
+                        srcDirs 'src/main/native/include'
+                    }
+                }
+            }
+            binaries.all {
+                lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
+                lib project: ':cscore', library: 'cscore', linkage: 'shared'
+                lib project: ':hal', library: 'hal', linkage: 'shared'
+                lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
+                lib project: ':cameraserver', library: 'cameraserver', linkage: 'shared'
+                project(':ni-libraries').addNiLibrariesToLinker(it)
+            }
+        }
+        // By default, a development executable will be generated. This is to help the case of
+        // testing specific functionality of the library.
+        "${nativeName}Dev"(NativeExecutableSpec) {
+            sources {
+                cpp {
+                    source {
+                        srcDirs 'src/dev/native/cpp'
+                        include '**/*.cpp'
+                        lib library: 'wpilibc'
+                    }
+                    exportedHeaders {
+                        srcDirs 'src/dev/native/include'
+                    }
+                }
+            }
+            binaries.all {
+                lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
+                lib project: ':cscore', library: 'cscore', linkage: 'shared'
+                lib project: ':hal', library: 'hal', linkage: 'shared'
+                lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
+                lib project: ':cameraserver', library: 'cameraserver', linkage: 'shared'
+                project(':ni-libraries').addNiLibrariesToLinker(it)
+            }
+        }
+        // The TestingBase library is a workaround for an issue with the GoogleTest plugin.
+        // The plugin by default will rebuild the entire test source set, which increases
+        // build time. By testing an empty library, and then just linking the already built component
+        // into the test, we save the extra build
+        "${nativeName}TestingBase"(NativeLibrarySpec) {}
     }
-  }
+    testSuites {
+        "${nativeName}TestingBaseTest" {
+            sources {
+                cpp {
+                    source {
+                        srcDirs 'src/test/native/cpp'
+                        include '**/*.cpp'
+                    }
+                    exportedHeaders {
+                        srcDirs 'src/test/native/include', 'src/main/native/cpp'
+                    }
+                }
+            }
+        }
+    }
+    binaries {
+        all {
+            tasks.withType(CppCompile) {
+                dependsOn generateCppVersion
+            }
+        }
+        withType(GoogleTestTestSuiteBinarySpec) {
+            if (it.component.testedComponent.name.contains('TestingBase') && !project.hasProperty('onlyAthena')) {
+                lib project: ':gmock', library: 'gmock', linkage: 'static'
+                lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
+                lib project: ':cscore', library: 'cscore', linkage: 'shared'
+                lib project: ':hal', library: 'hal', linkage: 'shared'
+                lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
+                lib project: ':cameraserver', library: 'cameraserver', linkage: 'shared'
+                project(':ni-libraries').addNiLibrariesToLinker(it)
+                lib library: nativeName, linkage: 'shared'
+            } else {
+                it.buildable = false
+            }
+        }
+    }
+    tasks {
+        def c = $.components
+        project.tasks.create('runCpp', Exec) {
+            def found = false
+            c.each {
+                if (it in NativeExecutableSpec && it.name == "${nativeName}Dev") {
+                    it.binaries.each {
+                        if (!found) {
+                            def arch = it.targetPlatform.architecture.name
+                            if (arch == 'x86-64' || arch == 'x86') {
+                                dependsOn it.tasks.install
+
+                                found = true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 apply from: 'publish.gradle'

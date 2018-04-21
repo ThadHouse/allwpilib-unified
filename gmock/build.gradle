@@ -25,7 +25,7 @@ model {
             }
             binaries.all {
                 if (toolChain in VisualCpp) {
-                    cppCompiler.args '-D_UNICODE', '-DUNICODE', '-DWIN32',  '-D_WIN32', '-DSTRICT', '-DWIN32_LEAN_AND_MEAN', '-D_HAS_EXCEPTIONS=1'
+                    cppCompiler.args '-D_UNICODE', '-DUNICODE', '-DWIN32', '-D_WIN32', '-DSTRICT', '-DWIN32_LEAN_AND_MEAN', '-D_HAS_EXCEPTIONS=1'
                 } else {
                     cppCompiler.args '-Wall', '-Wshadow', '-fexceptions', '-Wextra', '-Wno-unused-parameter', '-Wno-missing-field-initializers', '-pthread', '-fPIC'
                 }

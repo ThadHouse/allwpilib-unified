@@ -5,9 +5,9 @@ plugins {
 }
 
 ext {
-  useJava = true
-  useCpp = false
-  skipDev = true
+    useJava = true
+    useCpp = false
+    skipDev = true
 }
 
 apply from: "${rootDir}/shared/opencv.gradle"
@@ -42,7 +42,7 @@ task copyWpilibJIntegrationTestJarToOutput(type: Copy) {
     destinationDir testOutputFolder
     dependsOn shadowJar
     inputs.file shadowJar.archivePath
-    from (shadowJar) {
+    from(shadowJar) {
         into 'java'
     }
 }

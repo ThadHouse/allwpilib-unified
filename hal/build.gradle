@@ -1,91 +1,91 @@
 ext {
-  nativeName = 'hal'
-  setBaseName = 'wpiHal'
-  devMain = 'DevMain'
-  niLibraries = true
-  splitSetup = {
-    if (it.targetPlatform.architecture.name == 'athena') {
-      it.sources {
-        athenaCpp(CppSourceSet) {
-          source {
-            srcDirs = ['src/main/native/athena', "$buildDir/generated/cpp"]
-            include '**/*.cpp'
-          }
-          exportedHeaders {
-            srcDirs 'src/main/native/include'
-          }
+    nativeName = 'hal'
+    setBaseName = 'wpiHal'
+    devMain = 'DevMain'
+    niLibraries = true
+    splitSetup = {
+        if (it.targetPlatform.architecture.name == 'athena') {
+            it.sources {
+                athenaCpp(CppSourceSet) {
+                    source {
+                        srcDirs = ['src/main/native/athena', "$buildDir/generated/cpp"]
+                        include '**/*.cpp'
+                    }
+                    exportedHeaders {
+                        srcDirs 'src/main/native/include'
+                    }
+                }
+            }
+        } else {
+            it.sources {
+                simCpp(CppSourceSet) {
+                    source {
+                        srcDirs 'src/main/native/sim'
+                        include '**/*.cpp'
+                    }
+                    exportedHeaders {
+                        srcDirs 'src/main/native/include'
+                    }
+                }
+            }
         }
-      }
-    } else {
-      it.sources {
-        simCpp(CppSourceSet) {
-          source {
-            srcDirs 'src/main/native/sim'
-            include '**/*.cpp'
-          }
-          exportedHeaders {
-            srcDirs 'src/main/native/include'
-          }
-        }
-      }
     }
-  }
 }
 
 apply from: "${rootDir}/shared/jni/setupBuild.gradle"
 apply from: 'simjni.gradle'
 
 cppSourcesZip {
-  from('src/main/native/athena') {
-    into '/athena'
-  }
+    from('src/main/native/athena') {
+        into '/athena'
+    }
 
-  from('src/main/native/sim') {
-    into '/sim'
-  }
+    from('src/main/native/sim') {
+        into '/sim'
+    }
 
-  from("$buildDir/generated/cpp") {
-    into '/athena/jni'
-  }
+    from("$buildDir/generated/cpp") {
+        into '/athena/jni'
+    }
 
-  dependsOn generateAthenaSimFiles
+    dependsOn generateAthenaSimFiles
 }
 
 model {
-  // Exports config is a utility to enable exporting all symbols in a C++ library on windows to a DLL.
-  // This removes the need for DllExport on a library. However, the gradle C++ builder has a bug
-  // where some extra symbols are added that cannot be resolved at link time. This configuration
-  // lets you specify specific symbols to exlude from exporting.
-  exportsConfigs {
-    hal(ExportsConfig) {
-      x86ExcludeSymbols = [ '_CT??_R0?AV_System_error', '_CT??_R0?AVexception', '_CT??_R0?AVfailure',
-                            '_CT??_R0?AVbad_cast',
-                            '_CT??_R0?AVruntime_error', '_CT??_R0?AVsystem_error', '_CTA5?AVfailure',
-                            '_TI5?AVfailure' ]
-      x64ExcludeSymbols = [ '_CT??_R0?AV_System_error', '_CT??_R0?AVexception', '_CT??_R0?AVfailure',
-                            '_CT??_R0?AVbad_cast',
-                            '_CT??_R0?AVruntime_error', '_CT??_R0?AVsystem_error', '_CTA5?AVfailure',
-                            '_TI5?AVfailure' ]
-    }
-    halJNI(ExportsConfig) {
-      x86SymbolFilter = { symbols->
-        def retList = []
-        symbols.each { symbol->
-            if (symbol.startsWith('HAL_') || symbol.startsWith('Java_') || symbol.startsWith('JNI_')) {
-                retList << symbol
+    // Exports config is a utility to enable exporting all symbols in a C++ library on windows to a DLL.
+    // This removes the need for DllExport on a library. However, the gradle C++ builder has a bug
+    // where some extra symbols are added that cannot be resolved at link time. This configuration
+    // lets you specify specific symbols to exlude from exporting.
+    exportsConfigs {
+        hal(ExportsConfig) {
+            x86ExcludeSymbols = ['_CT??_R0?AV_System_error', '_CT??_R0?AVexception', '_CT??_R0?AVfailure',
+                                 '_CT??_R0?AVbad_cast',
+                                 '_CT??_R0?AVruntime_error', '_CT??_R0?AVsystem_error', '_CTA5?AVfailure',
+                                 '_TI5?AVfailure']
+            x64ExcludeSymbols = ['_CT??_R0?AV_System_error', '_CT??_R0?AVexception', '_CT??_R0?AVfailure',
+                                 '_CT??_R0?AVbad_cast',
+                                 '_CT??_R0?AVruntime_error', '_CT??_R0?AVsystem_error', '_CTA5?AVfailure',
+                                 '_TI5?AVfailure']
+        }
+        halJNI(ExportsConfig) {
+            x86SymbolFilter = { symbols ->
+                def retList = []
+                symbols.each { symbol ->
+                    if (symbol.startsWith('HAL_') || symbol.startsWith('Java_') || symbol.startsWith('JNI_')) {
+                        retList << symbol
+                    }
+                }
+                return retList
+            }
+            x64SymbolFilter = { symbols ->
+                def retList = []
+                symbols.each { symbol ->
+                    if (symbol.startsWith('HAL_') || symbol.startsWith('Java_') || symbol.startsWith('JNI_')) {
+                        retList << symbol
+                    }
+                }
+                return retList
             }
         }
-        return retList
-      }
-      x64SymbolFilter = { symbols->
-        def retList = []
-        symbols.each { symbol->
-            if (symbol.startsWith('HAL_') || symbol.startsWith('Java_') || symbol.startsWith('JNI_')) {
-                retList << symbol
-            }
-        }
-        return retList
-      }
     }
-  }
 }

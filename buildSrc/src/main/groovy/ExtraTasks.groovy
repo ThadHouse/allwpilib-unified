@@ -42,30 +42,30 @@ import groovy.transform.CompileStatic;
 
 @CompileStatic
 class ExtraTasks implements Plugin<Project> {
-  @CompileStatic
-  public void apply(Project project) {
-
-  }
-
-  @CompileStatic
-  static class Rules extends RuleSource {
-    @Mutate
     @CompileStatic
-    void createNativeCompileTask(ModelMap<Task> tasks, BinaryContainer binaries) {
-      tasks.create('compileCpp', Task) { oTask->
-        def task = (Task)oTask
-        task.group = 'build'
-        task.description = 'Uber task to compile all native code for this project'
-        binaries.each { binary ->
-          if (binary instanceof NativeBinarySpec && binary.buildable) {
-            binary.tasks.withType(AbstractNativeSourceCompileTask) { compileTask ->
-              task.dependsOn compileTask
-            }
-          }
-        }
-      }
+    public void apply(Project project) {
+
     }
 
+    @CompileStatic
+    static class Rules extends RuleSource {
+        @Mutate
+        @CompileStatic
+        void createNativeCompileTask(ModelMap<Task> tasks, BinaryContainer binaries) {
+            tasks.create('compileCpp', Task) { oTask ->
+                def task = (Task) oTask
+                task.group = 'build'
+                task.description = 'Uber task to compile all native code for this project'
+                binaries.each { binary ->
+                    if (binary instanceof NativeBinarySpec && binary.buildable) {
+                        binary.tasks.withType(AbstractNativeSourceCompileTask) { compileTask ->
+                            task.dependsOn compileTask
+                        }
+                    }
+                }
+            }
+        }
 
-  }
+
+    }
 }

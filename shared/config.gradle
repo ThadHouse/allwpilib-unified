@@ -4,8 +4,8 @@ import org.gradle.internal.os.OperatingSystem
 def windowsCompilerArgs = ['/EHsc', '/DNOMINMAX', '/Zi', '/FS', '/Zc:inline', '/MT']
 def windowsCCompilerArgs = ['/Zi', '/FS', '/Zc:inline', '/MT']
 def windowsReleaseCompilerArgs = ['/O2']
-def windowsLinkerArgs = [ '/DEBUG:FULL' ]
-def windowsReleaseLinkerArgs = [ '/OPT:REF', '/OPT:ICF' ]
+def windowsLinkerArgs = ['/DEBUG:FULL']
+def windowsReleaseLinkerArgs = ['/OPT:REF', '/OPT:ICF']
 
 def linuxCompilerArgs = ['-std=c++14', '-Wformat=2', '-Wall', '-Wextra', '-Werror', '-pedantic', '-Wno-psabi', '-g',
                          '-Wno-unused-parameter', '-fPIC', '-rdynamic', '-pthread']
@@ -16,11 +16,11 @@ def linuxReleaseCompilerArgs = ['-Og']
 def linuxDebugCompilerArgs = ['-O0']
 def linux32BitArg = '-m32'
 
-def macCompilerArgs =  ['-std=c++14', '-Wall', '-Wextra', '-Werror', '-pedantic-errors', '-fPIC', '-g',
-                            '-Wno-unused-parameter', '-Wno-missing-field-initializers', '-Wno-unused-private-field',
-                            '-Wno-unused-const-variable', '-pthread']
+def macCompilerArgs = ['-std=c++14', '-Wall', '-Wextra', '-Werror', '-pedantic-errors', '-fPIC', '-g',
+                       '-Wno-unused-parameter', '-Wno-missing-field-initializers', '-Wno-unused-private-field',
+                       '-Wno-unused-const-variable', '-pthread']
 def macCCompilerArgs = ['-Wall', '-Wextra', '-Werror', '-pedantic-errors', '-fPIC', '-g',
-                        '-Wno-unused-parameter', '-Wno-missing-field-initializers', '-Wno-unused-private-field' ]
+                        '-Wno-unused-parameter', '-Wno-missing-field-initializers', '-Wno-unused-private-field']
 def macReleaseCompilerArgs = ['-O2']
 def macDebugCompilerArgs = ['-O0']
 def mac32BitArg = '-m32'
@@ -98,7 +98,7 @@ def mac32PlatformDetect = {
 if (!project.hasProperty('skipAthena')) {
     model {
         buildConfigs {
-                roboRio(CrossBuildConfig) {
+            roboRio(CrossBuildConfig) {
                 architecture = 'athena'
                 operatingSystem = 'linux'
                 toolChainPrefix = 'arm-frc-linux-gnueabi-'
@@ -238,11 +238,11 @@ if (project.hasProperty('linuxCross')) {
     }
 }
 
-ext.getClassifier = { binary->
+ext.getClassifier = { binary ->
     return NativeUtils.getClassifier(binary)
 }
 
-ext.getPlatformPath = { binary->
+ext.getPlatformPath = { binary ->
     return NativeUtils.getPlatformPath(binary)
 }
 
@@ -266,7 +266,7 @@ ext.createComponentZipTasks = { components, name, base, type, project, func ->
     configMap.each { key, value ->
         def task = project.tasks.create(base + "-${key}", type) {
             description = 'Creates component archive for platform ' + key
-            destinationDir =  outputsFolder
+            destinationDir = outputsFolder
             classifier = key
             baseName = '_M_' + base
             duplicatesStrategy = 'exclude'
@@ -317,22 +317,22 @@ ext.createAllCombined = { list, name, base, type, project ->
 }
 
 ext.includeStandardZipFormat = { task, value ->
-    value.each { binary->
+    value.each { binary ->
         if (binary.buildable) {
             if (binary instanceof SharedLibraryBinarySpec) {
                 task.dependsOn binary.buildTask
                 task.from(new File(binary.sharedLibraryFile.absolutePath + ".debug")) {
                     into getPlatformPath(binary) + '/shared'
                 }
-                task.from (binary.sharedLibraryFile) {
+                task.from(binary.sharedLibraryFile) {
                     into getPlatformPath(binary) + '/shared'
                 }
-                task.from (binary.sharedLibraryLinkFile) {
+                task.from(binary.sharedLibraryLinkFile) {
                     into getPlatformPath(binary) + '/shared'
                 }
             } else if (binary instanceof StaticLibraryBinarySpec) {
                 task.dependsOn binary.buildTask
-                task.from (binary.staticLibraryFile) {
+                task.from(binary.staticLibraryFile) {
                     into getPlatformPath(binary) + '/static'
                 }
             }

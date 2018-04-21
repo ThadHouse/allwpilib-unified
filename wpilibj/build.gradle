@@ -4,9 +4,9 @@ evaluationDependsOn(':cscore')
 evaluationDependsOn(':cameraserver')
 
 ext {
-  baseId = 'wpilibj'
-  groupId = 'edu.wpi.first.wpilibj'
-  devMain = 'edu.wpi.first.wpilibj.DevMain'
+    baseId = 'wpilibj'
+    groupId = 'edu.wpi.first.wpilibj'
+    devMain = 'edu.wpi.first.wpilibj.DevMain'
 }
 
 apply from: "${rootDir}/shared/java/javacommon.gradle"
@@ -49,7 +49,7 @@ gradle.taskGraph.addTaskExecutionGraphListener { graph ->
 }
 
 sourceSets {
-   generated {
+    generated {
         java.srcDir "${buildDir}/generated/java/"
     }
 }
@@ -67,11 +67,11 @@ compileJava {
 classes.dependsOn generateJavaVersion
 
 sourcesJar {
-  from sourceSets.generated.allSource
+    from sourceSets.generated.allSource
 }
 
 outputSourcesJar {
-  from sourceSets.generated.allSource
+    from sourceSets.generated.allSource
 }
 
 dependencies {
@@ -97,68 +97,68 @@ apply plugin: ExtraTasks
 apply from: "${rootDir}/shared/config.gradle"
 
 ext {
-  sharedCvConfigs = [ wpilibjDev: [] ]
-  staticCvConfigs = [:]
-  useJava = true
-  useCpp = true
+    sharedCvConfigs = [wpilibjDev: []]
+    staticCvConfigs = [:]
+    useJava = true
+    useCpp = true
 }
 
 apply from: "${rootDir}/shared/opencv.gradle"
 
 model {
-  components {
-    wpilibjDev(NativeExecutableSpec) {
-      sources {
-        cpp {
-          source {
-            srcDirs 'src/dev/native/cpp'
-            include '**/*.cpp'
-            lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
-            lib project: ':cscore', library: 'cscore', linkage: 'shared'
-            lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
-            lib project: ':hal', library: 'hal', linkage: 'shared'
-            lib project: ':cameraserver', library: 'cameraserver', linkage: 'shared'
-          }
-          exportedHeaders {
-            srcDirs 'src/dev/native/include'
-          }
-        }
-      }
-      binaries.all {
-        project(':ni-libraries').addNiLibrariesToLinker(it)
-      }
-    }
-  }
-  tasks {
-    def c = $.components
-    project.tasks.create('runCpp', Exec) {
-      group = 'WPILib'
-      description = "Run the wpilibjDev executable"
-      def found = false
-      def systemArch = getCurrentArch()
-      c.each {
-        //println it.name
-        if (it in NativeExecutableSpec && it.name == "wpilibjDev") {
-          it.binaries.each {
-            if (!found) {
-              def arch = it.targetPlatform.architecture.name
-              if (arch == systemArch) {
-                dependsOn it.tasks.install
-                commandLine it.tasks.install.runScriptFile.get().asFile.toString()
-                def filePath = it.tasks.install.installDirectory.get().toString() + File.separatorChar + 'lib'
-                test.dependsOn it.tasks.install
-                test.systemProperty 'java.library.path', filePath
-                test.workingDir filePath
-                run.dependsOn it.tasks.install
-                run.systemProperty 'java.library.path', filePath
-                run.workingDir filePath
-
-                found = true
-              }
+    components {
+        wpilibjDev(NativeExecutableSpec) {
+            sources {
+                cpp {
+                    source {
+                        srcDirs 'src/dev/native/cpp'
+                        include '**/*.cpp'
+                        lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
+                        lib project: ':cscore', library: 'cscore', linkage: 'shared'
+                        lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
+                        lib project: ':hal', library: 'hal', linkage: 'shared'
+                        lib project: ':cameraserver', library: 'cameraserver', linkage: 'shared'
+                    }
+                    exportedHeaders {
+                        srcDirs 'src/dev/native/include'
+                    }
+                }
             }
-          }
+            binaries.all {
+                project(':ni-libraries').addNiLibrariesToLinker(it)
+            }
         }
-      }
     }
-  }
+    tasks {
+        def c = $.components
+        project.tasks.create('runCpp', Exec) {
+            group = 'WPILib'
+            description = "Run the wpilibjDev executable"
+            def found = false
+            def systemArch = getCurrentArch()
+            c.each {
+                //println it.name
+                if (it in NativeExecutableSpec && it.name == "wpilibjDev") {
+                    it.binaries.each {
+                        if (!found) {
+                            def arch = it.targetPlatform.architecture.name
+                            if (arch == systemArch) {
+                                dependsOn it.tasks.install
+                                commandLine it.tasks.install.runScriptFile.get().asFile.toString()
+                                def filePath = it.tasks.install.installDirectory.get().toString() + File.separatorChar + 'lib'
+                                test.dependsOn it.tasks.install
+                                test.systemProperty 'java.library.path', filePath
+                                test.workingDir filePath
+                                run.dependsOn it.tasks.install
+                                run.systemProperty 'java.library.path', filePath
+                                run.workingDir filePath
+
+                                found = true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

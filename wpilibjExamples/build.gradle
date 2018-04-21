@@ -2,9 +2,9 @@ apply plugin: 'java'
 apply plugin: 'pmd'
 
 ext {
-  useJava = true
-  useCpp = false
-  skipDev = true
+    useJava = true
+    useCpp = false
+    skipDev = true
 }
 
 apply from: "${rootDir}/shared/opencv.gradle"

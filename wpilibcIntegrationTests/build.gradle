@@ -8,7 +8,7 @@ if (!project.hasProperty('skipAthena')) {
     apply from: '../shared/config.gradle'
 
     ext {
-        sharedCvConfigs = [ wpilibcIntegrationTests: [] ]
+        sharedCvConfigs = [wpilibcIntegrationTests: []]
         staticCvConfigs = [:]
         useJava = false
         useCpp = true
@@ -32,7 +32,7 @@ if (!project.hasProperty('skipAthena')) {
                         }
                     }
                 }
-                binaries.all { binary->
+                binaries.all { binary ->
                     if (binary.targetPlatform.architecture.name == 'athena') {
                         binary.tasks.withType(CppCompile) {
                             cppCompiler.args "-Wno-missing-field-initializers"
@@ -66,11 +66,11 @@ model {
                 if (it in NativeExecutableBinarySpec && it.targetPlatform.architecture.name == 'athena') {
                     def installTask = it.tasks.install
                     task.dependsOn installTask
-                    task.from (installTask.executableFile) {
+                    task.from(installTask.executableFile) {
                         into '/cpp'
                     }
                     installTask.libs.each {
-                        task.from (it) {
+                        task.from(it) {
                             into '/libs'
                         }
                     }

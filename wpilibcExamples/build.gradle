@@ -12,19 +12,19 @@ if (!project.hasProperty('skipAthena')) {
 
     File examplesTree = file("$projectDir/src/main/cpp/examples")
     examplesTree.list(new FilenameFilter() {
-      @Override
-      public boolean accept(File current, String name) {
-        return new File(current, name).isDirectory();
-      }
+        @Override
+        public boolean accept(File current, String name) {
+            return new File(current, name).isDirectory();
+        }
     }).each {
         examplesMap.put(it, [])
     }
     File templatesTree = file("$projectDir/src/main/cpp/templates")
     templatesTree.list(new FilenameFilter() {
-      @Override
-      public boolean accept(File current, String name) {
-        return new File(current, name).isDirectory();
-      }
+        @Override
+        public boolean accept(File current, String name) {
+            return new File(current, name).isDirectory();
+        }
     }).each {
         templatesMap.put(it, [])
     }
@@ -40,9 +40,9 @@ if (!project.hasProperty('skipAthena')) {
 
     model {
         components {
-            examplesMap.each { key, value->
+            examplesMap.each { key, value ->
                 "${key}"(NativeExecutableSpec) {
-                    binaries.all { binary->
+                    binaries.all { binary ->
                         if (binary.targetPlatform.architecture.name == 'athena') {
                             lib project: ':wpilibc', library: 'wpilibc', linkage: 'shared'
                             lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
@@ -65,9 +65,9 @@ if (!project.hasProperty('skipAthena')) {
                     }
                 }
             }
-            templatesMap.each { key, value->
+            templatesMap.each { key, value ->
                 "${key}"(NativeExecutableSpec) {
-                    binaries.all { binary->
+                    binaries.all { binary ->
                         if (binary.targetPlatform.architecture.name == 'athena') {
                             lib project: ':wpilibc', library: 'wpilibc', linkage: 'shared'
                             lib project: ':ntcore', library: 'ntcore', linkage: 'shared'

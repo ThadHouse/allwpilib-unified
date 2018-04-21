@@ -43,70 +43,70 @@ import groovy.transform.CompileStatic;
 
 @CompileStatic
 class SingleNativeBuild implements Plugin<Project> {
-  @CompileStatic
-  public void apply(Project project) {
-
-  }
-
-  @CompileStatic
-  static class Rules extends RuleSource {
-    @Mutate
     @CompileStatic
-    void setupSingleNativeBuild(ModelMap<Task> tasks, ComponentSpecContainer components, BinaryContainer binaryContainer, ProjectLayout projectLayout) {
-      Project project = (Project)projectLayout.projectIdentifier;
+    public void apply(Project project) {
 
-      def nativeName = project.extensions.extraProperties.get('nativeName')
-
-      NativeLibrarySpec base = null
-      def subs = []
-      components.each { component ->
-        if (component.name == "${nativeName}Base") {
-          base = (NativeLibrarySpec)component
-        } else if (component.name == "${nativeName}" || component.name == "${nativeName}JNI") {
-          subs << component
-        }
-      }
-      subs.each {
-        ((NativeLibrarySpec)it).binaries.each { oBinary->
-          if (oBinary.buildable == false) {
-            return
-          }
-          NativeBinarySpec binary = (NativeBinarySpec)oBinary
-          NativeBinarySpec baseBin = null
-          base.binaries.each { oTmpBaseBin ->
-            if (oTmpBaseBin.buildable == false) {
-              return
-            }
-            def tmpBaseBin = (NativeBinarySpec)oTmpBaseBin
-            if (tmpBaseBin.targetPlatform.operatingSystem.name == binary.targetPlatform.operatingSystem.name &&
-                tmpBaseBin.targetPlatform.architecture.name == binary.targetPlatform.architecture.name) {
-              baseBin = tmpBaseBin
-            }
-          }
-          baseBin.tasks.withType(AbstractNativeSourceCompileTask) { oCompileTask ->
-            def compileTask = (AbstractNativeSourceCompileTask)oCompileTask
-            if (binary instanceof SharedLibraryBinarySpec) {
-              def sBinary = (SharedLibraryBinarySpec)binary
-              ObjectFilesToBinary link = (ObjectFilesToBinary)sBinary.tasks.link
-              link.dependsOn compileTask
-              link.inputs.dir compileTask.objectFileDir
-              def tree = project.fileTree(compileTask.objectFileDir)
-              tree.include '**/*.o'
-              tree.include '**/*.obj'
-              link.source tree
-            } else if (binary instanceof StaticLibraryBinarySpec) {
-              def sBinary = (StaticLibraryBinarySpec)binary
-              ObjectFilesToBinary assemble = (ObjectFilesToBinary)sBinary.tasks.createStaticLib
-              assemble.dependsOn compileTask
-              assemble.inputs.dir compileTask.objectFileDir
-              def tree = project.fileTree(compileTask.objectFileDir)
-              tree.include '**/*.o'
-              tree.include '**/*.obj'
-              assemble.source tree
-            }
-          }
-        }
-      }
     }
-  }
+
+    @CompileStatic
+    static class Rules extends RuleSource {
+        @Mutate
+        @CompileStatic
+        void setupSingleNativeBuild(ModelMap<Task> tasks, ComponentSpecContainer components, BinaryContainer binaryContainer, ProjectLayout projectLayout) {
+            Project project = (Project) projectLayout.projectIdentifier;
+
+            def nativeName = project.extensions.extraProperties.get('nativeName')
+
+            NativeLibrarySpec base = null
+            def subs = []
+            components.each { component ->
+                if (component.name == "${nativeName}Base") {
+                    base = (NativeLibrarySpec) component
+                } else if (component.name == "${nativeName}" || component.name == "${nativeName}JNI") {
+                    subs << component
+                }
+            }
+            subs.each {
+                ((NativeLibrarySpec) it).binaries.each { oBinary ->
+                    if (oBinary.buildable == false) {
+                        return
+                    }
+                    NativeBinarySpec binary = (NativeBinarySpec) oBinary
+                    NativeBinarySpec baseBin = null
+                    base.binaries.each { oTmpBaseBin ->
+                        if (oTmpBaseBin.buildable == false) {
+                            return
+                        }
+                        def tmpBaseBin = (NativeBinarySpec) oTmpBaseBin
+                        if (tmpBaseBin.targetPlatform.operatingSystem.name == binary.targetPlatform.operatingSystem.name &&
+                                tmpBaseBin.targetPlatform.architecture.name == binary.targetPlatform.architecture.name) {
+                            baseBin = tmpBaseBin
+                        }
+                    }
+                    baseBin.tasks.withType(AbstractNativeSourceCompileTask) { oCompileTask ->
+                        def compileTask = (AbstractNativeSourceCompileTask) oCompileTask
+                        if (binary instanceof SharedLibraryBinarySpec) {
+                            def sBinary = (SharedLibraryBinarySpec) binary
+                            ObjectFilesToBinary link = (ObjectFilesToBinary) sBinary.tasks.link
+                            link.dependsOn compileTask
+                            link.inputs.dir compileTask.objectFileDir
+                            def tree = project.fileTree(compileTask.objectFileDir)
+                            tree.include '**/*.o'
+                            tree.include '**/*.obj'
+                            link.source tree
+                        } else if (binary instanceof StaticLibraryBinarySpec) {
+                            def sBinary = (StaticLibraryBinarySpec) binary
+                            ObjectFilesToBinary assemble = (ObjectFilesToBinary) sBinary.tasks.createStaticLib
+                            assemble.dependsOn compileTask
+                            assemble.inputs.dir compileTask.objectFileDir
+                            def tree = project.fileTree(compileTask.objectFileDir)
+                            tree.include '**/*.o'
+                            tree.include '**/*.obj'
+                            assemble.source tree
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
