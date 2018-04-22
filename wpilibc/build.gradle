@@ -173,7 +173,7 @@ model {
         }
         withType(GoogleTestTestSuiteBinarySpec) {
             if (it.component.testedComponent.name.contains('TestingBase') && !project.hasProperty('onlyAthena')) {
-                lib project: ':gmock', library: 'gmock', linkage: 'static'
+                lib project: ':gtest', library: 'gtest', linkage: 'static'
                 lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
                 lib project: ':cscore', library: 'cscore', linkage: 'shared'
                 lib project: ':hal', library: 'hal', linkage: 'shared'
