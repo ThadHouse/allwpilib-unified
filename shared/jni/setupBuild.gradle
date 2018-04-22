@@ -153,7 +153,7 @@ model {
     binaries {
         withType(GoogleTestTestSuiteBinarySpec) {
             if (it.component.testedComponent.name.contains('TestingBase') && !project.hasProperty('onlyAthena')) {
-                lib project: ':gmock', library: 'gmock', linkage: 'static'
+                lib project: ':gtest', library: 'gtest', linkage: 'static'
                 lib library: nativeName, linkage: 'shared'
                 lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
             } else {
