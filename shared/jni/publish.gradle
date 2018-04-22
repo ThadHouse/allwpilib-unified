@@ -77,29 +77,7 @@ addTaskToCopyAllOutputs(cppHeadersZip)
 
 model {
     publishing {
-        def taskList = createComponentZipTasks($.components, nativeName, zipBaseName, Zip, project, { task, value ->
-            value.each { binary ->
-                if (binary.buildable) {
-                    if (binary instanceof SharedLibraryBinarySpec) {
-                        task.dependsOn binary.buildTask
-                        task.from(new File(binary.sharedLibraryFile.absolutePath + ".debug")) {
-                            into getPlatformPath(binary) + '/shared'
-                        }
-                        task.from(binary.sharedLibraryFile) {
-                            into getPlatformPath(binary) + '/shared'
-                        }
-                        task.from(binary.sharedLibraryLinkFile) {
-                            into getPlatformPath(binary) + '/shared'
-                        }
-                    } else if (binary instanceof StaticLibraryBinarySpec) {
-                        task.dependsOn binary.buildTask
-                        task.from(binary.staticLibraryFile) {
-                            into getPlatformPath(binary) + '/static'
-                        }
-                    }
-                }
-            }
-        })
+        def taskList = createComponentZipTasks($.components, nativeName, zipBaseName, Zip, project, includeStandardZipFormat)
 
         def allTask
         if (!project.hasProperty('jenkinsBuild')) {
