@@ -20,6 +20,8 @@ dependencies {
     devCompile project(':wpiutil')
 }
 
+project(':').libraryBuild.dependsOn build
+
 model {
     components {
         "${nativeName}Base"(JniNativeLibrarySpec) {

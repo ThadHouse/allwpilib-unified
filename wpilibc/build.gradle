@@ -60,6 +60,8 @@ ext {
 
 apply from: "${rootDir}/shared/opencv.gradle"
 
+project(':').libraryBuild.dependsOn build
+
 model {
     exportsConfigs {
         wpilibc(ExportsConfig) {

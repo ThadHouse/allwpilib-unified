@@ -69,6 +69,7 @@ build.dependsOn outputSourcesJar
 build.dependsOn outputJavadocJar
 build.dependsOn outputJar
 
+project(':').libraryBuild.dependsOn build
 
 publishing {
     publications {
