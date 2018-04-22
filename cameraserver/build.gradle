@@ -19,10 +19,10 @@ dependencies {
 }
 
 ext {
-    sharedCvConfigs = [cameraserver               : [],
-                       cameraserverBase           : [],
-                       cameraserverDev            : [],
-                       cameraserverTestingBaseTest: []]
+    sharedCvConfigs = [cameraserver    : [],
+                       cameraserverBase: [],
+                       cameraserverDev : [],
+                       cameraserverTest: []]
     staticCvConfigs = [:]
     useJava = true
     useCpp = true

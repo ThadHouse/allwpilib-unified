@@ -1,5 +1,5 @@
 apply plugin: 'cpp'
-apply plugin: 'google-test'
+apply plugin: 'google-test-test-suite'
 apply plugin: 'visual-studio'
 apply plugin: 'edu.wpi.first.NativeUtils'
 apply plugin: SingleNativeBuild
@@ -64,14 +64,15 @@ model {
                 }
             }
         }
-        // The TestingBase library is a workaround for an issue with the GoogleTest plugin.
-        // The plugin by default will rebuild the entire test source set, which increases
-        // build time. By testing an empty library, and then just linking the already built component
-        // into the test, we save the extra build
-        "${nativeName}TestingBase"(NativeLibrarySpec) {}
     }
     testSuites {
-        "${nativeName}TestingBaseTest" {
+        "${nativeName}Test"(GoogleTestTestSuiteSpec) {
+            for(NativeComponentSpec c : $.components) {
+                if (c.name == nativeName) {
+                    testing c
+                    break
+                }
+            }
             sources {
                 cpp {
                     source {
@@ -87,7 +88,7 @@ model {
     }
     binaries {
         withType(GoogleTestTestSuiteBinarySpec) {
-            if (it.component.testedComponent.name.contains('TestingBase') && !project.hasProperty('onlyAthena')) {
+            if (!project.hasProperty('onlyAthena')) {
                 lib project: ':gtest', library: 'gtest', linkage: 'static'
                 lib library: nativeName, linkage: 'shared'
             } else {
@@ -126,6 +127,11 @@ model {
             }
         }
     }
+}
+
+tasks.withType(RunTestExecutable) {
+    args "--gtest_output=xml:test_detail.xml"
+    outputs.dir outputDir
 }
 
 apply from: "${rootDir}/shared/javacpp/publish.gradle"

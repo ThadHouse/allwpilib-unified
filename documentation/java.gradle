@@ -45,6 +45,7 @@ task generateJavaDocs(type: Javadoc) {
     source project(':hal').sourceSets.main.java
     source project(':wpiutil').sourceSets.main.java
     source project(':wpilibj').sourceSets.main.java
+    source project(':wpilibj').sourceSets.generated.java
     source project(':cscore').sourceSets.main.java
     source project(':ntcore').sourceSets.main.java
     source project(':cameraserver').sourceSets.main.java

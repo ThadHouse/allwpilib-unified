@@ -42,17 +42,13 @@ model {
         examplesMap.each { key, value ->
             "${key}"(NativeExecutableSpec) {
                 binaries.all { binary ->
-                    if (binary.targetPlatform.architecture.name == 'athena') {
-                        lib project: ':wpilibc', library: 'wpilibc', linkage: 'shared'
-                        lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
-                        lib project: ':cscore', library: 'cscore', linkage: 'shared'
-                        lib project: ':hal', library: 'hal', linkage: 'shared'
-                        lib project: ':cameraserver', library: 'cameraserver', linkage: 'shared'
-                        lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
-                        project(':ni-libraries').addNiLibrariesToLinker(binary)
-                    } else {
-                        binary.buildable = false
-                    }
+                    lib project: ':wpilibc', library: 'wpilibc', linkage: 'shared'
+                    lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
+                    lib project: ':cscore', library: 'cscore', linkage: 'shared'
+                    lib project: ':hal', library: 'hal', linkage: 'shared'
+                    lib project: ':cameraserver', library: 'cameraserver', linkage: 'shared'
+                    lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
+                    project(':ni-libraries').addNiLibrariesToLinker(binary)
                 }
                 sources {
                     cpp {
@@ -67,17 +63,13 @@ model {
         templatesMap.each { key, value ->
             "${key}"(NativeExecutableSpec) {
                 binaries.all { binary ->
-                    if (binary.targetPlatform.architecture.name == 'athena') {
-                        lib project: ':wpilibc', library: 'wpilibc', linkage: 'shared'
-                        lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
-                        lib project: ':cscore', library: 'cscore', linkage: 'shared'
-                        lib project: ':hal', library: 'hal', linkage: 'shared'
-                        lib project: ':cameraserver', library: 'cameraserver', linkage: 'shared'
-                        lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
-                        project(':ni-libraries').addNiLibrariesToLinker(binary)
-                    } else {
-                        binary.buildable = false
-                    }
+                    lib project: ':wpilibc', library: 'wpilibc', linkage: 'shared'
+                    lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
+                    lib project: ':cscore', library: 'cscore', linkage: 'shared'
+                    lib project: ':hal', library: 'hal', linkage: 'shared'
+                    lib project: ':cameraserver', library: 'cameraserver', linkage: 'shared'
+                    lib project: ':wpiutil', library: 'wpiutil', linkage: 'shared'
+                    project(':ni-libraries').addNiLibrariesToLinker(binary)
                 }
                 sources {
                     cpp {

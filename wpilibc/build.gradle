@@ -1,5 +1,5 @@
 apply plugin: 'cpp'
-apply plugin: 'google-test'
+apply plugin: 'google-test-test-suite'
 apply plugin: 'visual-studio'
 apply plugin: 'edu.wpi.first.NativeUtils'
 apply plugin: SingleNativeBuild
@@ -49,10 +49,10 @@ gradle.taskGraph.addTaskExecutionGraphListener { graph ->
 }
 
 ext {
-    sharedCvConfigs = [wpilibc               : [],
-                       wpilibcBase           : [],
-                       wpilibcDev            : [],
-                       wpilibcTestingBaseTest: []]
+    sharedCvConfigs = [wpilibc    : [],
+                       wpilibcBase: [],
+                       wpilibcDev : [],
+                       wpilibcTest: []]
     staticCvConfigs = [:]
     useJava = false
     useCpp = true
@@ -144,14 +144,15 @@ model {
                 project(':ni-libraries').addNiLibrariesToLinker(it)
             }
         }
-        // The TestingBase library is a workaround for an issue with the GoogleTest plugin.
-        // The plugin by default will rebuild the entire test source set, which increases
-        // build time. By testing an empty library, and then just linking the already built component
-        // into the test, we save the extra build
-        "${nativeName}TestingBase"(NativeLibrarySpec) {}
     }
     testSuites {
-        "${nativeName}TestingBaseTest" {
+        "${nativeName}Test"(GoogleTestTestSuiteSpec) {
+            for(NativeComponentSpec c : $.components) {
+                if (c.name == nativeName) {
+                    testing c
+                    break
+                }
+            }
             sources {
                 cpp {
                     source {
@@ -172,7 +173,7 @@ model {
             }
         }
         withType(GoogleTestTestSuiteBinarySpec) {
-            if (it.component.testedComponent.name.contains('TestingBase') && !project.hasProperty('onlyAthena')) {
+            if (!project.hasProperty('onlyAthena')) {
                 lib project: ':gtest', library: 'gtest', linkage: 'static'
                 lib project: ':ntcore', library: 'ntcore', linkage: 'shared'
                 lib project: ':cscore', library: 'cscore', linkage: 'shared'
@@ -206,6 +207,11 @@ model {
             }
         }
     }
+}
+
+tasks.withType(RunTestExecutable) {
+    args "--gtest_output=xml:test_detail.xml"
+    outputs.dir outputDir
 }
 
 apply from: 'publish.gradle'
