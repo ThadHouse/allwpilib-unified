@@ -9,7 +9,7 @@ cppSrcFileInclude {
 }
 
 generatedFileExclude {
-  gmock/
+  gtest/
   llvm/
   ni-libraries/include/
   ni-libraries/lib/
@@ -68,4 +68,3 @@ includeGuardRoots {
   ntcore/src/main/native/include/
   ntcore/src/test/native/cpp/
 }
-
