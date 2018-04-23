@@ -12,6 +12,7 @@
 #include <HAL/HAL.h>
 #include <networktables/NetworkTableInstance.h>
 
+#include "CameraServerShared.h"
 #include "DriverStation.h"
 #include "HLUsageReporting.h"
 #include "Internal/HardwareHLReporting.h"
@@ -19,9 +20,8 @@
 #include "RobotState.h"
 #include "SmartDashboard/SmartDashboard.h"
 #include "Utility.h"
-#include "WPILibVersion.h"
-#include "CameraServerShared.h"
 #include "WPIErrors.h"
+#include "WPILibVersion.h"
 
 using namespace frc;
 
