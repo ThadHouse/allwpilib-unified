@@ -5,7 +5,7 @@
 #include "HAL/handles/UnlimitedHandleResource.h"
 #include "MockData/HAL_Value.h"
 #include "MockData/NotifyListener.h"
-#include "HAL/types.h"
+#include "HAL/Types.h"
 #include "SimulatorJNI.h"
 
 using namespace wpi::java;

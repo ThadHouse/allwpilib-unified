@@ -96,37 +96,53 @@ model {
     }
     tasks {
         def b = $.binaries
-        b.each {
-            if (it in NativeExecutableBinarySpec) {
-                def installDir = it.tasks.install.installDirectory.get().toString() + File.separatorChar
-                def runFile = it.tasks.install.runScriptFile.get().asFile.name.toString()
+        b.each { binary->
+            if (binary in NativeExecutableBinarySpec) {
+                def installDir = binary.tasks.install.installDirectory.get().toString() + File.separatorChar
+                def runFile = binary.tasks.install.runScriptFile.get().asFile.toString()
 
-                if (it.targetPlatform.operatingSystem.isWindows()) {
-                    // Windows batch scripts
-                    def fileName = it.component.name + 'LowFi.bat'
-                    def file = new File(installDir + fileName)
-                    file.withWriter { out ->
-                        out.println '@ECHO OFF'
-                        out.print 'SET HALSIM_EXTENSIONS='
-                        out.print new File(installDir + 'lib\\halsim_lowfi.dll').toString() + ';'
-                        out.println new File(installDir + 'lib\\halsim_ds_nt.dll').toString()
-                        out.println runFile + ' %*'
+                binary.tasks.install.doLast {
+                    if (binary.targetPlatform.operatingSystem.isWindows()) {
+                        // Windows batch scripts
+                        def fileName = binary.component.name + 'LowFi.bat'
+                        def file = new File(installDir + fileName)
+                        file.withWriter { out ->
+                            out.println '@ECHO OFF'
+                            out.print 'SET HALSIM_EXTENSIONS='
+                            out.print '"' + new File(installDir + 'lib\\halsim_lowfi.dll').toString() + '";'
+                            out.println '"' + new File(installDir + 'lib\\halsim_ds_nt.dll').toString() + '"'
+                            out.println runFile + ' %*'
+                        }
+
+                        fileName = binary.component.name + 'LowFiRealDS.bat'
+                        file = new File(installDir + fileName)
+                        file.withWriter { out ->
+                            out.println '@ECHO OFF'
+                            out.print 'SET HALSIM_EXTENSIONS='
+                            out.print '"' + new File(installDir + 'lib\\halsim_lowfi.dll').toString() + '";'
+                            out.println '"' + new File(installDir + 'lib\\halsim_ds_socket.dll').toString() + '"'
+                            out.println runFile + ' %*'
+                        }
+                    } else {
+                        def fileName = binary.component.name + 'LowFi.sh'
+                        def file = new File(installDir + fileName)
+
+                        file.withWriter { out ->
+                            out.print 'export HALSIM_EXTENSIONS='
+                            out.print '"' + new File(installDir + '/lib/libhalsim_lowfi.so').toString() + '";'
+                            out.println '"' + new File(installDir + '/lib/libhalsim_ds_nt.so').toString() + '"'
+                            out.println runFile + ' "$@"'
+                        }
+
+                        fileName = binary.component.name + 'LowFiRealDS.sh'
+                        file = new File(installDir + fileName)
+                        file.withWriter { out ->
+                            out.print 'export HALSIM_EXTENSIONS='
+                            out.print '"' + new File(installDir + '/lib/libhalsim_lowfi.so').toString() + '":'
+                            out.println '"' + new File(installDir + '/lib/libhalsim_ds_socket.so').toString() + '"'
+                            out.println runFile + ' "$@"'
+                        }
                     }
-
-                    fileName = it.component.name + 'LowFiRealDS.bat'
-                    file = new File(installDir + fileName)
-                    file.withWriter { out ->
-                        out.println '@ECHO OFF'
-                        out.print 'SET HALSIM_EXTENSIONS='
-                        out.print new File(installDir + 'lib\\halsim_lowfi.dll').toString() + ';'
-                        out.println new File(installDir + 'lib\\halsim_ds_socket.dll').toString()
-                        out.println runFile + ' %*'
-                    }
-                } else {
-                    def fileName = it.component.name + 'LowFi.sh'
-                    def file = file(installDir + fileName)
-
-
                 }
 
             }

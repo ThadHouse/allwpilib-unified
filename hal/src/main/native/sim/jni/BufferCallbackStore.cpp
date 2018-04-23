@@ -5,7 +5,7 @@
 #include "HAL/handles/UnlimitedHandleResource.h"
 #include "MockData/HAL_Value.h"
 #include "MockData/NotifyListener.h"
-#include "HAL/types.h"
+#include "HAL/Types.h"
 #include "SimulatorJNI.h"
 
 using namespace wpi::java;
@@ -50,7 +50,7 @@ void BufferCallbackStore::performCallback(const char* name, uint8_t* buffer, uin
 
   jbyte* fromCallbackArr = reinterpret_cast<jbyte*>(env->GetPrimitiveArrayCritical(toCallbackArr, nullptr));
 
-  for (int i = 0; i < length; i++) {
+  for (size_t i = 0; i < length; i++) {
     buffer[i] = fromCallbackArr[i];
   }
 

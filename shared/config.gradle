@@ -11,7 +11,7 @@ def linuxCompilerArgs = ['-std=c++14', '-Wformat=2', '-Wall', '-Wextra', '-Werro
                          '-Wno-unused-parameter', '-fPIC', '-rdynamic', '-pthread']
 def linuxCCompilerArgs = ['-Wformat=2', '-Wall', '-Wextra', '-Werror', '-pedantic', '-Wno-psabi', '-g',
                           '-Wno-unused-parameter', '-fPIC', '-rdynamic', '-pthread']
-def linuxLinkerArgs = ['-rdynamic', '-pthread']
+def linuxLinkerArgs = ['-rdynamic', '-pthread', '-ldl']
 def linuxReleaseCompilerArgs = ['-Og']
 def linuxDebugCompilerArgs = ['-O0']
 def linux32BitArg = '-m32'

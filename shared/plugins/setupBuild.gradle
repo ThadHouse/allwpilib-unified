@@ -77,7 +77,12 @@ model {
                                 if (arch == systemArch) {
                                     dependsOn it.tasks.install
                                     commandLine it.tasks.install.runScriptFile.get().asFile.toString()
-
+                                    // it.tasks.install.libs.each { lib ->
+                                    //     if (lib.name.contains(pluginName)) {
+                                    //         def filePath = it.tasks.install.installDirectory.get().toString() + File.separatorChar + 'lib' + File.separatorChar + lib.name
+                                    //         environment('HALSIM_EXTENSIONS', filePath)
+                                    //     }
+                                    // }
                                     found = true
                                 }
                             }
