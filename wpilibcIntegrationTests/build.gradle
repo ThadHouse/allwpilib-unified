@@ -50,7 +50,7 @@ model {
                     binary.sources {
                         simCpp(CppSourceSet) {
                             source {
-                                srcDirs "${rootDir}/shared/singlelib"
+                                srcDirs 'src/main/native/dt'
                                 includes = ['**/*.cpp']
                             }
                         }
